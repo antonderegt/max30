@@ -2,12 +2,30 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/horeca">Horeca</router-link>
+      <!-- <router-link to="/horeca">Horeca</router-link> | -->
+      <a @click="logout">logout</a>
     </div>
     <router-view />
   </div>
 </template>
 
+<script>
+import firebase from "firebase/app";
+require("firebase/auth");
+
+export default {
+  methods: {
+    logout() {
+      firebase
+        .auth()
+        .signOut()
+        .then(() => {
+          this.$router.push("/login");
+        });
+    }
+  }
+};
+</script>
 <style>
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
