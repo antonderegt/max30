@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <h3>Selecteer locatie</h3>
-    <div v-if="loading">Loading...</div>
+    <Loading v-if="loading" />
     <div v-else v-for="location in venueList" :key="location.id">
       <router-link :to="'venue/' + location.id" x>{{
         location.name
@@ -12,6 +12,7 @@
 
 <script>
 import { mapState } from "vuex";
+import Loading from "@/components/Loading.vue";
 
 export default {
   computed: mapState(["venueList"]),
@@ -19,6 +20,9 @@ export default {
     return {
       loading: false
     };
+  },
+  components: {
+    Loading
   },
   methods: {
     getVenueList() {
