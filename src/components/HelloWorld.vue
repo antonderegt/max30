@@ -1,7 +1,8 @@
 <template>
   <div class="hello">
     <h3>Selecteer locatie</h3>
-    <div v-for="location in venueList" :key="location.id">
+    <div v-if="loading">Loading...</div>
+    <div v-else v-for="location in venueList" :key="location.id">
       <router-link :to="'venue/' + location.id" x>{{
         location.name
       }}</router-link>
@@ -14,11 +15,22 @@ import { mapState } from "vuex";
 
 export default {
   computed: mapState(["venueList"]),
+  data() {
+    return {
+      loading: false
+    };
+  },
   methods: {
     getVenueList() {
-      this.$store.dispatch("bindVenueList").catch(error => {
-        alert("bindLocations: " + error);
-      });
+      this.loading = true;
+      this.$store
+        .dispatch("bindVenueList")
+        .then(() => {
+          this.loading = false;
+        })
+        .catch(error => {
+          alert("bindLocations: " + error);
+        });
     }
   },
   created() {
