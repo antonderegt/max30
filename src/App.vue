@@ -1,47 +1,6 @@
 <template>
   <v-app class="grey lighten-4">
-    <v-app-bar flat app>
-      <v-app-bar-nav-icon
-        class="grey--text"
-        @click="drawer = !drawer"
-      ></v-app-bar-nav-icon>
-      <v-toolbar-title class="text-uppercase grey--text">
-        <span class="font-weight-light">Max</span>
-        <span>30</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn v-if="user.loggedIn" text color="grey" @click="logout">
-        <span>Sign out</span>
-        <v-icon right>exit_to_app</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-navigation-drawer v-model="drawer" app>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="title grey--text text-uppercase">
-            <span class="font-weight-light">Max</span>
-            <span>30</span>
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            Join the fun
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-divider></v-divider>
-
-      <v-list dense nav>
-        <v-list-item v-for="item in items" :key="item.title" :to="item.link">
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <NavBar :items="items" />
 
     <v-content>
       <router-view />
@@ -50,32 +9,14 @@
 </template>
 
 <script>
-import firebase from "firebase/app";
-require("firebase/auth");
-import { mapGetters } from "vuex";
+import NavBar from "@/components/NavBar.vue";
 
 export default {
-  computed: {
-    ...mapGetters({
-      user: "user"
-    })
-  },
   data() {
     return {
-      drawer: false,
-      items: [{ title: "Home", icon: "mdi-view-dashboard", link: "/" }],
-      right: null
+      items: [{ title: "Home", icon: "mdi-view-dashboard", link: "/" }]
     };
   },
-  methods: {
-    logout() {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          this.$router.push("/login");
-        });
-    }
-  }
+  components: { NavBar }
 };
 </script>
