@@ -1,21 +1,41 @@
 <template>
   <Loading v-if="loadingVenue" />
   <div v-else>
-    <div v-if="venue === null">No venue information...</div>
-    <div v-else>
-      <h3>{{ venue.name }}</h3>
-      <p v-if="venue.location">
-        {{ venue.location.city }}, {{ venue.location.street }}
-      </p>
-      <p>Capaciteit: {{ venue.capacity }}</p>
-      <p>Aanwezig: {{ venue.present }}</p>
-      <p>Wachtrij:</p>
-      <Loading v-if="loadingQueue" />
-      <div v-else>
-        <p v-if="queue.length === 0">Geen wachtrij, kom snel!</p>
-        <p v-else v-for="person in queue" :key="person.id">{{ person.name }}</p>
-      </div>
-    </div>
+    <v-card class="mx-auto my-5" max-width="400" outlined>
+      <v-layout v-if="venue === null">
+        <v-flex>
+          <h3>No venue information...</h3>
+        </v-flex>
+      </v-layout>
+
+      <v-layout v-else row wrap class="pa-3" justify-space-around>
+        <v-flex xs12>
+          <v-card-title>{{ venue.name }}</v-card-title>
+          <v-card-subtitle v-if="venue.location">
+            {{ venue.location.city }}, {{ venue.location.street }}
+          </v-card-subtitle>
+          <v-divider></v-divider>
+        </v-flex>
+        <v-flex xs6>
+          <v-card-text>Capaciteit: {{ venue.capacity }}</v-card-text>
+        </v-flex>
+        <v-flex xs6>
+          <v-card-text>Aanwezig: {{ venue.present }}</v-card-text>
+        </v-flex>
+        <v-flex xs12>
+          <v-card-text>Wachtrij:</v-card-text>
+        </v-flex>
+        <Loading v-if="loadingQueue" />
+        <v-flex v-if="queue.length === 0" xs12>
+          <v-card-text>Geen wachtrij, kom snel!</v-card-text>
+        </v-flex>
+        <v-flex xs3 v-for="person in queue" :key="person.id">
+          <v-btn outlined block>
+            {{ person.name }}
+          </v-btn>
+        </v-flex>
+      </v-layout>
+    </v-card>
   </div>
 </template>
 
