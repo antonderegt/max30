@@ -2,14 +2,14 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 
 firebase.initializeApp({
-  apiKey: "AIzaSyCYZI9ewanrCc_wx0--NNTKipBJ4YkQv9s",
-  authDomain: "max30-max100.firebaseapp.com",
-  databaseURL: "https://max30-max100.firebaseio.com",
-  projectId: "max30-max100",
-  storageBucket: "max30-max100.appspot.com",
-  messagingSenderId: "30134021170",
-  appId: "1:30134021170:web:e0e53bee2955ef1a62202b",
-  measurementId: "G-WMWZ6X2JTF"
+  apiKey: process.env.VUE_APP_API_KEY,
+  authDomain: process.env.VUE_APP_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_DATABASE_URL,
+  projectId: process.env.VUE_APP_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_APP_ID,
+  measurementId: process.env.VUE_APP_MEASUREMENT_ID
 });
 
 export const db = firebase.firestore();
