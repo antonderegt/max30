@@ -1,7 +1,24 @@
 <template>
   <div class="login">
-    <img src="../assets/logo.png" width="300px" />
-    <h3>DC Comics Rebirth - Covers</h3>
+    <img alt="Vue logo" src="../assets/logo.png" />
+    <h3>Login</h3>
+    <!-- <div class="row">
+    <form class="col s12">
+      <div class="row">
+        <div class="input-field col s6">
+          <input placeholder="Email" id="first_name" type="text" class="validate"> 
+          <input placeholder="Email" id="first_name" type="email" >
+          <label for="first_name">First Name</label>
+        </div>
+        </div>
+      <div class="row">
+        <div class="input-field col s6">
+          <input placeholder="Password" id="last_name" type="text" class="validate">
+          <label for="last_name">Last Name</label>
+        </div>
+      </div>
+    </form>
+     </div> -->
     <input
       type="text"
       v-model="email"
@@ -18,7 +35,7 @@
       required
     />
     <br />
-    <button v-on:click="login" class="button">Enter</button>
+    <button @click="login" class="button">Enter</button>
     <p>
       <router-link to="/signup">
         New Here? Create a new account
@@ -28,7 +45,6 @@
 </template>
 
 <script>
-//   import firebase from 'firebase';
 import firebase from "firebase/app";
 
 export default {
