@@ -20,7 +20,7 @@
           width="100"
         />
       </div>
-      
+
       <router-link to="/">Home</router-link> |
       <a @click="logout">logout</a>
 
@@ -32,7 +32,6 @@
     </v-content>
   </v-app>
 </template>
-
 
 <script>
 import firebase from "firebase/app";
