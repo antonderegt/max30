@@ -15,7 +15,8 @@ export default new Vuex.Store({
       loggedIn: false,
       data: null,
       profile: null
-    }
+    },
+    myVenues: []
   },
   mutations: {
     ...vuexfireMutations,
@@ -56,6 +57,21 @@ export default new Vuex.Store({
           .doc(id)
           .collection("queue")
           .orderBy("date")
+      );
+    }),
+    // bindMyVenues: () => {
+    // console.log(
+    // "binidng@"
+    // );
+    //
+    // },
+    bindMyVenues: firestoreAction((bindFirestoreRef, id) => {
+      return bindFirestoreRef.bindFirestoreRef(
+        "myVenues",
+        db
+          .collection("profiles")
+          .doc(id)
+          .collection("venues")
       );
     }),
     updatePresent({ commit }, venue) {
@@ -116,7 +132,8 @@ export default new Vuex.Store({
       if (user) {
         commit("SET_USER", {
           displayName: user.displayName,
-          email: user.email
+          email: user.email,
+          uid: user.uid
         });
         const docRef = db.collection("profiles").doc(user.uid);
 
@@ -140,6 +157,9 @@ export default new Vuex.Store({
   getters: {
     user(state) {
       return state.user;
+    },
+    myVenues(state) {
+      return state.myVenues;
     }
   },
   modules: {}

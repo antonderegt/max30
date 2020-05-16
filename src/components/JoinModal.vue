@@ -52,7 +52,9 @@ export default {
           id: this.venue.id,
           present: newPresent
         };
-        this.$store.dispatch("updatePresent", venue);
+        this.$store.dispatch("updatePresent", venue).then(() => {
+          this.$router.push("/waiting-room");
+        });
       } else {
         console.log("It doesn't fit do you want to join the waitlist?");
       }

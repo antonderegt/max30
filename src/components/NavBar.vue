@@ -41,18 +41,24 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
-        <v-list-item
-          v-if="user.profile !== null && user.profile.owner"
-          to="/add-venue"
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-map-plus</v-icon>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title>Add Venue</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <div v-if="user.profile !== null && user.profile.owner">
+          <v-list-item to="/add-venue">
+            <v-list-item-icon>
+              <v-icon>mdi-map-plus</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>Add Venue</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item to="/my-venues">
+            <v-list-item-icon>
+              <v-icon>mdi-map-marker</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>My Venues</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </div>
       </v-list>
     </v-navigation-drawer>
   </nav>

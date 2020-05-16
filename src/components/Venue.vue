@@ -35,7 +35,7 @@
           </v-btn>
         </v-flex>
         <v-flex xs12 class="pa-3">
-          <v-btn outlined block @click="show = !show">JOIN {{ count }}</v-btn>
+          <v-btn outlined block @click="show = !show">JOIN</v-btn>
           <JoinModal
             v-if="show"
             :show.sync="show"

@@ -32,7 +32,17 @@ const routes = [
   {
     path: "/add-venue",
     name: "AddVenue",
-    component: () => import("@/views/AddVenue.vue")
+    component: () => import("@/views/owner/AddVenue.vue")
+  },
+  {
+    path: "/my-venues",
+    name: "MyVenues",
+    component: () => import("@/views/owner/MyVenues.vue")
+  },
+  {
+    path: "/waiting-room",
+    name: "WaitingRoom",
+    component: () => import("@/views/WaitingRoom.vue")
   }
 ];
 
