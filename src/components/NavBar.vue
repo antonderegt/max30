@@ -25,6 +25,7 @@
           </v-list-item-title>
           <v-list-item-subtitle>
             Join the fun
+            <span v-if="user.profile !== null">{{ user.profile.name }}</span>
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -38,6 +39,18 @@
 
           <v-list-item-content>
             <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item
+          v-if="user.profile !== null && user.profile.owner"
+          to="/add-venue"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-map-plus</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Add Venue</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
