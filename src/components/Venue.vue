@@ -1,7 +1,7 @@
 <template>
   <Loading v-if="loadingVenue" />
   <div v-else>
-    <v-card class="mx-auto my-5" max-width="400" outlined>
+    <v-card class="mx-auto my-5" max-width="343" outlined>
       <v-layout v-if="venue === null">
         <v-flex>
           <h3>No venue information...</h3>
@@ -12,7 +12,7 @@
         <v-flex xs12>
           <v-card-title>{{ venue.name }}</v-card-title>
           <v-card-subtitle v-if="venue.location">
-            {{ venue.location.city }}, {{ venue.location.street }}
+            {{ venue.location.city }}, {{ venue.location.address }}
           </v-card-subtitle>
           <v-divider></v-divider>
         </v-flex>
@@ -34,6 +34,10 @@
             {{ person.name }}
           </v-btn>
         </v-flex>
+        <v-flex xs12 class="pa-3">
+          <v-btn outlined block @click="show = !show">JOIN {{ count }}</v-btn>
+          <JoinModal v-if="show" :show.sync="show" :count.sync="count" />
+        </v-flex>
       </v-layout>
     </v-card>
   </div>
@@ -42,6 +46,7 @@
 <script>
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
+import JoinModal from "@/components/JoinModal.vue";
 
 export default {
   computed: mapState(["venue", "queue"]),
@@ -49,7 +54,9 @@ export default {
     return {
       id: "",
       loadingVenue: false,
-      loadingQueue: false
+      loadingQueue: false,
+      show: false,
+      count: 0
     };
   },
   methods: {
@@ -73,15 +80,10 @@ export default {
           alert("bindHoreca: " + error);
         });
     }
-    // async addMessage() {
-    //     await db.collection("test").add({
-    //         name: "testname",
-    //         date: Timestamp.fromDate(new Date()),
-    //     })
-    // }
   },
   components: {
-    Loading
+    Loading,
+    JoinModal
   },
   created() {
     this.id = this.$route.params.id;
