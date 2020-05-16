@@ -1,0 +1,99 @@
+<template>
+  <v-card width="400" class="mx-auto mt-5">
+    <v-card-title>
+      <h1 class="display-1">Add Venue</h1>
+    </v-card-title>
+    <v-card-text>
+      <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+        <v-text-field
+          v-model="name"
+          :rules="nameRules"
+          label="Name"
+          prepend-icon="mdi-account"
+          required
+        ></v-text-field>
+        <v-text-field
+          v-model="city"
+          :rules="nameRules"
+          label="City"
+          prepend-icon="mdi-account"
+          required
+        ></v-text-field>
+        <v-text-field
+          v-model="address"
+          :rules="nameRules"
+          label="address"
+          prepend-icon="mdi-account"
+          required
+        ></v-text-field>
+
+        <v-divider></v-divider>
+        <v-slider
+          :label="'Capacity: ' + capacity"
+          v-model="capacity"
+          thumb-label
+        ></v-slider>
+      </v-form>
+    </v-card-text>
+    <v-divider></v-divider>
+    <v-card-actions>
+      <v-btn color="info" @click="addVenue">Add</v-btn>
+    </v-card-actions>
+  </v-card>
+</template>
+
+<script>
+import firebase from "firebase/app";
+import { mapGetters } from "vuex";
+
+export default {
+  name: "signup",
+  computed: {
+    ...mapGetters({
+      user: "user"
+    })
+  },
+  data() {
+    return {
+      valid: true,
+      lazy: true,
+      name: "",
+      city: "",
+      address: "",
+      nameRules: [v => !!v || "Name is required"],
+      capacity: 30
+    };
+  },
+  methods: {
+    addVenue() {
+      const venue = {
+        name: this.name,
+        location: {
+          city: this.city,
+          address: this.address
+        },
+        capacity: this.capacity,
+        present: 0
+      };
+      this.$store.dispatch("addVenue", venue);
+    },
+    signUp() {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(res => {
+          const profile = {
+            id: res.user.uid,
+            name: this.name,
+            owner: this.owner
+          };
+          this.$store.dispatch("createProfile", profile);
+          this.$router.replace("/login");
+        })
+        .catch(err => {
+          alert(err.message);
+        });
+    }
+  }
+};
+</script>
