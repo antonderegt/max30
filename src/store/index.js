@@ -30,6 +30,9 @@ export default new Vuex.Store({
     },
     ADD_VENUE() {
       console.log("added venue");
+    },
+    UPDATE_PRESENT(state, newPresent) {
+      state.venue.present = newPresent;
     }
   },
   actions: {
@@ -55,6 +58,19 @@ export default new Vuex.Store({
           .orderBy("date")
       );
     }),
+    updatePresent({ commit }, venue) {
+      db.collection("venues")
+        .doc(venue.id)
+        .update({
+          present: venue.present
+        })
+        .then(() => {
+          commit("UPDATE_PRESENT", venue.present);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     addVenue({ commit }, venue) {
       db.collection("venues")
         .add(venue)

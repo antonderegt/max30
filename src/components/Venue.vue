@@ -36,7 +36,12 @@
         </v-flex>
         <v-flex xs12 class="pa-3">
           <v-btn outlined block @click="show = !show">JOIN {{ count }}</v-btn>
-          <JoinModal v-if="show" :show.sync="show" :count.sync="count" />
+          <JoinModal
+            v-if="show"
+            :show.sync="show"
+            :count.sync="count"
+            :venue="venue"
+          />
         </v-flex>
       </v-layout>
     </v-card>
@@ -56,7 +61,7 @@ export default {
       loadingVenue: false,
       loadingQueue: false,
       show: false,
-      count: 0
+      count: 1
     };
   },
   methods: {

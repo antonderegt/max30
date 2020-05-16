@@ -9,12 +9,12 @@
             in contact with CORONA
           </div>
           <div>
-            <input
+            <v-text-field
               type="number"
               label="how many"
               v-model="newCount"
-              @change="$emit('update:count', newCount)"
-            /></div
+              @change="$emit('update:count', parseInt(newCount))"
+            ></v-text-field></div
         ></v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -24,12 +24,7 @@
             @click="$emit('update:show', false)"
             >Disagree</v-btn
           >
-          <v-btn
-            color="green darken-1"
-            text
-            @click="$emit('update:show', false)"
-            >Agree</v-btn
-          >
+          <v-btn color="green darken-1" text @click="agree">Agree</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -40,12 +35,29 @@
 export default {
   props: {
     show: Boolean,
-    count: Number
+    count: Number,
+    venue: Object
   },
   data() {
     return {
       newCount: Number
     };
+  },
+  methods: {
+    agree() {
+      const newPresent = parseInt(this.newCount) + this.venue.present;
+      if (newPresent <= this.venue.capacity) {
+        console.log("It fits! You can enter the venue.");
+        const venue = {
+          id: this.venue.id,
+          present: newPresent
+        };
+        this.$store.dispatch("updatePresent", venue);
+      } else {
+        console.log("It doesn't fit do you want to join the waitlist?");
+      }
+      this.$emit("update:show", false);
+    }
   },
   created() {
     this.newCount = this.count;
