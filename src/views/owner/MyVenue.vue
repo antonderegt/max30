@@ -39,11 +39,19 @@
             <v-card-actions>
               <v-btn
                 color="success"
-                @click="acceptGroup(person.id, person.count)"
+                @click="
+                  acceptOrDeclineGroup(person.id, person.count, 'accepted')
+                "
                 >accept</v-btn
               >
               <v-spacer></v-spacer>
-              <v-btn color="error" @click="declineGroup">decline</v-btn>
+              <v-btn
+                color="error"
+                @click="
+                  acceptOrDeclineGroup(person.id, person.count, 'declined')
+                "
+                >decline</v-btn
+              >
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -67,21 +75,23 @@ export default {
     };
   },
   methods: {
-    acceptGroup(id, count) {
-      const venue = {
+    acceptOrDeclineGroup(id, count, status) {
+      let venue = {
         id: this.venue.id,
-        present: this.venue.present + parseInt(count)
+        present: this.venue.present
       };
+      if (status == "accepted") {
+        venue.present += parseInt(count);
+      }
       this.$store.dispatch("updatePresent", venue).then(() => {
         const waitlist = {
           venue: this.venue.id,
           user: id,
-          status: "accepted"
+          status
         };
         this.$store.dispatch("updateWaitList", waitlist);
       });
     },
-    declineGroup() {},
     getVenue() {
       this.loadingVenue = true;
       this.$store
