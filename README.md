@@ -1,5 +1,7 @@
 # max30
 
+Demo at [max30-max100.web.app](https://max30-max100.web.app)
+
 ## Project setup
 ```
 npm install
