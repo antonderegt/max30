@@ -50,7 +50,8 @@ export default {
         userid: this.user.data.uid,
         username: this.user.profile.name,
         venue: this.venue.id,
-        count: this.newCount
+        count: parseInt(this.newCount),
+        status: "waiting"
       }
       
       this.$store.dispatch("joinWaitList", waitlist)

@@ -59,6 +59,7 @@ export default new Vuex.Store({
           .collection("venues")
           .doc(id)
           .collection("waitlist")
+          .where("status", "==", "waiting")
           .orderBy("timestamp")
       );
     }),
@@ -71,6 +72,22 @@ export default new Vuex.Store({
           .collection("venues")
       );
     }),
+    updateWaitList({ commit }, waitlist) {
+      waitlist.timestamp = Timestamp.fromDate(new Date);
+      db
+        .collection("venues")
+        .doc(waitlist.venue)
+        .collection("waitlist")
+        .doc(waitlist.user)
+        .update({
+          status: waitlist.status
+        })
+        .then(() => {
+          // commit("ADD_TO_WAITLIST", waitlist);
+          console.log(commit);
+          
+        })
+    },
     joinWaitList({ commit }, waitlist) {
       waitlist.timestamp = Timestamp.fromDate(new Date);
       db
@@ -81,7 +98,8 @@ export default new Vuex.Store({
         .set({
           name: waitlist.username,
           count: waitlist.count,
-          timestamp: waitlist.timestamp
+          timestamp: waitlist.timestamp,
+          status: waitlist.status
         })
         .then(() => {
           commit("ADD_TO_WAITLIST", waitlist);
