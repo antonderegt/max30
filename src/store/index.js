@@ -3,10 +3,12 @@ import Vuex from "vuex";
 import { vuexfireMutations, firestoreAction } from "vuexfire";
 import { db, Timestamp } from "@/db";
 import firebase from "firebase/app";
+// import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  // plugins: [createPersistedState()],
   state: {
     waitList: [],
     venueList: [],
