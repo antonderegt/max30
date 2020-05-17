@@ -40,6 +40,11 @@ const routes = [
     component: () => import("@/views/owner/MyVenues.vue")
   },
   {
+    path: "/my-venue/:id",
+    name: "MyVenue",
+    component: () => import("@/views/owner/MyVenue.vue")
+  },
+  {
     path: "/waiting-room",
     name: "WaitingRoom",
     component: () => import("@/views/WaitingRoom.vue")

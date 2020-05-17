@@ -1,14 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { vuexfireMutations, firestoreAction } from "vuexfire";
-import { db } from "@/db";
+import { db, Timestamp } from "@/db";
 import firebase from "firebase/app";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    queue: [],
+    waitlist: [],
     venueList: [],
     venue: {},
     user: {
@@ -28,6 +28,9 @@ export default new Vuex.Store({
     },
     UPDATE_PROFILE(state, profile) {
       state.user.profile = profile;
+    },
+    ADD_TO_WAITLIST(state, waitlist) {
+      state.waitlist.push(waitlist);
     },
     ADD_VENUE() {
       console.log("added venue");
@@ -51,20 +54,14 @@ export default new Vuex.Store({
     }),
     bindQueue: firestoreAction((bindFirestoreRef, id) => {
       return bindFirestoreRef.bindFirestoreRef(
-        "queue",
+        "waitlist",
         db
           .collection("venues")
           .doc(id)
-          .collection("queue")
-          .orderBy("date")
+          .collection("waitlist")
+          .orderBy("timestamp")
       );
     }),
-    // bindMyVenues: () => {
-    // console.log(
-    // "binidng@"
-    // );
-    //
-    // },
     bindMyVenues: firestoreAction((bindFirestoreRef, id) => {
       return bindFirestoreRef.bindFirestoreRef(
         "myVenues",
@@ -74,6 +71,22 @@ export default new Vuex.Store({
           .collection("venues")
       );
     }),
+    joinWaitList({ commit }, waitlist) {
+      waitlist.timestamp = Timestamp.fromDate(new Date);
+      db
+        .collection("venues")
+        .doc(waitlist.venue)
+        .collection("waitlist")
+        .doc(waitlist.userid)
+        .set({
+          name: waitlist.username,
+          count: waitlist.count,
+          timestamp: waitlist.timestamp
+        })
+        .then(() => {
+          commit("ADD_TO_WAITLIST", waitlist);
+        })
+    },
     updatePresent({ commit }, venue) {
       db.collection("venues")
         .doc(venue.id)

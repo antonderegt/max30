@@ -26,23 +26,13 @@
           <v-card-text>Wachtrij:</v-card-text>
         </v-flex>
         <Loading v-if="loadingQueue" />
-        <v-flex v-if="waitlist.length === 0" xs12>
-          <v-card-text>Geen wachtrij, kom snel!</v-card-text>
+        <v-flex v-if="queue.length === 0" xs12>
+          <v-card-text>Geen wachtrij...</v-card-text>
         </v-flex>
-        <v-flex xs3 v-for="person in waitlist" :key="person.id">
+        <v-flex xs3 v-for="person in queue" :key="person.id">
           <v-btn outlined block>
             {{ person.name }}
           </v-btn>
-        </v-flex>
-        <v-flex xs12 class="pa-3">
-          <v-btn outlined block @click="show = !show">JOIN</v-btn>
-          <JoinModal
-            v-if="show"
-            :show.sync="show"
-            :count.sync="count"
-            :venue="venue"
-            :user="user"
-          />
         </v-flex>
       </v-layout>
     </v-card>
@@ -52,16 +42,14 @@
 <script>
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
-import JoinModal from "@/components/JoinModal.vue";
 
 export default {
-  computed: mapState(["venue", "waitlist", "user"]),
+  computed: mapState(["venue", "queue"]),
   data() {
     return {
       id: "",
       loadingVenue: false,
       loadingQueue: false,
-      show: false,
       count: 1
     };
   },
@@ -89,7 +77,6 @@ export default {
   },
   components: {
     Loading,
-    JoinModal
   },
   created() {
     this.id = this.$route.params.id;

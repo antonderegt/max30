@@ -36,7 +36,8 @@ export default {
   props: {
     show: Boolean,
     count: Number,
-    venue: Object
+    venue: Object,
+    user: Object
   },
   data() {
     return {
@@ -45,19 +46,17 @@ export default {
   },
   methods: {
     agree() {
-      const newPresent = parseInt(this.newCount) + this.venue.present;
-      if (newPresent <= this.venue.capacity) {
-        console.log("It fits! You can enter the venue.");
-        const venue = {
-          id: this.venue.id,
-          present: newPresent
-        };
-        this.$store.dispatch("updatePresent", venue).then(() => {
-          this.$router.push("/waiting-room");
-        });
-      } else {
-        console.log("It doesn't fit do you want to join the waitlist?");
+      const waitlist = {
+        userid: this.user.data.uid,
+        username: this.user.profile.name,
+        venue: this.venue.id,
+        count: this.newCount
       }
+      
+      this.$store.dispatch("joinWaitList", waitlist)
+      .then(() => {
+        this.$router.push("/waiting-room");
+      })
       this.$emit("update:show", false);
     }
   },
