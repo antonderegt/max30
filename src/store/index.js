@@ -72,9 +72,8 @@ export default new Vuex.Store({
       );
     }),
     joinWaitList({ commit }, waitlist) {
-      waitlist.timestamp = Timestamp.fromDate(new Date);
-      db
-        .collection("venues")
+      waitlist.timestamp = Timestamp.fromDate(new Date());
+      db.collection("venues")
         .doc(waitlist.venue)
         .collection("waitlist")
         .doc(waitlist.userid)
@@ -85,7 +84,7 @@ export default new Vuex.Store({
         })
         .then(() => {
           commit("ADD_TO_WAITLIST", waitlist);
-        })
+        });
     },
     updatePresent({ commit }, venue) {
       db.collection("venues")
@@ -98,45 +97,6 @@ export default new Vuex.Store({
         })
         .catch(error => {
           console.log(error);
-        });
-    },
-    addVenue({ commit }, venue) {
-      db.collection("venues")
-        .add(venue)
-        .then(ven => {
-          commit("ADD_VENUE");
-          var user = firebase.auth().currentUser;
-          db.collection("profiles")
-            .doc(user.uid)
-            .collection("venues")
-            .doc(ven.id)
-            .set({
-              name: venue.name
-            })
-            .then(() => {
-              console.log("added venue to profile");
-              this.fetchUser(user);
-            })
-            .catch(error => {
-              alert(error);
-            });
-        })
-        .catch(error => {
-          console.error("Error writing document: ", error);
-        });
-    },
-    createProfile({ commit }, profile) {
-      db.collection("profiles")
-        .doc(profile.id)
-        .set({
-          name: profile.name,
-          owner: profile.owner
-        })
-        .then(function() {
-          commit("UPDATE_PROFILE", profile);
-        })
-        .catch(function(error) {
-          console.error("Error writing document: ", error);
         });
     },
     fetchUser({ commit }, user) {
@@ -165,6 +125,39 @@ export default new Vuex.Store({
       } else {
         commit("SET_USER", null);
       }
+    },
+    async addVenue({ commit }, venue) {
+      const ven = await db.collection("venues").add(venue);
+      try {
+        commit("ADD_VENUE");
+        const user = firebase.auth().currentUser;
+        await db
+          .collection("profiles")
+          .doc(user.uid)
+          .collection("venues")
+          .doc(ven.id)
+          .set({
+            name: venue.name
+          });
+        console.log("added venue to profile");
+        this.dispatch("fetchUser", user);
+      } catch (error) {
+        alert(error);
+      }
+    },
+    createProfile({ commit }, profile) {
+      db.collection("profiles")
+        .doc(profile.id)
+        .set({
+          name: profile.name,
+          owner: profile.owner
+        })
+        .then(function() {
+          commit("UPDATE_PROFILE", profile);
+        })
+        .catch(function(error) {
+          console.error("Error writing document: ", error);
+        });
     }
   },
   getters: {

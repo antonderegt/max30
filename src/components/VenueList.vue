@@ -1,12 +1,24 @@
 <template>
   <div class="hello">
-    <h3>Selecteer locatie</h3>
-    <Loading v-if="loading" />
-    <div v-else v-for="location in venueList" :key="location.id">
-      <router-link :to="'venue/' + location.id" x>{{
-        location.name
-      }}</router-link>
-    </div>
+    <Loading v-show="loading" />
+
+    <v-list two-line subheader>
+      <v-subheader>Venues</v-subheader>
+
+      <v-list-item
+        :to="'venue/' + venue.id"
+        v-for="venue in venueList"
+        :key="venue.id"
+      >
+        <v-list-item-content>
+          <v-list-item-title>{{ venue.name }}</v-list-item-title>
+          <v-list-item-subtitle
+            >{{ venue.location.address }} in
+            {{ venue.location.city }}</v-list-item-subtitle
+          >
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
   </div>
 </template>
 
