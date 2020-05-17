@@ -34,12 +34,14 @@
             <v-card-title>
               {{ person.name }}
             </v-card-title>
-              <v-card-text>
-                With {{ person.count }} people.
-              </v-card-text>
+            <v-card-text> With {{ person.count }} people. </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
-              <v-btn color="success" @click="acceptGroup(person.id, person.count)">accept</v-btn>
+              <v-btn
+                color="success"
+                @click="acceptGroup(person.id, person.count)"
+                >accept</v-btn
+              >
               <v-spacer></v-spacer>
               <v-btn color="error" @click="declineGroup">decline</v-btn>
             </v-card-actions>
@@ -69,16 +71,15 @@ export default {
       const venue = {
         id: this.venue.id,
         present: this.venue.present + parseInt(count)
-      }
-      this.$store.dispatch("updatePresent", venue)
-      .then(() => {
+      };
+      this.$store.dispatch("updatePresent", venue).then(() => {
         const waitlist = {
           venue: this.venue.id,
           user: id,
           status: "accepted"
-        }
-        this.$store.dispatch("updateWaitList", waitlist)
-      })
+        };
+        this.$store.dispatch("updateWaitList", waitlist);
+      });
     },
     declineGroup() {},
     getVenue() {
@@ -103,7 +104,7 @@ export default {
     }
   },
   components: {
-    Loading,
+    Loading
   },
   created() {
     this.id = this.$route.params.id;

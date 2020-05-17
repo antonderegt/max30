@@ -37,7 +37,7 @@ export default {
       });
     },
     goToVenue(id) {
-        this.$router.push(`/my-venue/${id}`);
+      this.$router.push(`/my-venue/${id}`);
     }
   },
   components: { Loading },
