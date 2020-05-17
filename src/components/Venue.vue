@@ -25,11 +25,11 @@
         <v-flex xs12>
           <v-card-text>Wachtrij:</v-card-text>
         </v-flex>
-        <Loading v-if="loadingQueue" />
-        <v-flex v-if="waitlist.length === 0" xs12>
+        <Loading v-if="loadingWaitList" />
+        <v-flex v-if="waitList.length === 0" xs12>
           <v-card-text>Geen wachtrij, kom snel!</v-card-text>
         </v-flex>
-        <v-flex xs3 v-for="person in waitlist" :key="person.id">
+        <v-flex xs3 v-for="person in waitList" :key="person.id">
           <v-btn outlined block>
             {{ person.name }}
           </v-btn>
@@ -55,12 +55,12 @@ import Loading from "@/components/Loading.vue";
 import JoinModal from "@/components/JoinModal.vue";
 
 export default {
-  computed: mapState(["venue", "waitlist", "user"]),
+  computed: mapState(["venue", "waitList", "user"]),
   data() {
     return {
-      id: "",
+      venueID: "",
       loadingVenue: false,
-      loadingQueue: false,
+      loadingWaitList: false,
       show: false,
       count: 1
     };
@@ -69,21 +69,21 @@ export default {
     getVenue() {
       this.loadingVenue = true;
       this.$store
-        .dispatch("bindVenue", this.id)
+        .dispatch("bindVenue", this.venueID)
         .then(() => {
           this.loadingVenue = false;
-          this.loadingQueue = true;
+          this.loadingWaitList = true;
           this.$store
-            .dispatch("bindQueue", this.id)
+            .dispatch("bindWaitList", this.venueID)
             .then(() => {
-              this.loadingQueue = false;
+              this.loadingWaitList = false;
             })
             .catch(error => {
-              alert("bindQueue: " + error);
+              alert("bindWaitList: " + error);
             });
         })
         .catch(error => {
-          alert("bindHoreca: " + error);
+          alert("bindVenue: " + error);
         });
     }
   },
@@ -92,7 +92,7 @@ export default {
     JoinModal
   },
   created() {
-    this.id = this.$route.params.id;
+    this.venueID = this.$route.params.venue;
     this.getVenue();
   }
 };

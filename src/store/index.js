@@ -8,7 +8,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    waitlist: [],
+    waitList: [],
     venueList: [],
     venue: {},
     user: {
@@ -53,9 +53,9 @@ export default new Vuex.Store({
         db.collection("venues")
       );
     }),
-    bindQueue: firestoreAction((bindFirestoreRef, id) => {
+    bindWaitList: firestoreAction((bindFirestoreRef, id) => {
       return bindFirestoreRef.bindFirestoreRef(
-        "waitlist",
+        "waitList",
         db
           .collection("venues")
           .doc(id)
