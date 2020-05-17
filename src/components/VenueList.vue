@@ -3,9 +3,9 @@
     <Loading v-show="loading" />
 
     <v-list two-line subheader>
-      <v-subheader
-        >Zoveel plek is er bij bedrijven bij u in de buurt:</v-subheader
-      >
+      <v-subheader>
+        Zoveel plek is er bij bedrijven bij u in de buurt:
+      </v-subheader>
 
       <v-list-item
         :to="'venue/' + venue.id"
@@ -14,10 +14,10 @@
       >
         <v-list-item-content>
           <v-list-item-title>{{ venue.name }}</v-list-item-title>
-          <v-list-item-subtitle
-            >{{ venue.location.address }} in
-            {{ venue.location.city }}</v-list-item-subtitle
-          >
+          <v-list-item-subtitle>
+            {{ venue.location.address }} in
+            {{ venue.location.city }}
+          </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
     </v-list>

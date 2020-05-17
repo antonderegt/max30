@@ -23,13 +23,13 @@
           <v-card-text>Present: {{ venue.present }}</v-card-text>
         </v-flex>
         <v-flex xs12>
-          <v-card-text>Waitlist:</v-card-text>
+          <v-card-text>Wait list:</v-card-text>
         </v-flex>
-        <Loading v-if="loadingQueue" />
-        <v-flex v-if="waitlist.length === 0" xs12>
-          <v-card-text>No waitlist...</v-card-text>
+        <Loading v-if="loadingWaitList" />
+        <v-flex v-if="waitList.length === 0" xs12>
+          <v-card-text>No wait list...</v-card-text>
         </v-flex>
-        <v-flex xs12 v-for="person in waitlist" :key="person.id" class="pa-3">
+        <v-flex xs12 v-for="person in waitList" :key="person.id" class="pa-3">
           <v-card>
             <v-card-title>
               {{ person.name }}
@@ -42,8 +42,9 @@
                 @click="
                   acceptOrDeclineGroup(person.id, person.count, 'accepted')
                 "
-                >accept</v-btn
               >
+                accept
+              </v-btn>
               <v-spacer></v-spacer>
               <v-btn
                 color="error"
@@ -65,17 +66,17 @@ import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 
 export default {
-  computed: mapState(["venue", "waitlist"]),
+  computed: mapState(["venue", "waitList"]),
   data() {
     return {
-      id: "",
+      venueID: "",
       loadingVenue: false,
-      loadingQueue: false,
+      loadingWaitList: false,
       count: 1
     };
   },
   methods: {
-    acceptOrDeclineGroup(id, count, status) {
+    acceptOrDeclineGroup(userID, count, status) {
       let venue = {
         id: this.venue.id,
         present: this.venue.present
@@ -84,32 +85,32 @@ export default {
         venue.present += parseInt(count);
       }
       this.$store.dispatch("updatePresent", venue).then(() => {
-        const waitlist = {
+        const waitList = {
           venue: this.venue.id,
-          user: id,
+          user: userID,
           status
         };
-        this.$store.dispatch("updateWaitList", waitlist);
+        this.$store.dispatch("updateWaitList", waitList);
       });
     },
     getVenue() {
       this.loadingVenue = true;
       this.$store
-        .dispatch("bindVenue", this.id)
+        .dispatch("bindVenue", this.venueID)
         .then(() => {
           this.loadingVenue = false;
-          this.loadingQueue = true;
+          this.loadingWaitList = true;
           this.$store
-            .dispatch("bindQueue", this.id)
+            .dispatch("bindWaitList", this.venueID)
             .then(() => {
-              this.loadingQueue = false;
+              this.loadingWaitList = false;
             })
             .catch(error => {
-              console.log("bindQueue: " + error);
+              console.log("bindWaitList: " + error);
             });
         })
         .catch(error => {
-          alert("bindHoreca: " + error);
+          alert("bindVenue: " + error);
         });
     }
   },
@@ -117,7 +118,7 @@ export default {
     Loading
   },
   created() {
-    this.id = this.$route.params.id;
+    this.venueID = this.$route.params.venue;
     this.getVenue();
   }
 };

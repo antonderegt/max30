@@ -12,7 +12,7 @@ const routes = [
     component: Home
   },
   {
-    path: "/venue/:id",
+    path: "/venue/:venue",
     name: "Venue",
     component: () => import("@/components/Venue.vue"),
     meta: {
@@ -40,7 +40,7 @@ const routes = [
     component: () => import("@/views/owner/MyVenues.vue")
   },
   {
-    path: "/my-venue/:id",
+    path: "/my-venue/:venue",
     name: "MyVenue",
     component: () => import("@/views/owner/MyVenue.vue")
   },
