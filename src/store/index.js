@@ -16,7 +16,8 @@ export default new Vuex.Store({
       data: null,
       profile: null
     },
-    myVenues: []
+    myVenues: [],
+    waitListItem: {}
   },
   mutations: {
     ...vuexfireMutations,
@@ -59,9 +60,22 @@ export default new Vuex.Store({
           .collection("venues")
           .doc(id)
           .collection("waitlist")
+          .where("status", "==", "waiting")
           .orderBy("timestamp")
       );
     }),
+    bindSingleWaitListItem: firestoreAction(
+      (bindFirestoreRef, waitlistItem) => {
+        return bindFirestoreRef.bindFirestoreRef(
+          "waitListItem",
+          db
+            .collection("venues")
+            .doc(waitlistItem.venue)
+            .collection("waitlist")
+            .doc(waitlistItem.user)
+        );
+      }
+    ),
     bindMyVenues: firestoreAction((bindFirestoreRef, id) => {
       return bindFirestoreRef.bindFirestoreRef(
         "myVenues",
@@ -71,19 +85,35 @@ export default new Vuex.Store({
           .collection("venues")
       );
     }),
+    updateWaitList({ commit }, waitlist) {
+      waitlist.timestamp = Timestamp.fromDate(new Date());
+      db.collection("venues")
+        .doc(waitlist.venue)
+        .collection("waitlist")
+        .doc(waitlist.user)
+        .update({
+          status: waitlist.status
+        })
+        .then(() => {
+          // commit("ADD_TO_WAITLIST", waitlist);
+          console.log(commit);
+        });
+    },
     joinWaitList({ commit }, waitlist) {
       waitlist.timestamp = Timestamp.fromDate(new Date());
       db.collection("venues")
         .doc(waitlist.venue)
         .collection("waitlist")
-        .doc(waitlist.userid)
+        .doc(waitlist.user)
         .set({
           name: waitlist.username,
           count: waitlist.count,
-          timestamp: waitlist.timestamp
+          timestamp: waitlist.timestamp,
+          status: waitlist.status
         })
         .then(() => {
           commit("ADD_TO_WAITLIST", waitlist);
+          this.dispatch("updateProfile", waitlist);
         });
     },
     updatePresent({ commit }, venue) {
@@ -99,51 +129,60 @@ export default new Vuex.Store({
           console.log(error);
         });
     },
-    fetchUser({ commit }, user) {
-      commit("SET_LOGGED_IN", user !== null);
-
-      if (user) {
-        commit("SET_USER", {
-          displayName: user.displayName,
-          email: user.email,
-          uid: user.uid
+    addVenue({ commit }, venue) {
+      db.collection("venues")
+        .add(venue)
+        .then(ven => {
+          commit("ADD_VENUE");
+          var user = firebase.auth().currentUser;
+          db.collection("profiles")
+            .doc(user.uid)
+            .collection("venues")
+            .doc(ven.id)
+            .set({
+              name: venue.name
+            })
+            .then(() => {
+              console.log("added venue to profile");
+              this.fetchUser(user);
+            })
+            .catch(error => {
+              alert(error);
+            });
+        })
+        .catch(error => {
+          console.error("Error writing document: ", error);
         });
-        const docRef = db.collection("profiles").doc(user.uid);
-
-        docRef
-          .get()
-          .then(function(doc) {
-            if (doc.exists) {
-              commit("UPDATE_PROFILE", doc.data());
-            } else {
-              console.log("No such document!");
-            }
-          })
-          .catch(function(error) {
-            console.log("Error getting document:", error);
-          });
-      } else {
-        commit("SET_USER", null);
-      }
     },
-    async addVenue({ commit }, venue) {
-      const ven = await db.collection("venues").add(venue);
-      try {
-        commit("ADD_VENUE");
-        const user = firebase.auth().currentUser;
-        await db
-          .collection("profiles")
-          .doc(user.uid)
-          .collection("venues")
-          .doc(ven.id)
-          .set({
-            name: venue.name
-          });
-        console.log("added venue to profile");
-        this.dispatch("fetchUser", user);
-      } catch (error) {
-        alert(error);
-      }
+    fetchProfile({ commit }, uid) {
+      const docRef = db.collection("profiles").doc(uid);
+
+      docRef
+        .get()
+        .then(function(doc) {
+          if (doc.exists) {
+            commit("UPDATE_PROFILE", doc.data());
+          } else {
+            console.log("No such document!");
+          }
+        })
+        .catch(function(error) {
+          console.log("Error getting document:", error);
+        });
+    },
+    updateProfile({ commit }, profile) {
+      db.collection("profiles")
+        .doc(profile.user)
+        .update({
+          waitingFor: profile.venue
+        })
+        .then(function() {
+          this.dispatch("fetchProfile", profile.user);
+          console.log(commit);
+        })
+        .catch(function(error) {
+          console.error("Error writing document: ", error);
+        });
     },
     createProfile({ commit }, profile) {
       db.collection("profiles")
@@ -158,6 +197,21 @@ export default new Vuex.Store({
         .catch(function(error) {
           console.error("Error writing document: ", error);
         });
+    },
+    fetchUser({ commit }, user) {
+      commit("SET_LOGGED_IN", user !== null);
+
+      if (user) {
+        commit("SET_USER", {
+          displayName: user.displayName,
+          email: user.email,
+          uid: user.uid
+        });
+
+        this.dispatch("fetchProfile", user.uid);
+      } else {
+        commit("SET_USER", null);
+      }
     }
   },
   getters: {
