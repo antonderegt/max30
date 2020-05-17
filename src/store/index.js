@@ -85,23 +85,23 @@ export default new Vuex.Store({
           .collection("venues")
       );
     }),
-    updateWaitList({ commit }, waitlist) {
+    async updateWaitList({ commit }, waitlist) {
       waitlist.timestamp = Timestamp.fromDate(new Date());
-      db.collection("venues")
+      await db
+        .collection("venues")
         .doc(waitlist.venue)
         .collection("waitlist")
         .doc(waitlist.user)
         .update({
           status: waitlist.status
-        })
-        .then(() => {
-          // commit("ADD_TO_WAITLIST", waitlist);
-          console.log(commit);
         });
+      // commit("ADD_TO_WAITLIST", waitlist);
+      console.log(commit);
     },
-    joinWaitList({ commit }, waitlist) {
+    async joinWaitList({ commit }, waitlist) {
       waitlist.timestamp = Timestamp.fromDate(new Date());
-      db.collection("venues")
+      await db
+        .collection("venues")
         .doc(waitlist.venue)
         .collection("waitlist")
         .doc(waitlist.user)
@@ -110,93 +110,85 @@ export default new Vuex.Store({
           count: waitlist.count,
           timestamp: waitlist.timestamp,
           status: waitlist.status
-        })
-        .then(() => {
-          commit("ADD_TO_WAITLIST", waitlist);
-          this.dispatch("updateProfile", waitlist);
         });
-    },
-    updatePresent({ commit }, venue) {
-      db.collection("venues")
-        .doc(venue.id)
-        .update({
-          present: venue.present
-        })
-        .then(() => {
-          commit("UPDATE_PRESENT", venue.present);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    addVenue({ commit }, venue) {
-      db.collection("venues")
-        .add(venue)
-        .then(ven => {
-          commit("ADD_VENUE");
-          var user = firebase.auth().currentUser;
-          db.collection("profiles")
-            .doc(user.uid)
-            .collection("venues")
-            .doc(ven.id)
-            .set({
-              name: venue.name
-            })
-            .then(() => {
-              console.log("added venue to profile");
-              this.fetchUser(user);
-            })
-            .catch(error => {
-              alert(error);
-            });
-        })
-        .catch(error => {
-          console.error("Error writing document: ", error);
-        });
-    },
-    fetchProfile({ commit }, uid) {
-      const docRef = db.collection("profiles").doc(uid);
 
-      docRef
-        .get()
-        .then(function(doc) {
-          if (doc.exists) {
-            commit("UPDATE_PROFILE", doc.data());
-          } else {
-            console.log("No such document!");
-          }
-        })
-        .catch(function(error) {
-          console.log("Error getting document:", error);
-        });
+      commit("ADD_TO_WAITLIST", waitlist);
+      this.dispatch("updateProfile", waitlist);
     },
-    updateProfile({ commit }, profile) {
-      db.collection("profiles")
-        .doc(profile.user)
-        .update({
-          waitingFor: profile.venue
-        })
-        .then(function() {
-          this.dispatch("fetchProfile", profile.user);
-          console.log(commit);
-        })
-        .catch(function(error) {
-          console.error("Error writing document: ", error);
-        });
+    async updatePresent({ commit }, venue) {
+      try {
+        await db
+          .collection("venues")
+          .doc(venue.id)
+          .update({
+            present: venue.present
+          });
+      } catch (error) {
+        console.log(error);
+      }
+      commit("UPDATE_PRESENT", venue.present);
     },
-    createProfile({ commit }, profile) {
-      db.collection("profiles")
-        .doc(profile.id)
-        .set({
-          name: profile.name,
-          owner: profile.owner
-        })
-        .then(function() {
-          commit("UPDATE_PROFILE", profile);
-        })
-        .catch(function(error) {
-          console.error("Error writing document: ", error);
-        });
+    async addVenue({ commit }, venue) {
+      try {
+        const res = await db.collection("venues").add(venue);
+
+        commit("ADD_VENUE");
+        var user = firebase.auth().currentUser;
+        await db
+          .collection("profiles")
+          .doc(user.uid)
+          .collection("venues")
+          .doc(res.id)
+          .set({
+            name: venue.name
+          });
+
+        console.log("added venue to profile");
+        this.dispatch("fetchUser", user);
+      } catch (error) {
+        console.error("Error writing document: ", error);
+      }
+    },
+    async fetchProfile({ commit }, uid) {
+      const docRef = db.collection("profiles").doc(uid);
+      try {
+        const doc = await docRef.get();
+        if (doc.exists) {
+          commit("UPDATE_PROFILE", doc.data());
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.log("Error getting document:", error);
+      }
+    },
+    async updateProfile({ commit }, profile) {
+      try {
+        await db
+          .collection("profiles")
+          .doc(profile.user)
+          .update({
+            waitingFor: profile.venue
+          });
+      } catch (error) {
+        console.error("Error writing document: ", error);
+      }
+      this.dispatch("fetchProfile", profile.user);
+      console.log(commit);
+    },
+    async createProfile({ commit }, profile) {
+      try {
+        await db
+          .collection("profiles")
+          .doc(profile.id)
+          .set({
+            name: profile.name,
+            owner: profile.owner
+          });
+      } catch (error) {
+        console.error("Error writing document: ", error);
+      }
+      commit("UPDATE_PROFILE", profile);
     },
     fetchUser({ commit }, user) {
       commit("SET_LOGGED_IN", user !== null);
