@@ -14,7 +14,7 @@ const routes = [
   {
     path: "/venue/:venue",
     name: "Venue",
-    component: () => import("@/components/Venue.vue"),
+    component: () => import("@/components/VenueCard.vue"),
     meta: {
       requiresAuth: true
     }
@@ -42,7 +42,8 @@ const routes = [
   {
     path: "/my-venue/:venue",
     name: "MyVenue",
-    component: () => import("@/views/owner/MyVenue.vue")
+    component: () => import("@/components/VenueCard.vue"),
+    props: { isAdmin: true }
   },
   {
     path: "/waiting-room",
