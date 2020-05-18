@@ -17,7 +17,8 @@ export default new Vuex.Store({
       profile: null
     },
     myVenues: [],
-    waitListItem: {}
+    waitListItem: {},
+    messages: []
   },
   mutations: {
     ...vuexfireMutations,
@@ -83,6 +84,18 @@ export default new Vuex.Store({
           .collection("profiles")
           .doc(id)
           .collection("venues")
+      );
+    }),
+    bindMessages: firestoreAction((bindFirestoreRef, waitListItem) => {
+      return bindFirestoreRef.bindFirestoreRef(
+        "messages",
+        db
+          .collection("venues")
+          .doc(waitListItem.venue)
+          .collection("waitlist")
+          .doc(waitListItem.user)
+          .collection("messages")
+          .orderBy("timestamp")
       );
     }),
     async updateWaitList({ commit }, waitlist) {
