@@ -39,7 +39,6 @@
 import firebase from "firebase/app";
 
 export default {
-  name: "login",
   data: function() {
     return {
       valid: true,
@@ -58,16 +57,15 @@ export default {
     };
   },
   methods: {
-    login() {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(() => {
-          this.$router.push(this.$route.query.redirect || "/");
-        })
-        .catch(err => {
-          alert(err.message);
-        });
+    async login() {
+      try {
+        await firebase
+          .auth()
+          .signInWithEmailAndPassword(this.email, this.password);
+      } catch (err) {
+        alert(err.message);
+      }
+      this.$router.push(this.$route.query.redirect || "/");
     },
     validate() {
       this.$refs.form.validate();
