@@ -1,11 +1,16 @@
 <template>
-  <v-row justify-ceneter>
-    <Loading v-if="loading" />
-    <v-flex v-for="venue in myVenues" :key="venue.name">
-      {{ venue.name }}
-      <v-btn outlined block @click="goToVenue(venue.id)">Show venue</v-btn>
-    </v-flex>
-  </v-row>
+  <Loading v-if="loading" />
+  <v-list v-else subheader two-line>
+    <v-list-item
+      v-for="venue in myVenues"
+      :key="venue.name"
+      @click="goToVenue(venue.id)"
+    >
+      <v-list-item-content>
+        <v-list-item-title>{{ venue.name }}</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </v-list>
 </template>
 
 <script>

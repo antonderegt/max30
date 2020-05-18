@@ -22,6 +22,9 @@
         <v-flex xs6>
           <v-card-text>Aanwezig: {{ venue.present }}</v-card-text>
         </v-flex>
+        <v-progress-linear xs12 v-model="progress" height="25" reactive>
+          <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
+        </v-progress-linear>
         <v-flex xs12>
           <v-card-text>Wachtrij:</v-card-text>
         </v-flex>
@@ -29,6 +32,7 @@
         <v-flex v-if="waitList.length === 0" xs12>
           <v-card-text>Geen wachtrij, kom snel!</v-card-text>
         </v-flex>
+
         <v-flex xs3 v-for="person in waitList" :key="person.id">
           <v-btn outlined block>
             {{ person.name }}
@@ -55,7 +59,12 @@ import Loading from "@/components/Loading.vue";
 import JoinModal from "@/components/JoinModal.vue";
 
 export default {
-  computed: mapState(["venue", "waitList", "user"]),
+  computed: {
+    progress() {
+      return (this.venue.present / this.venue.capacity) * 100;
+    },
+    ...mapState(["venue", "waitList", "user"])
+  },
   data() {
     return {
       venueID: "",
