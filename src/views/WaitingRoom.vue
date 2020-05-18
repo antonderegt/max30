@@ -1,27 +1,41 @@
 <template>
-  <v-container>
-    You're in the waitingroom
-    <span v-if="!loading">{{ user.profile.name }}</span
-    >!
-    <p>
-      Your wait list status:
-      <span v-if="!loading">{{ waitListItem.status }}</span>
-    </p>
-    <v-btn @click="loadWaitListStatus">Load status</v-btn>
+  <v-container grid-list-xl>
+    <v-layout row wrap justify-center>
+      <v-flex xs12>
+        <h1>Welcome to the waiting room</h1>
+      </v-flex>
+      <Loading v-if="loading" />
+      <v-flex v-else xs12 md6>
+        {{ user.profile.name }} your wait list status is:
+        <span class="font-weight-bold text-uppercase">{{
+          waitListItem.status
+        }}</span>
+      </v-flex>
+      <v-flex>
+        <v-text-field v-model="message"></v-text-field>
+        <v-btn @click="sendMessage">Send message to venue</v-btn>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import firebase from "firebase/app";
+import Loading from "@/components/Loading.vue";
 
 export default {
   computed: mapState(["user", "waitListItem"]),
   data() {
     return {
-      loading: true
+      loading: true,
+      message: ""
     };
   },
   methods: {
+    sendMessage() {
+      alert("I'm not sending this offensive message: " + this.message);
+    },
     async loadWaitListStatus() {
       this.loading = true;
       const waitListItem = {
@@ -36,9 +50,9 @@ export default {
       }
     }
   },
+  components: { Loading },
   async created() {
-    // @TODO: wait for profile data to load before loading waitlist item
-    // Error on refresh of page: "TypeError: Cannot read property 'uid' of null"
+    await firebase.getCurrentUser();
     await this.$store.dispatch("fetchProfile", this.user.data.uid);
     this.loadWaitListStatus();
   }

@@ -48,6 +48,9 @@ const routes = [
     path: "/waiting-room",
     name: "WaitingRoom",
     component: () => import("@/views/WaitingRoom.vue")
+    // beforeEnter: async (to, from, next) => {
+    //   await firebase.getCurrentUser();
+    // }
   }
 ];
 
