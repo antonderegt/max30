@@ -63,7 +63,7 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(() => {
-          this.$router.replace("/");
+          this.$router.push(this.$route.query.redirect || "/");
         })
         .catch(err => {
           alert(err.message);
