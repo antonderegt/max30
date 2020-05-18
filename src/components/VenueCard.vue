@@ -52,9 +52,6 @@
             <v-card-text>Wait list:</v-card-text>
           </v-flex>
           <Loading v-if="loadingWaitList" />
-          <v-flex v-if="!waitList.length" xs12>
-            <v-card-text>No wait list...</v-card-text>
-          </v-flex>
           <v-flex xs12 v-for="person in waitList" :key="person.id" class="pa-3">
             <v-card>
               <v-card-title>
@@ -82,6 +79,16 @@
               </v-card-actions>
             </v-card>
           </v-flex>
+          <v-flex xs12 ma-5>
+            <v-card>
+              <VueQrcode
+                :value="
+                  `https://max30-max100.firebaseapp.com/venue/${venue.id}`
+                "
+                :options="{ width: 200 }"
+              />
+            </v-card>
+          </v-flex>
         </div>
       </v-layout>
     </v-card>
@@ -92,6 +99,7 @@
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 import JoinModal from "@/components/JoinModal.vue";
+import VueQrcode from "@chenfengyuan/vue-qrcode";
 
 export default {
   props: ["isAdmin"],
@@ -146,7 +154,8 @@ export default {
   },
   components: {
     Loading,
-    JoinModal
+    JoinModal,
+    VueQrcode
   },
   created() {
     this.venueID = this.$route.params.venue;
