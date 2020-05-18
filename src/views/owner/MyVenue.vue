@@ -22,7 +22,10 @@
         <v-flex xs6>
           <v-card-text>Present: {{ venue.present }}</v-card-text>
         </v-flex>
-        <v-flex xs12>
+        <v-progress-linear xs12 v-model="progress" height="25" reactive>
+          <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
+        </v-progress-linear>
+        <v-flex v-if="waitList.length" xs12>
           <v-card-text>Wait list:</v-card-text>
         </v-flex>
         <Loading v-if="loadingWaitList" />

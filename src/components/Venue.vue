@@ -25,7 +25,7 @@
         <v-progress-linear xs12 v-model="progress" height="25" reactive>
           <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
         </v-progress-linear>
-        <v-flex xs12>
+        <v-flex v-if="waitList.length" xs12>
           <v-card-text>Wachtrij:</v-card-text>
         </v-flex>
         <Loading v-if="loadingWaitList" />
@@ -39,7 +39,7 @@
           </v-btn>
         </v-flex>
         <v-flex xs12 class="pa-3">
-          <v-btn outlined block @click="show = !show">JOIN</v-btn>
+          <v-btn outlined block @click="show = !show">Reserveer</v-btn>
           <JoinModal
             v-if="show"
             :show.sync="show"
