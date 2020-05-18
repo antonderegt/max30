@@ -28,11 +28,10 @@ export default {
   methods: {
     getMyVenues() {
       this.loading = true;
-      firebase.auth().onAuthStateChanged(user => {
+      firebase.auth().onAuthStateChanged(async user => {
         if (user) {
-          this.$store.dispatch("bindMyVenues", user.uid).then(() => {
-            this.loading = false;
-          });
+          await this.$store.dispatch("bindMyVenues", user.uid);
+          this.loading = false;
         }
       });
     },

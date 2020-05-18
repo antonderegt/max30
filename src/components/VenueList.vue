@@ -38,16 +38,14 @@ export default {
     Loading
   },
   methods: {
-    getVenueList() {
+    async getVenueList() {
       this.loading = true;
-      this.$store
-        .dispatch("bindVenueList")
-        .then(() => {
-          this.loading = false;
-        })
-        .catch(error => {
-          alert("bindLocations: " + error);
-        });
+      try {
+        await this.$store.dispatch("bindVenueList");
+        this.loading = false;
+      } catch (error) {
+        alert("bindLocations: " + error);
+      }
     }
   },
   created() {

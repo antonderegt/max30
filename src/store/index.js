@@ -30,8 +30,8 @@ export default new Vuex.Store({
     UPDATE_PROFILE(state, profile) {
       state.user.profile = profile;
     },
-    ADD_TO_WAITLIST(state, waitlist) {
-      state.waitlist.push(waitlist);
+    ADD_TO_WAITLIST(state, waitList) {
+      state.waitList.push(waitList);
     },
     ADD_VENUE() {
       console.log("added venue");
@@ -102,25 +102,25 @@ export default new Vuex.Store({
       // commit("ADD_TO_WAITLIST", waitlist);
       console.log(commit);
     },
-    async joinWaitList({ commit }, waitlist) {
-      waitlist.timestamp = Timestamp.fromDate(new Date());
+    async joinWaitList({ commit }, waitList) {
+      waitList.timestamp = Timestamp.fromDate(new Date());
       try {
         await db
           .collection("venues")
-          .doc(waitlist.venue)
+          .doc(waitList.venue)
           .collection("waitlist")
-          .doc(waitlist.user)
+          .doc(waitList.user)
           .set({
-            name: waitlist.username,
-            count: waitlist.count,
-            timestamp: waitlist.timestamp,
-            status: waitlist.status
+            name: waitList.username,
+            count: waitList.count,
+            timestamp: waitList.timestamp,
+            status: waitList.status
           });
       } catch (error) {
         console.log(error);
       }
-      commit("ADD_TO_WAITLIST", waitlist);
-      this.dispatch("updateProfile", waitlist);
+      commit("ADD_TO_WAITLIST", waitList);
+      this.dispatch("updateProfile", waitList);
     },
     async updatePresent({ commit }, venue) {
       try {

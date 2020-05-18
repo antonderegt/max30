@@ -65,7 +65,7 @@ export default {
     };
   },
   methods: {
-    addVenue() {
+    async addVenue() {
       const venue = {
         name: this.name,
         location: {
@@ -75,24 +75,26 @@ export default {
         capacity: this.capacity,
         present: 0
       };
-      this.$store.dispatch("addVenue", venue);
+      await this.$store.dispatch("addVenue", venue);
+      this.$router.push("/my-venues");
     },
-    signUp() {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(res => {
-          const profile = {
-            id: res.user.uid,
-            name: this.name,
-            owner: this.owner
-          };
-          this.$store.dispatch("createProfile", profile);
-          this.$router.replace("/login");
-        })
-        .catch(err => {
-          alert(err.message);
-        });
+    async signUp() {
+      try {
+        const res = await firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.email, this.password);
+
+        const profile = {
+          id: res.user.uid,
+          name: this.name,
+          owner: this.owner
+        };
+
+        this.$store.dispatch("createProfile", profile);
+        this.$router.replace("/login");
+      } catch (error) {
+        alert(error.message);
+      }
     }
   }
 };

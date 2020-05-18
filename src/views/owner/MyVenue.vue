@@ -76,7 +76,7 @@ export default {
     };
   },
   methods: {
-    acceptOrDeclineGroup(userID, count, status) {
+    async acceptOrDeclineGroup(userID, count, status) {
       let venue = {
         id: this.venue.id,
         present: this.venue.present
@@ -84,34 +84,29 @@ export default {
       if (status == "accepted") {
         venue.present += parseInt(count);
       }
-      this.$store.dispatch("updatePresent", venue).then(() => {
+      try {
+        await this.$store.dispatch("updatePresent", venue);
         const waitList = {
           venue: this.venue.id,
           user: userID,
           status
         };
-        this.$store.dispatch("updateWaitList", waitList);
-      });
+        await this.$store.dispatch("updateWaitList", waitList);
+      } catch (error) {
+        alert(error);
+      }
     },
-    getVenue() {
+    async getVenue() {
       this.loadingVenue = true;
-      this.$store
-        .dispatch("bindVenue", this.venueID)
-        .then(() => {
-          this.loadingVenue = false;
-          this.loadingWaitList = true;
-          this.$store
-            .dispatch("bindWaitList", this.venueID)
-            .then(() => {
-              this.loadingWaitList = false;
-            })
-            .catch(error => {
-              console.log("bindWaitList: " + error);
-            });
-        })
-        .catch(error => {
-          alert("bindVenue: " + error);
-        });
+      try {
+        await this.$store.dispatch("bindVenue", this.venueID);
+        this.loadingVenue = false;
+        this.loadingWaitList = true;
+        await this.$store.dispatch("bindWaitList", this.venueID);
+        this.loadingWaitList = false;
+      } catch (error) {
+        alert("bindVenue: " + error);
+      }
     }
   },
   components: {

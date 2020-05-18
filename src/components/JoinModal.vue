@@ -45,8 +45,8 @@ export default {
     };
   },
   methods: {
-    agree() {
-      const waitlist = {
+    async agree() {
+      const waitList = {
         user: this.user.data.uid,
         username: this.user.profile.name,
         venue: this.venue.id,
@@ -54,9 +54,8 @@ export default {
         status: "waiting"
       };
 
-      this.$store.dispatch("joinWaitList", waitlist).then(() => {
-        this.$router.push("/waiting-room");
-      });
+      await this.$store.dispatch("joinWaitList", waitList);
+      this.$router.push("/waiting-room");
       this.$emit("update:show", false);
     }
   },

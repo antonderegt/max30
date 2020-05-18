@@ -83,13 +83,9 @@ export default {
     };
   },
   methods: {
-    logout() {
-      firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          this.$router.replace("/login");
-        });
+    async logout() {
+      await firebase.auth().signOut();
+      this.$router.replace("/login");
     }
   }
 };

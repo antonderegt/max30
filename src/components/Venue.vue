@@ -66,25 +66,17 @@ export default {
     };
   },
   methods: {
-    getVenue() {
+    async getVenue() {
       this.loadingVenue = true;
-      this.$store
-        .dispatch("bindVenue", this.venueID)
-        .then(() => {
-          this.loadingVenue = false;
-          this.loadingWaitList = true;
-          this.$store
-            .dispatch("bindWaitList", this.venueID)
-            .then(() => {
-              this.loadingWaitList = false;
-            })
-            .catch(error => {
-              alert("bindWaitList: " + error);
-            });
-        })
-        .catch(error => {
-          alert("bindVenue: " + error);
-        });
+      try {
+        await this.$store.dispatch("bindVenue", this.venueID);
+        this.loadingVenue = false;
+        this.loadingWaitList = true;
+        await this.$store.dispatch("bindWaitList", this.venueID);
+        this.loadingWaitList = false;
+      } catch (error) {
+        alert("bindVenue: " + error);
+      }
     }
   },
   components: {

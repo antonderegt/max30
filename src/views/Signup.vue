@@ -93,22 +93,21 @@ export default {
     };
   },
   methods: {
-    signUp() {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(res => {
-          const profile = {
-            id: res.user.uid,
-            name: this.name,
-            owner: this.owner
-          };
-          this.$store.dispatch("createProfile", profile);
-          this.$router.replace("/login");
-        })
-        .catch(err => {
-          alert(err.message);
-        });
+    async signUp() {
+      try {
+        const res = await firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.email, this.password);
+        const profile = {
+          id: res.user.uid,
+          name: this.name,
+          owner: this.owner
+        };
+        this.$store.dispatch("createProfile", profile);
+        this.$router.replace("/login");
+      } catch (error) {
+        alert(error.message);
+      }
     }
   }
 };
