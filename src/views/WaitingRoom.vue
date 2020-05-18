@@ -24,8 +24,6 @@ export default {
   methods: {
     async loadWaitListStatus() {
       this.loading = true;
-      console.log(this.user.profile);
-
       const waitListItem = {
         venue: this.user.profile.waitingFor,
         user: this.user.data.uid
@@ -33,7 +31,6 @@ export default {
       try {
         await this.$store.dispatch("bindSingleWaitListItem", waitListItem);
         this.loading = false;
-        console.log(this.user.profile);
       } catch (error) {
         alert("SingleWaitListItem: " + error);
       }
@@ -41,6 +38,7 @@ export default {
   },
   async created() {
     // @TODO: wait for profile data to load before loading waitlist item
+    // Error on refresh of page: "TypeError: Cannot read property 'uid' of null"
     await this.$store.dispatch("fetchProfile", this.user.data.uid);
     this.loadWaitListStatus();
   }
