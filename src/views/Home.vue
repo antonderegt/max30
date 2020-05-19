@@ -20,7 +20,7 @@
       <v-row>
         <v-col class="text-center" cols="6">
           <div class="text-right">
-            <v-btn rounded color="#3581C1" dark>Meld je bedrijf aan</v-btn>
+            <v-btn to="/register-venue" rounded color="#3581C1" dark>Meld je bedrijf aan</v-btn>
           </div>
         </v-col>
         <v-col class="text-center" cols="6">

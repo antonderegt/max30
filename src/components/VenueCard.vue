@@ -21,6 +21,7 @@
         </v-flex>
         <v-flex xs6>
           <v-card-text>Aanwezig: {{ venue.present }}</v-card-text>
+          <!-- TODO: venue owner can change the presents (in case client doesnt own a phone e.g.) -->
         </v-flex>
         <v-progress-linear xs12 v-model="progress" height="25" reactive>
           <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
