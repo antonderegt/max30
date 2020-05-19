@@ -2,7 +2,12 @@
   <v-app class="grey lighten-4">
     <NavBar :items="items" />
 
-    <v-content :style="{ 'background-image': `url(${backgroundImage})` }">
+    <v-content
+      :style="{
+        'background-image': `url(${backgroundImage})`,
+        'background-size': 'cover'
+      }"
+    >
       <router-view />
     </v-content>
   </v-app>
