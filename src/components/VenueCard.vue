@@ -21,11 +21,19 @@
         </v-flex>
         <v-flex xs6>
           <v-card-text>Aanwezig: {{ venue.present }}</v-card-text>
-          <!-- TODO: venue owner can change the presents (in case client doesnt own a phone e.g.) -->
         </v-flex>
         <v-progress-linear xs12 v-model="progress" height="25" reactive>
           <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
         </v-progress-linear>
+        <v-card-text>Pas aanwezigen aan:</v-card-text>
+        <v-card-actions>
+          <v-btn color="success" @click="updatePresent(venue.present + 1)"
+            >+</v-btn
+          >
+          <v-btn color="error" @click="updatePresent(venue.present - 1)"
+            >-</v-btn
+          >
+        </v-card-actions>
         <v-flex v-if="waitList.length" xs12>
           <v-card-text>Wachtrij:</v-card-text>
         </v-flex>
@@ -131,15 +139,14 @@ export default {
       }
     },
     async acceptOrDeclineGroup(userID, count, status) {
-      let venue = {
-        id: this.venue.id,
-        present: this.venue.present
-      };
+      let newCount = this.venue.present;
+
       if (status == "accepted") {
-        venue.present += parseInt(count);
+        newCount += parseInt(count);
       }
+
       try {
-        await this.$store.dispatch("updatePresent", venue);
+        await this.updatePresent(newCount);
         const waitList = {
           venue: this.venue.id,
           user: userID,
@@ -148,6 +155,18 @@ export default {
         await this.$store.dispatch("updateWaitList", waitList);
       } catch (error) {
         alert(error);
+      }
+    },
+    async updatePresent(newValue) {
+      let venue = {
+        id: this.venue.id,
+        present: newValue
+      };
+
+      try {
+        await this.$store.dispatch("updatePresent", venue);
+      } catch (error) {
+        console.log(error);
       }
     }
   },
