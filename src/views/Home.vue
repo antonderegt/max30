@@ -6,7 +6,7 @@
     >
       <v-layout align-center justify-center>
         <v-flex xs12 class="text-center">
-          <h1 class="display-1 font-weight-thin mb-4">Max 30</h1>
+          <h1 class="display-1 font-weight-thin mb-4">Plekkie</h1>
           <h4 class="subheading">
             Lekker weer open! Makkelijk beheren dat je 30 mensen binnen hebt met
             30max.nl

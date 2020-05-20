@@ -6,8 +6,8 @@
         @click="drawer = !drawer"
       ></v-app-bar-nav-icon>
       <v-toolbar-title class="text-uppercase grey--text">
-        <span class="font-weight-light">Max</span>
-        <span>30</span>
+        <span>Plek</span>
+        <span class="font-weight-light">kie</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn v-if="user.loggedIn" text color="grey" @click="logout">
@@ -20,8 +20,8 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title grey--text text-uppercase">
-            <span class="font-weight-light">Max</span>
-            <span>30</span>
+            <span class="font-weight-light">Plek</span>
+            <span>kie</span>
           </v-list-item-title>
           <v-list-item-subtitle>
             Join the fun
