@@ -1,22 +1,25 @@
 <template>
   <Loading v-if="loading" />
-  <v-list v-else subheader two-line class="pa-3">
-    <v-list-item
+  <v-container v-else class="pa-3">
+    <v-card
       v-for="venue in myVenues"
       :key="venue.name"
       @click="goToVenue(venue.id)"
+      class="ma-3"
     >
-      <v-list-item-content>
-        <v-list-item-title>{{ venue.name }} </v-list-item-title>
-        <v-list-item-action>
-          <v-spacer></v-spacer>
-          <v-btn color="error" @click.stop="deleteVenue(venue.id)"
-            >delete</v-btn
-          >
-        </v-list-item-action>
-      </v-list-item-content>
-    </v-list-item>
-  </v-list>
+      <v-card-title>
+        {{ venue.name }}
+      </v-card-title>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-btn color="info" @click.stop="editVenue(venue.id)">Edit</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn color="error" @click.stop="deleteVenue(venue.id)">
+          Delete
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -48,6 +51,11 @@ export default {
     },
     goToVenue(id) {
       this.$router.push(`/my-venue/${id}`);
+    },
+    editVenue(id) {
+      console.log(id);
+
+      alert("Jeroen bouw dit ff in.");
     },
     deleteVenue(id) {
       const venue = {
