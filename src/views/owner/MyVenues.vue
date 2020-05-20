@@ -1,13 +1,19 @@
 <template>
   <Loading v-if="loading" />
-  <v-list v-else subheader two-line>
+  <v-list v-else subheader two-line class="pa-3">
     <v-list-item
       v-for="venue in myVenues"
       :key="venue.name"
       @click="goToVenue(venue.id)"
     >
       <v-list-item-content>
-        <v-list-item-title>{{ venue.name }}</v-list-item-title>
+        <v-list-item-title>{{ venue.name }} </v-list-item-title>
+        <v-list-item-action>
+          <v-spacer></v-spacer>
+          <v-btn color="error" @click.stop="deleteVenue(venue.id)"
+            >delete</v-btn
+          >
+        </v-list-item-action>
       </v-list-item-content>
     </v-list-item>
   </v-list>
@@ -42,6 +48,15 @@ export default {
     },
     goToVenue(id) {
       this.$router.push(`/my-venue/${id}`);
+    },
+    deleteVenue(id) {
+      console.log(id);
+      console.log(this.user.data.uid);
+      const venue = {
+        venue: id,
+        user: this.user.data.uid
+      };
+      this.$store.dispatch("deleteVenue", venue);
     }
   },
   components: { Loading },

@@ -34,9 +34,6 @@ export default new Vuex.Store({
     ADD_TO_WAITLIST(state, waitList) {
       state.waitList.push(waitList);
     },
-    ADD_VENUE() {
-      console.log("added venue");
-    },
     UPDATE_PRESENT(state, newPresent) {
       state.venue.present = newPresent;
     }
@@ -98,7 +95,7 @@ export default new Vuex.Store({
           .orderBy("timestamp")
       );
     }),
-    async updateWaitList({ commit }, waitlist) {
+    async updateWaitList(_, waitlist) {
       waitlist.timestamp = Timestamp.fromDate(new Date());
       try {
         await db
@@ -112,8 +109,6 @@ export default new Vuex.Store({
       } catch (error) {
         console.log(error);
       }
-      // commit("ADD_TO_WAITLIST", waitlist);
-      console.log(commit);
     },
     async joinWaitList({ commit }, waitList) {
       waitList.timestamp = Timestamp.fromDate(new Date());
@@ -148,11 +143,10 @@ export default new Vuex.Store({
       }
       commit("UPDATE_PRESENT", venue.present);
     },
-    async addVenue({ commit }, venue) {
+    async addVenue(_, venue) {
       try {
         const res = await db.collection("venues").add(venue);
 
-        commit("ADD_VENUE");
         var user = firebase.auth().currentUser;
         await db
           .collection("profiles")
@@ -180,6 +174,23 @@ export default new Vuex.Store({
         }
       } catch (error) {
         console.log("Error getting document:", error);
+      }
+    },
+    async deleteVenue(_, venue) {
+      try {
+        await db
+          .collection("profiles")
+          .doc(venue.user)
+          .collection("venues")
+          .doc(venue.venue)
+          .delete();
+
+        await db
+          .collection("venues")
+          .doc(venue.venue)
+          .delete();
+      } catch (error) {
+        console.error("Error writing document: ", error);
       }
     },
     async updateProfile({ commit }, profile) {
