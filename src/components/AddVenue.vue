@@ -1,45 +1,47 @@
 <template>
-  <v-card width="400" class="mx-auto mt-5">
-    <v-card-title>
-      <h1 class="display-1">Add Venue</h1>
-    </v-card-title>
-    <v-card-text>
-      <v-form ref="form" v-model="valid" :lazy-validation="lazy">
-        <v-text-field
-          v-model="name"
-          :rules="nameRules"
-          label="Name"
-          prepend-icon="mdi-account"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="city"
-          :rules="nameRules"
-          label="City"
-          prepend-icon="mdi-account"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="address"
-          :rules="nameRules"
-          label="Address"
-          prepend-icon="mdi-account"
-          required
-        ></v-text-field>
+  <v-container>
+    <v-card width="400" class="mx-auto mt-5">
+      <v-card-title>
+        <h1 class="display-1">Add Venue</h1>
+      </v-card-title>
+      <v-card-text>
+        <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+          <v-text-field
+            v-model="name"
+            :rules="nameRules"
+            label="Name"
+            prepend-icon="mdi-account"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="city"
+            :rules="nameRules"
+            label="City"
+            prepend-icon="mdi-account"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="address"
+            :rules="nameRules"
+            label="Address"
+            prepend-icon="mdi-account"
+            required
+          ></v-text-field>
 
-        <v-divider></v-divider>
-        <v-slider
-          :label="'Capacity: ' + capacity"
-          v-model="capacity"
-          thumb-label
-        ></v-slider>
-      </v-form>
-    </v-card-text>
-    <v-divider></v-divider>
-    <v-card-actions>
-      <v-btn color="info" @click="addVenue">Add</v-btn>
-    </v-card-actions>
-  </v-card>
+          <v-divider></v-divider>
+          <v-slider
+            :label="'Capacity: ' + capacity"
+            v-model="capacity"
+            thumb-label
+          ></v-slider>
+        </v-form>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-btn color="info" @click="addVenue">Add</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script>

@@ -1,61 +1,63 @@
 <template>
-  <v-card width="400" class="mx-auto mt-5 pb-1">
-    <v-card-title>
-      <h1 class="display-1" v-if="isVenue">Meld hier je bedrijf aan</h1>
-      <h1 class="display-1" v-else>Meld je aan</h1>
-    </v-card-title>
-    <v-card-text>
-      <v-form ref="form" v-model="valid" :lazy-validation="lazy">
-        <v-text-field
-          v-model="name"
-          :rules="nameRules"
-          label="Naam"
-          prepend-icon="mdi-account"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="email"
-          :rules="emailRules"
-          label="Email"
-          prepend-icon="mdi-email"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          :rules="passwordRules"
-          label="Wachtwoord"
-          :type="showPassword ? 'text' : 'password'"
-          prepend-icon="mdi-lock"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          @click:append="showPassword = !showPassword"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="passwordVerification"
-          :rules="passwordVerificationRules"
-          label="Herhaal wachtwoord"
-          :type="showPassword ? 'text' : 'password'"
-          prepend-icon="mdi-lock"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          @click:append="showPassword = !showPassword"
-          required
-        ></v-text-field>
-        <v-radio-group v-model="owner" label="Wie ben je?" required>
-          <v-radio label="Ondernemer" :value="true"></v-radio>
-          <v-radio label="Bezoeker" :value="false"></v-radio>
-        </v-radio-group>
-      </v-form>
-    </v-card-text>
-    <v-divider></v-divider>
-    <v-flex ma-3>
-      <v-btn color="info" ma-5 @click="signUp"
-        >Laat de klanten maar komen!</v-btn
-      >
-    </v-flex>
-    <v-flex ma-3>
-      <v-btn text small to="/login">Ik heb al een account</v-btn>
-    </v-flex>
-  </v-card>
+  <v-container>
+    <v-card width="400" class="mx-auto mt-5 pb-1">
+      <v-card-title>
+        <h1 class="display-1" v-if="isVenue">Meld hier je bedrijf aan</h1>
+        <h1 class="display-1" v-else>Meld je aan</h1>
+      </v-card-title>
+      <v-card-text>
+        <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+          <v-text-field
+            v-model="name"
+            :rules="nameRules"
+            label="Naam"
+            prepend-icon="mdi-account"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            label="Email"
+            prepend-icon="mdi-email"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="password"
+            :rules="passwordRules"
+            label="Wachtwoord"
+            :type="showPassword ? 'text' : 'password'"
+            prepend-icon="mdi-lock"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="passwordVerification"
+            :rules="passwordVerificationRules"
+            label="Herhaal wachtwoord"
+            :type="showPassword ? 'text' : 'password'"
+            prepend-icon="mdi-lock"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
+            required
+          ></v-text-field>
+          <v-radio-group v-model="owner" label="Wie ben je?" required>
+            <v-radio label="Ondernemer" :value="true"></v-radio>
+            <v-radio label="Bezoeker" :value="false"></v-radio>
+          </v-radio-group>
+        </v-form>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-flex ma-3>
+        <v-btn color="info" ma-5 @click="signUp"
+          >Laat de klanten maar komen!</v-btn
+        >
+      </v-flex>
+      <v-flex ma-3>
+        <v-btn text small to="/login">Ik heb al een account</v-btn>
+      </v-flex>
+    </v-card>
+  </v-container>
 </template>
 
 <script>

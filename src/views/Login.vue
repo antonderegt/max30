@@ -1,38 +1,40 @@
 <template>
-  <v-card width="400" class="mx-auto mt-5">
-    <v-card-title>
-      <h1 class="display-1">Login</h1>
-    </v-card-title>
-    <v-card-text>
-      <v-form ref="form" v-model="valid" :lazy-validation="lazy">
-        <v-text-field
-          v-model="email"
-          :rules="emailRules"
-          label="E-mail"
-          prepend-icon="mdi-account"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          :rules="passwordRules"
-          label="Password"
-          :type="showPassword ? 'text' : 'password'"
-          prepend-icon="mdi-lock"
-          :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          @click:append="showPassword = !showPassword"
-          required
-        ></v-text-field>
-      </v-form>
-    </v-card-text>
-    <v-divider></v-divider>
-    <v-card-actions>
-      <v-btn color="info" @click="login">Login</v-btn>
-      <v-spacer></v-spacer>
-      <router-link to="/signup">
-        New Here? Create a new account
-      </router-link>
-    </v-card-actions>
-  </v-card>
+  <v-container>
+    <v-card width="400" class="mx-auto mt-5">
+      <v-card-title>
+        <h1 class="display-1">Login</h1>
+      </v-card-title>
+      <v-card-text>
+        <v-form ref="form" v-model="valid" :lazy-validation="lazy">
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            label="E-mail"
+            prepend-icon="mdi-account"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="password"
+            :rules="passwordRules"
+            label="Password"
+            :type="showPassword ? 'text' : 'password'"
+            prepend-icon="mdi-lock"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            @click:append="showPassword = !showPassword"
+            required
+          ></v-text-field>
+        </v-form>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-card-actions>
+        <v-btn color="info" @click="login">Login</v-btn>
+        <v-spacer></v-spacer>
+        <router-link to="/signup">
+          New Here? Create a new account
+        </router-link>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
