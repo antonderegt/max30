@@ -32,6 +32,7 @@
             required
           ></v-text-field>
           <v-text-field
+            @keyup.enter="signUp"
             v-model="passwordVerification"
             :rules="passwordVerificationRules"
             label="Herhaal wachtwoord"
@@ -99,19 +100,21 @@ export default {
   },
   methods: {
     async signUp() {
-      try {
-        const res = await firebase
-          .auth()
-          .createUserWithEmailAndPassword(this.email, this.password);
-        const profile = {
-          id: res.user.uid,
-          name: this.name,
-          owner: this.owner
-        };
-        this.$store.dispatch("createProfile", profile);
-        this.$router.replace("/login");
-      } catch (error) {
-        alert(error.message);
+      if (this.$refs.form.validate()) {
+        try {
+          const res = await firebase
+            .auth()
+            .createUserWithEmailAndPassword(this.email, this.password);
+          const profile = {
+            id: res.user.uid,
+            name: this.name,
+            owner: this.owner
+          };
+          this.$store.dispatch("createProfile", profile);
+          this.$router.replace("/login");
+        } catch (error) {
+          alert(error.message);
+        }
       }
     }
   }

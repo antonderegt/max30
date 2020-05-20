@@ -7,6 +7,7 @@
       <v-card-text>
         <v-form ref="form" v-model="valid" :lazy-validation="lazy">
           <v-text-field
+            @keyup.enter="login"
             v-model="email"
             :rules="emailRules"
             label="E-mail"
@@ -14,6 +15,7 @@
             required
           ></v-text-field>
           <v-text-field
+            @keyup.enter="login"
             v-model="password"
             :rules="passwordRules"
             label="Password"
@@ -27,7 +29,7 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="info" @click="login">Login</v-btn>
+        <v-btn color="info" @click.prevent="login">Login</v-btn>
         <v-spacer></v-spacer>
         <router-link to="/signup">
           New Here? Create a new account
@@ -60,14 +62,16 @@ export default {
   },
   methods: {
     async login() {
-      try {
-        await firebase
-          .auth()
-          .signInWithEmailAndPassword(this.email, this.password);
-      } catch (err) {
-        alert(err.message);
+      if (this.$refs.form.validate()) {
+        try {
+          await firebase
+            .auth()
+            .signInWithEmailAndPassword(this.email, this.password);
+        } catch (err) {
+          alert(err.message);
+        }
+        this.$router.push(this.$route.query.redirect || "/");
       }
-      this.$router.push(this.$route.query.redirect || "/");
     },
     validate() {
       this.$refs.form.validate();

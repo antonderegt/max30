@@ -21,6 +21,7 @@
             required
           ></v-text-field>
           <v-text-field
+            @keyup.enter="addVenue"
             v-model="address"
             :rules="nameRules"
             label="Address"
