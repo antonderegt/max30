@@ -1,6 +1,6 @@
 <template>
   <Loading v-if="loadingVenue" />
-  <div v-else>
+  <v-container v-else>
     <v-card class="mx-auto my-5" max-width="343" outlined>
       <v-layout v-if="venue === null">
         <v-flex>
@@ -93,7 +93,7 @@
         </div>
       </v-layout>
     </v-card>
-  </div>
+  </v-container>
 </template>
 
 <script>
