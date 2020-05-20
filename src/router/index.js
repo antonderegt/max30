@@ -26,7 +26,7 @@ const routes = [
   },
   {
     path: "/register-venue",
-    name: "Signup",
+    name: "SignupVenue",
     component: () => import("@/views/Signup.vue"),
     props: { isVenue: true }
   },
@@ -55,9 +55,6 @@ const routes = [
     path: "/waiting-room",
     name: "WaitingRoom",
     component: () => import("@/views/WaitingRoom.vue")
-    // beforeEnter: async (to, from, next) => {
-    //   await firebase.getCurrentUser();
-    // }
   }
 ];
 
