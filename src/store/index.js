@@ -157,7 +157,6 @@ export default new Vuex.Store({
             name: venue.name
           });
 
-        console.log("added venue to profile");
         this.dispatch("fetchUser", user);
       } catch (error) {
         console.error("Error writing document: ", error);
@@ -193,7 +192,7 @@ export default new Vuex.Store({
         console.error("Error writing document: ", error);
       }
     },
-    async updateProfile({ commit }, profile) {
+    async updateProfile(_, profile) {
       try {
         await db
           .collection("profiles")
@@ -205,7 +204,6 @@ export default new Vuex.Store({
         console.error("Error writing document: ", error);
       }
       this.dispatch("fetchProfile", profile.user);
-      console.log(commit);
     },
     async createProfile({ commit }, profile) {
       try {

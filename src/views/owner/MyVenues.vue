@@ -50,8 +50,6 @@ export default {
       this.$router.push(`/my-venue/${id}`);
     },
     deleteVenue(id) {
-      console.log(id);
-      console.log(this.user.data.uid);
       const venue = {
         venue: id,
         user: this.user.data.uid
