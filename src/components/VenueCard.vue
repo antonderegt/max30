@@ -83,9 +83,7 @@
           <v-flex xs12 ma-5>
             <v-card>
               <VueQrcode
-                :value="
-                  `https://max30-max100.firebaseapp.com/venue/${venue.id}`
-                "
+                :value="`https://plekkie.me/venue/${venue.id}`"
                 :options="{ width: 200 }"
               />
             </v-card>
