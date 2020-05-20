@@ -22,7 +22,7 @@
         <v-text-field
           v-model="address"
           :rules="nameRules"
-          label="address"
+          label="Address"
           prepend-icon="mdi-account"
           required
         ></v-text-field>
@@ -60,23 +60,25 @@ export default {
       name: "",
       city: "",
       address: "",
-      nameRules: [v => !!v || "Name is required"],
+      nameRules: [v => !!v || "Field is required"],
       capacity: 30
     };
   },
   methods: {
     async addVenue() {
-      const venue = {
-        name: this.name,
-        location: {
-          city: this.city,
-          address: this.address
-        },
-        capacity: this.capacity,
-        present: 0
-      };
-      await this.$store.dispatch("addVenue", venue);
-      this.$router.push("/my-venues");
+      if (this.$refs.form.validate()) {
+        const venue = {
+          name: this.name,
+          location: {
+            city: this.city,
+            address: this.address
+          },
+          capacity: this.capacity,
+          present: 0
+        };
+        await this.$store.dispatch("addVenue", venue);
+        this.$router.push("/my-venues");
+      }
     },
     async signUp() {
       try {
