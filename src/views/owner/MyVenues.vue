@@ -10,14 +10,6 @@
       <v-card-title>
         {{ venue.name }}
       </v-card-title>
-      <v-divider></v-divider>
-      <v-card-actions>
-        <v-btn color="info" @click.stop="editVenue(venue.id)">Edit</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn color="error" @click.stop="deleteVenue(venue.id)">
-          Delete
-        </v-btn>
-      </v-card-actions>
     </v-card>
   </v-container>
 </template>
@@ -54,6 +46,7 @@ export default {
     },
     editVenue(id) {
       console.log(id);
+      this.$router.push(`/edit-venue/${id}`);
 
       alert("Jeroen bouw dit ff in.");
     },
