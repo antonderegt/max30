@@ -1,17 +1,17 @@
 <template>
   <v-container grid-list-xl>
-    <v-layout row wrap justify-center>
-      <v-flex xs12>
+    <v-row justify="center">
+      <v-col cols="12" align="center">
         <h1>Welcome to the waiting room</h1>
-      </v-flex>
+      </v-col>
       <Loading v-if="loading" />
-      <v-flex v-else xs12 md6>
+      <v-col v-else cols="12" md="6" align="center">
         {{ user.profile.name }} your wait list status is:
         <span class="font-weight-bold text-uppercase">{{
           waitListItem.status
         }}</span>
-      </v-flex>
-    </v-layout>
+      </v-col>
+    </v-row>
 
     <ChatCard />
   </v-container>

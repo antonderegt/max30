@@ -49,14 +49,14 @@
         </v-form>
       </v-card-text>
       <v-divider></v-divider>
-      <v-flex ma-3>
+      <v-row class="ma-3">
         <v-btn color="info" ma-5 @click="signUp"
           >Laat de klanten maar komen!</v-btn
         >
-      </v-flex>
-      <v-flex ma-3>
+      </v-row>
+      <v-row class="ma-3">
         <v-btn text small to="/login">Ik heb al een account</v-btn>
-      </v-flex>
+      </v-row>
     </v-card>
   </v-container>
 </template>
