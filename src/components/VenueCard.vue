@@ -1,104 +1,132 @@
 <template>
   <Loading v-if="loadingVenue" />
   <v-container v-else>
-    <v-card class="mx-auto my-5" max-width="343" outlined>
-      <v-layout v-if="venue === null">
-        <v-flex>
-          <h3>No venue information...</h3>
-        </v-flex>
-      </v-layout>
+    <v-row justify="center">
+      <v-col cols="12" md="6">
+        <v-card max-width="400" class="mx-auto">
+          <v-row v-if="venue === null">
+            <v-col>
+              <h3>No venue information...</h3>
+            </v-col>
+          </v-row>
 
-      <v-layout v-else row wrap class="pa-3" justify-space-around>
-        <v-flex xs12>
-          <v-card-title>{{ venue.name }}</v-card-title>
-          <v-card-subtitle v-if="venue.location">
-            {{ venue.location.city }}, {{ venue.location.address }}
-          </v-card-subtitle>
-          <v-divider></v-divider>
-        </v-flex>
-        <v-flex xs6>
-          <v-card-text>Capaciteit: {{ venue.capacity }}</v-card-text>
-        </v-flex>
-        <v-flex xs6>
-          <v-card-text>Aanwezig: {{ venue.present }}</v-card-text>
-        </v-flex>
-        <v-progress-linear xs12 v-model="progress" height="25" reactive>
-          <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
-        </v-progress-linear>
-        <v-card-text>Pas aanwezigen aan:</v-card-text>
-        <v-card-actions>
-          <v-btn color="success" @click="updatePresent(venue.present + 1)"
-            >+</v-btn
-          >
-          <v-btn color="error" @click="updatePresent(venue.present - 1)"
-            >-</v-btn
-          >
-        </v-card-actions>
-        <v-flex v-if="waitList.length" xs12>
-          <v-card-text>Wachtrij:</v-card-text>
-        </v-flex>
-        <Loading v-if="loadingWaitList" />
-
-        <div v-if="!isAdmin">
-          <v-flex v-if="waitList.length === 0" xs12>
-            <v-card-text>Geen wachtrij, kom snel!</v-card-text>
-          </v-flex>
-
-          <v-flex xs12 class="pa-3">
-            <v-btn outlined block @click="show = !show">Reserveer</v-btn>
-            <JoinModal
-              v-if="show"
-              :show.sync="show"
-              :count.sync="count"
-              :venue="venue"
-              :user="user"
-            />
-          </v-flex>
-        </div>
-
-        <div v-if="isAdmin">
-          <v-flex v-if="waitList.length" xs12>
-            <v-card-text>Wait list:</v-card-text>
-          </v-flex>
-          <Loading v-if="loadingWaitList" />
-          <v-flex xs12 v-for="person in waitList" :key="person.id" class="pa-3">
-            <v-card>
-              <v-card-title>
-                {{ person.name }}
-              </v-card-title>
-              <v-card-text> With {{ person.count }} people. </v-card-text>
+          <v-row v-else class="pa-3" no-gutters>
+            <v-col cols="12">
+              <v-card-title>{{ venue.name }}</v-card-title>
+              <v-card-subtitle v-if="venue.location">
+                {{ venue.location.city }}, {{ venue.location.address }}
+              </v-card-subtitle>
               <v-divider></v-divider>
-              <v-card-actions>
-                <v-btn
-                  color="success"
-                  @click="
-                    acceptOrDeclineGroup(person.id, person.count, 'accepted')
-                  "
-                >
-                  accept
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="error"
-                  @click="
-                    acceptOrDeclineGroup(person.id, person.count, 'declined')
-                  "
-                  >decline</v-btn
-                >
-              </v-card-actions>
-            </v-card>
-          </v-flex>
-          <v-flex xs12 ma-5>
-            <v-card>
-              <VueQrcode
-                :value="`https://plekkie.me/venue/${venue.id}`"
-                :options="{ width: 200 }"
-              />
-            </v-card>
-          </v-flex>
+            </v-col>
+          </v-row>
+
+          <v-row no-gutters>
+            <v-col cols="6">
+              <v-card-text>Capaciteit: {{ venue.capacity }}</v-card-text>
+            </v-col>
+
+            <v-col cols="6">
+              <v-card-text>Aanwezig: {{ venue.present }}</v-card-text>
+            </v-col>
+          </v-row>
+
+          <v-row no-gutters>
+            <v-col class="ma-3">
+              <v-progress-linear xs12 v-model="progress" height="25" reactive>
+                <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
+              </v-progress-linear>
+            </v-col>
+          </v-row>
+
+          <v-row class="pa-3" justify="center" no-gutters>
+            <v-col>
+              Pas aanwezigen aan:
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col align="center">
+              <v-btn color="success" @click="updatePresent(venue.present + 1)"
+                >+</v-btn
+              >
+            </v-col>
+            <v-col align="center">
+              <v-btn color="error" @click="updatePresent(venue.present - 1)"
+                >-</v-btn
+              >
+            </v-col>
+          </v-row>
+          <v-col v-if="isAdmin" align="center">
+            <VueQrcode
+              :value="`https://plekkie.me/venue/${venue.id}`"
+              :options="{ width: 200 }"
+            />
+          </v-col>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="!isAdmin">
+      <v-col v-if="waitList.length === 0" xs12>
+        <v-card-text>Geen wachtrij, kom snel!</v-card-text>
+      </v-col>
+
+      <v-col xs12 class="pa-3">
+        <v-btn outlined block @click="show = !show">Reserveer</v-btn>
+        <JoinModal
+          v-if="show"
+          :show.sync="show"
+          :count.sync="count"
+          :venue="venue"
+          :user="user"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row>
+      <v-col>
+        <v-row v-if="waitList.length" xs12>
+          <v-col>
+            Wachtrij:
+          </v-col>
+        </v-row>
+        <div v-if="!isAdmin">
+          <v-row v-for="person in waitList" :key="person.id">
+            <v-col>
+              {{ person.name }}
+            </v-col>
+          </v-row>
         </div>
-      </v-layout>
-    </v-card>
+      </v-col>
+    </v-row>
+
+    <Loading v-if="loadingWaitList" />
+
+    <v-row v-if="isAdmin" class="pa-3" justify="center">
+      <v-col cols="12" md="3" v-for="person in waitList" :key="person.id">
+        <v-card>
+          <v-card-title>
+            {{ person.name }}
+          </v-card-title>
+          <v-card-text> With {{ person.count }} people. </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-btn
+              color="success"
+              @click="acceptOrDeclineGroup(person.id, person.count, 'accepted')"
+            >
+              accept
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="error"
+              @click="acceptOrDeclineGroup(person.id, person.count, 'declined')"
+              >decline</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
