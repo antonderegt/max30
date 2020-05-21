@@ -103,25 +103,40 @@
     <Loading v-if="loadingWaitList" />
 
     <v-row v-if="isAdmin" class="pa-3" justify="center">
-      <v-col cols="12" md="3" v-for="person in waitList" :key="person.id">
+      <v-col
+        cols="12"
+        md="3"
+        v-for="(person, index) in waitList"
+        :key="person.id"
+      >
         <v-card>
           <v-card-title>
             {{ person.name }}
           </v-card-title>
           <v-card-text> With {{ person.count }} people. </v-card-text>
+          <chatCard
+            v-if="openChat == index"
+            :userProp="person.id"
+            :venue="venue.id"
+          />
           <v-divider></v-divider>
           <v-card-actions>
             <v-btn
               color="success"
               @click="acceptOrDeclineGroup(person.id, person.count, 'accepted')"
             >
-              accept
+              yes
             </v-btn>
-            <v-spacer></v-spacer>
+            <v-btn v-if="openChat != index" @click="openChat = index"
+              >Chat</v-btn
+            >
+            <v-btn v-if="openChat == index" @click="openChat = -1"
+              >Close Chat</v-btn
+            >
             <v-btn
               color="error"
               @click="acceptOrDeclineGroup(person.id, person.count, 'declined')"
-              >decline</v-btn
+              >no</v-btn
             >
           </v-card-actions>
         </v-card>
@@ -134,6 +149,7 @@
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 import JoinModal from "@/components/JoinModal.vue";
+import ChatCard from "@/components/ChatCard.vue";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 
 export default {
@@ -150,7 +166,8 @@ export default {
       loadingVenue: false,
       loadingWaitList: false,
       show: false,
-      count: 1
+      count: 1,
+      openChat: -1
     };
   },
   methods: {
@@ -201,6 +218,7 @@ export default {
   components: {
     Loading,
     JoinModal,
+    ChatCard,
     VueQrcode
   },
   created() {

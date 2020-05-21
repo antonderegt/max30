@@ -1,9 +1,9 @@
 <template>
   <v-container>
     <Loading v-if="loading" />
-    <v-row v-else justify="center">
-      <v-col cols="12" md="6">
-        <v-card class="messages-container">
+    <v-row justify="center">
+      <v-col cols="12">
+        <v-card v-if="messages.length > 0" class="messages-container">
           <div class="messages" v-chat-scroll>
             <div class="message" v-for="message in messages" :key="message.id">
               <div v-if="message.sendByOwner" class="chat-message owner">
@@ -43,33 +43,62 @@ import { db, Timestamp } from "@/db.js";
 import Loading from "@/components/Loading.vue";
 
 export default {
+  props: ["userProp", "venue"],
   computed: mapState(["user", "waitListItem", "messages"]),
   data() {
     return {
-      loading: true,
+      loading: false,
       newMessage: ""
     };
   },
   methods: {
     async getMessages() {
-      const waitListItem = {
-        venue: this.user.profile.waitingFor,
-        user: this.user.data.uid
-      };
-      await this.$store.dispatch("bindMessages", waitListItem);
-      this.loading = false;
+      let waitListItem = {};
+      console.log(this.venue);
+      console.log(this.userProp);
+
+      if (this.userProp === undefined) {
+        waitListItem = {
+          venue: this.user.profile.waitingFor,
+          user: this.user.data.uid
+        };
+      } else {
+        waitListItem = {
+          venue: this.venue,
+          user: this.userProp
+        };
+      }
+      try {
+        this.loading = true;
+        await this.$store.dispatch("bindMessages", waitListItem);
+        this.loading = false;
+      } catch (error) {
+        this.loading = false;
+        console.log(error);
+      }
     },
     async sendMessage() {
       if (this.newMessage) {
+        let venueDoc = this.user.profile.waitingFor;
+        let name = this.user.profile.name;
+        let sendByOwner = false;
+        let userDoc = this.user.data.uid;
+        if (this.venue !== undefined) {
+          name = "Owner";
+          sendByOwner = true;
+          userDoc = this.userProp;
+          venueDoc = this.venue;
+        }
         await db
           .collection("venues")
-          .doc(this.user.profile.waitingFor)
+          .doc(venueDoc)
           .collection("waitlist")
-          .doc(this.user.data.uid)
+          .doc(userDoc)
           .collection("messages")
           .add({
-            name: this.user.profile.name,
+            name: name,
             content: this.newMessage,
+            sendByOwner: sendByOwner,
             timestamp: Timestamp.fromDate(new Date())
           });
         this.newMessage = "";
@@ -80,7 +109,6 @@ export default {
   async created() {
     await firebase.getCurrentUser();
     await this.$store.dispatch("fetchProfile", this.user.data.uid);
-    // this.loadWaitListStatus();
     this.getMessages();
   }
 };

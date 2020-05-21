@@ -84,16 +84,37 @@ export default new Vuex.Store({
       );
     }),
     bindMessages: firestoreAction((bindFirestoreRef, waitListItem) => {
-      return bindFirestoreRef.bindFirestoreRef(
-        "messages",
-        db
+      try {
+        const ref = db
           .collection("venues")
           .doc(waitListItem.venue)
           .collection("waitlist")
           .doc(waitListItem.user)
-          .collection("messages")
-          .orderBy("timestamp")
-      );
+          .collection("messages");
+        ref.get().then(res => {
+          if (res.docs.length > 0) {
+            console.log("yea");
+          } else {
+            console.log("neej");
+            return {};
+          }
+        });
+
+        return bindFirestoreRef.bindFirestoreRef(
+          "messages",
+          db
+            .collection("venues")
+            .doc(waitListItem.venue)
+            .collection("waitlist")
+            .doc(waitListItem.user)
+            .collection("messages")
+            .orderBy("timestamp")
+        );
+      } catch (error) {
+        console.log("errrorrr");
+
+        console.log(error);
+      }
     }),
     async updateWaitList(_, waitlist) {
       waitlist.timestamp = Timestamp.fromDate(new Date());
