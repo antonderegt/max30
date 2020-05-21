@@ -11,7 +11,6 @@
           </v-row>
 
           <v-row v-else class="pa-3" no-gutters>
-            <!-- TODO: how to higlight the edited fields and blur the info fields of the venu (perhabs dismiss during edit -->
             <v-col v-if="isEdit && editedVenue" cols="11">
               <!-- Venue info fields -->
               <v-text-field
@@ -30,17 +29,19 @@
                 :value="editedVenue.location.address"
               ></v-text-field>
 
+              <v-divider></v-divider>
+
               <!-- Venue capacity -->
               <v-row v-show="isAdmin" class="pa-3" justify="center" no-gutters>
                 <v-col>
-                  Pas capaciteit aan:
+                  Pas capaciteit aan. Huidig: <b>{{ venue.capacity }}</b>
                 </v-col>
               </v-row>
 
               <v-row v-show="isAdmin">
                 <v-col align="center">
                   <v-btn
-                    color="error"
+                    color="warning"
                     @click="updateMetaInfo('capacity', venue.capacity - 1)"
                     >-</v-btn
                   >
@@ -53,6 +54,20 @@
                   >
                 </v-col>
               </v-row>
+              <v-divider></v-divider>
+
+              <v-row
+                v-show="isAdmin"
+                class="pa-3 mt-10"
+                justify="center"
+                no-gutters
+              >
+                <v-col>
+                  <v-btn color="error" @click="deleteVenue()"
+                    >Verwijder bedrijf uit Plekkie</v-btn
+                  >
+                </v-col>
+              </v-row>
             </v-col>
             <v-col v-else cols="11">
               <v-card-title>{{ venue.name }}</v-card-title>
@@ -61,57 +76,59 @@
               </v-card-subtitle>
             </v-col>
             <v-col v-show="isAdmin" @click="isEdit = !isEdit" cols="1 pt-4">
-              <v-icon>create</v-icon>
+              <v-icon>{{ isEdit ? "done" : "create" }}</v-icon>
             </v-col>
           </v-row>
           <v-divider></v-divider>
 
-          <v-row no-gutters>
-            <v-col cols="6">
-              <v-card-text>Capaciteit: {{ venue.capacity }}</v-card-text>
-            </v-col>
+          <div class="venueInfo" v-if="!isEdit">
+            <v-row no-gutters>
+              <v-col cols="6">
+                <v-card-text>Capaciteit: {{ venue.capacity }}</v-card-text>
+              </v-col>
 
-            <v-col cols="6">
-              <v-card-text>Aanwezig: {{ venue.present }}</v-card-text>
-            </v-col>
-          </v-row>
+              <v-col cols="6">
+                <v-card-text>Aanwezig: {{ venue.present }}</v-card-text>
+              </v-col>
+            </v-row>
 
-          <v-row no-gutters>
-            <v-col class="ma-3">
-              <v-progress-linear xs12 v-model="progress" height="25" reactive>
-                <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
-              </v-progress-linear>
-            </v-col>
-          </v-row>
+            <v-row no-gutters>
+              <v-col class="ma-3">
+                <v-progress-linear xs12 v-model="progress" height="25" reactive>
+                  <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
+                </v-progress-linear>
+              </v-col>
+            </v-row>
 
-          <v-row v-show="isAdmin" class="pa-3" justify="center" no-gutters>
-            <v-col>
-              Pas aanwezigen aan:
-            </v-col>
-          </v-row>
+            <v-row v-show="isAdmin" class="pa-3" justify="center" no-gutters>
+              <v-col>
+                Pas aanwezigen aan:
+              </v-col>
+            </v-row>
 
-          <v-row v-show="isAdmin">
-            <v-col align="center">
-              <v-btn
-                color="error"
-                @click="updateMetaInfo('present', venue.present - 1)"
-                >-</v-btn
-              >
+            <v-row v-show="isAdmin">
+              <v-col align="center">
+                <v-btn
+                  color="warning"
+                  @click="updateMetaInfo('present', venue.present - 1)"
+                  >-</v-btn
+                >
+              </v-col>
+              <v-col align="center">
+                <v-btn
+                  color="success"
+                  @click="updateMetaInfo('present', venue.present + 1)"
+                  >+</v-btn
+                >
+              </v-col>
+            </v-row>
+            <v-col v-if="isAdmin" align="center">
+              <VueQrcode
+                :value="`https://plekkie.me/venue/${venue.id}`"
+                :options="{ width: 200 }"
+              />
             </v-col>
-            <v-col align="center">
-              <v-btn
-                color="success"
-                @click="updateMetaInfo('present', venue.present + 1)"
-                >+</v-btn
-              >
-            </v-col>
-          </v-row>
-          <v-col v-if="isAdmin" align="center">
-            <VueQrcode
-              :value="`https://plekkie.me/venue/${venue.id}`"
-              :options="{ width: 200 }"
-            />
-          </v-col>
+          </div>
         </v-card>
       </v-col>
     </v-row>
@@ -280,6 +297,13 @@ export default {
         await this.$store.dispatch("updateVenue", this.editedVenue);
       } catch (error) {
         console.log(error);
+      }
+    },
+    async deleteVenue() {
+      // TODO: use Vuetify modal for confirmation
+      if (confirm("Weet je zeker dat je het bedrijf wilt verwijderen?")) {
+        await this.$store.dispatch("deleteVenue", this.venue);
+        this.$router.replace("/");
       }
     }
   },

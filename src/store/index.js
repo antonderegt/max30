@@ -196,16 +196,17 @@ export default new Vuex.Store({
     },
     async deleteVenue(_, venue) {
       try {
-        await db
-          .collection("profiles")
-          .doc(venue.user)
-          .collection("venues")
-          .doc(venue.venue)
-          .delete();
+        // TODO: rewrite that deletevenue will automatically remove its reverence at the profiles relation instead of fetching user profile on venue delete request
+        // await db
+        //   .collection("profiles")
+        //   .doc(venue.user)
+        //   .collection("venues")
+        //   .doc(venue.venue)
+        //   .delete();
 
         await db
           .collection("venues")
-          .doc(venue.venue)
+          .doc(venue.id)
           .delete();
       } catch (error) {
         console.error("Error writing document: ", error);
