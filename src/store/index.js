@@ -130,14 +130,12 @@ export default new Vuex.Store({
       commit("ADD_TO_WAITLIST", waitList);
       this.dispatch("updateProfile", waitList);
     },
-    async updatePresent({ commit }, venue) {
+    async updateVenue({ commit }, venue) {
       try {
         await db
           .collection("venues")
           .doc(venue.id)
-          .update({
-            present: venue.present
-          });
+          .update(venue);
       } catch (error) {
         console.log(error);
       }

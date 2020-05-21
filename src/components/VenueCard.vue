@@ -11,14 +11,60 @@
           </v-row>
 
           <v-row v-else class="pa-3" no-gutters>
-            <v-col cols="12">
+            <!-- TODO: how to higlight the edited fields and blur the info fields of the venu (perhabs dismiss during edit -->
+            <v-col v-if="isEdit && editedVenue" cols="11">
+              <!-- Venue info fields -->
+              <v-text-field
+                label="Naam"
+                v-model="editedVenue.name"
+                :value="editedVenue.name"
+              ></v-text-field>
+              <v-text-field
+                label="Stad"
+                v-model="editedVenue.location.city"
+                :value="editedVenue.location.city"
+              ></v-text-field>
+              <v-text-field
+                label="Adres"
+                v-model="editedVenue.location.address"
+                :value="editedVenue.location.address"
+              ></v-text-field>
+
+              <!-- Venue capacity -->
+              <v-row v-show="isAdmin" class="pa-3" justify="center" no-gutters>
+                <v-col>
+                  Pas capaciteit aan:
+                </v-col>
+              </v-row>
+
+              <v-row v-show="isAdmin">
+                <v-col align="center">
+                  <v-btn
+                    color="error"
+                    @click="updateMetaInfo('capacity', venue.capacity - 1)"
+                    >-</v-btn
+                  >
+                </v-col>
+                <v-col align="center">
+                  <v-btn
+                    color="success"
+                    @click="updateMetaInfo('capacity', venue.capacity + 1)"
+                    >+</v-btn
+                  >
+                </v-col>
+              </v-row>
+            </v-col>
+            <v-col v-else cols="11">
               <v-card-title>{{ venue.name }}</v-card-title>
               <v-card-subtitle v-if="venue.location">
                 {{ venue.location.city }}, {{ venue.location.address }}
               </v-card-subtitle>
-              <v-divider></v-divider>
+            </v-col>
+            <v-col v-show="isAdmin" @click="isEdit = !isEdit" cols="1 pt-4">
+              <v-icon>create</v-icon>
             </v-col>
           </v-row>
+          <v-divider></v-divider>
 
           <v-row no-gutters>
             <v-col cols="6">
@@ -38,21 +84,25 @@
             </v-col>
           </v-row>
 
-          <v-row class="pa-3" justify="center" no-gutters>
+          <v-row v-show="isAdmin" class="pa-3" justify="center" no-gutters>
             <v-col>
               Pas aanwezigen aan:
             </v-col>
           </v-row>
 
-          <v-row>
+          <v-row v-show="isAdmin">
             <v-col align="center">
-              <v-btn color="success" @click="updatePresent(venue.present + 1)"
-                >+</v-btn
+              <v-btn
+                color="error"
+                @click="updateMetaInfo('present', venue.present - 1)"
+                >-</v-btn
               >
             </v-col>
             <v-col align="center">
-              <v-btn color="error" @click="updatePresent(venue.present - 1)"
-                >-</v-btn
+              <v-btn
+                color="success"
+                @click="updateMetaInfo('present', venue.present + 1)"
+                >+</v-btn
               >
             </v-col>
           </v-row>
@@ -150,8 +200,21 @@ export default {
       loadingVenue: false,
       loadingWaitList: false,
       show: false,
-      count: 1
+      count: 1,
+      isEdit: false,
+      editedVenue: null
     };
+  },
+  watch: {
+    venue(newValue) {
+      this.editedVenue = newValue; // prefill edit fields
+    },
+    editedVenue: {
+      async handler(newValue) {
+        await this.$store.dispatch("updateVenue", newValue);
+      },
+      deep: true
+    }
   },
   methods: {
     async getVenue() {
@@ -185,14 +248,19 @@ export default {
         alert(error);
       }
     },
-    async updatePresent(newValue) {
-      let venue = {
-        id: this.venue.id,
-        present: newValue
-      };
+    async updateMetaInfo(property, newValue) {
+      newValue = newValue < 0 ? 0 : newValue; // prevent new value from goging negative
+
+      switch (property) {
+        case "present":
+          this.editedVenue.present = newValue;
+          break;
+        case "capacity":
+          this.editedVenue.capacity = newValue;
+      }
 
       try {
-        await this.$store.dispatch("updatePresent", venue);
+        await this.$store.dispatch("updateVenue", this.editedVenue);
       } catch (error) {
         console.log(error);
       }
