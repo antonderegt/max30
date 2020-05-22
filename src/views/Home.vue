@@ -14,12 +14,13 @@
       <v-layout row justify-center>
         <v-toolbar class="mx-auto" max-width="700">
           <v-text-field
+            v-model="searchField"
             hide-details
             prepend-icon="search"
             single-line
           ></v-text-field>
 
-          <v-btn icon>
+          <v-btn @click="requestLocation()" icon>
             <v-icon>my_location</v-icon>
           </v-btn>
         </v-toolbar>
@@ -28,7 +29,7 @@
     <v-container class="my-5">
       <v-row justify="center" class="pa-3">
         <v-col cols="12" md="6">
-          <VenueList />
+          <VenueList :filter="searchField" />
         </v-col>
       </v-row>
     </v-container>
@@ -42,6 +43,28 @@ export default {
   name: "Home",
   components: {
     VenueList
+  },
+  data() {
+    return {
+      searchField: ""
+    };
+  },
+  watch: {
+    searchField(newValue) {
+      console.log(newValue);
+    }
+  },
+  methods: {
+    async requestLocation() {
+      navigator.geolocation.getCurrentPosition(
+        res => {
+          console.log(res);
+        },
+        e => {
+          alert(e);
+        }
+      );
+    }
   }
 };
 </script>

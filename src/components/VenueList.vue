@@ -74,6 +74,12 @@
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 export default {
+  props: {
+    filter: {
+      type: String,
+      default: ""
+    }
+  },
   computed: mapState(["venueList"]),
   data() {
     return {
