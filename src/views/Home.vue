@@ -11,7 +11,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row justify-center>
+      <v-layout row justify-center ma-2>
         <v-toolbar
           style="border-radius: .5rem"
           class="mx-auto"
