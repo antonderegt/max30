@@ -51,7 +51,7 @@
                   outlined
                   color="success"
                 >
-                  <v-icon left>mdi-pencil</v-icon> Zet mij in de wachtrij
+                  <v-icon left>post_add</v-icon> Zet mij in de wachtrij
                 </v-btn>
               </v-card-actions>
             </v-list-item>
