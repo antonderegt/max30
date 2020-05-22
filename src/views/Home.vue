@@ -65,6 +65,7 @@ export default {
             `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
           );
           this.address = osmRes.data.address;
+          this.searchField = osmRes.data.address.postcode;
         },
         e => {
           alert(e);
