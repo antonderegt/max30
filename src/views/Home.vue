@@ -12,10 +12,19 @@
       </v-layout>
 
       <v-layout row justify-center>
-        <v-toolbar class="mx-auto" max-width="700">
+        <v-toolbar
+          style="border-radius: .5rem"
+          class="mx-auto"
+          max-width="700"
+          rounded
+          dense
+        >
           <v-text-field
             v-model="searchField"
             hide-details
+            autofocus
+            clearable
+            placeholder="Plaatsnaam of postcode"
             prepend-icon="search"
             single-line
           ></v-text-field>
@@ -44,6 +53,9 @@ export default {
   name: "Home",
   components: {
     VenueList
+  },
+  mounted() {
+    this.requestLocation();
   },
   data() {
     return {
