@@ -3,11 +3,7 @@
     <Loading v-show="loading" />
 
     <v-list two-line subheader>
-      <v-subheader>
-        Zoveel plek is er bij bedrijven bij u in de buurt:
-      </v-subheader>
-
-      <v-list-item
+      <!-- <v-list-item
         :to="'venue/' + venue.id"
         v-for="venue in venueList"
         :key="venue.id"
@@ -15,11 +11,61 @@
         <v-list-item-content>
           <v-list-item-title>{{ venue.name }}</v-list-item-title>
           <v-list-item-subtitle>
-            {{ venue.location.address }} in
-            {{ venue.location.city }}
+            {{ venue.location.address }}<br />
+            {{ venue.location.postcode }} in {{ venue.location.city }}
           </v-list-item-subtitle>
         </v-list-item-content>
-      </v-list-item>
+      </v-list-item> -->
+      <!-- TODO: hadere restaruants: in Zwolle (postcode) -->
+      <v-row>
+        <v-col
+          :to="'venue/' + venue.id"
+          v-for="venue in venueList"
+          :key="venue.id"
+          cols="12"
+        >
+          <v-card class="mx-auto" max-width="700" outlined>
+            <v-list-item three-line>
+              <v-list-item-content>
+                <v-list-item-title class="headline mb-1">{{
+                  venue.name
+                }}</v-list-item-title>
+                <v-list-item-subtitle>{{
+                  venue.location.address
+                }}</v-list-item-subtitle>
+                <v-list-item-subtitle>{{
+                  venue.location.city
+                }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <!-- 
+              <v-list-item-avatar
+                tile
+                size="80"
+                color="grey"
+              ></v-list-item-avatar> -->
+            </v-list-item>
+
+            <v-card-actions>
+              <!-- <v-btn text>Button</v-btn> -->
+              <v-progress-linear
+                xs12
+                :v-model="(venue.present / venue.capacity) * 100"
+                height="25"
+                :color="getProgressColor(venue)"
+                reactive
+              >
+                <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
+              </v-progress-linear>
+              <v-list-item-subtitle
+                v-if="venue.waitlist && venue.waitlist.length > 0"
+              >
+                Er staan <b>{{ venue.waitlist.length }}</b> mensen in de
+                wachtrij
+              </v-list-item-subtitle>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-list>
   </div>
 </template>
@@ -46,6 +92,12 @@ export default {
       } catch (error) {
         alert("bindLocations: " + error);
       }
+    },
+    getProgressColor(venue) {
+      let progess = (venue.present / venue.capacity) * 100;
+      if (progess < 80) return "green";
+      if (progess < 99) return "orange";
+      return "red";
     }
   },
   created() {

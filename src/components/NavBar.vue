@@ -1,16 +1,16 @@
 <template>
   <nav>
-    <v-app-bar flat app hide-on-scroll>
+    <v-app-bar elevate-on-scroll="true" color="#54BFEB" app hide-on-scroll>
       <v-app-bar-nav-icon
-        class="grey--text"
+        class="white--text"
         @click="drawer = !drawer"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title class="text-uppercase grey--text">
+      <v-toolbar-title class="text-uppercase white--text">
         <span>Plek</span>
         <span class="font-weight-light">kie</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="user.loggedIn" text color="grey" @click="logout">
+      <v-btn v-if="user.loggedIn" text color="white" @click="logout">
         <span>Sign out</span>
         <v-icon right>exit_to_app</v-icon>
       </v-btn>
@@ -19,7 +19,7 @@
     <v-navigation-drawer v-model="drawer" app>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="title grey--text text-uppercase">
+          <v-list-item-title class="title white--text text-uppercase">
             <span class="font-weight-light">Plek</span>
             <span>kie</span>
           </v-list-item-title>

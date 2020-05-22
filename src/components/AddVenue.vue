@@ -28,6 +28,7 @@
             prepend-icon="mdi-account"
             required
           ></v-text-field>
+          <!-- TODO: add category -->
 
           <v-divider></v-divider>
           <v-slider
