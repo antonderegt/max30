@@ -15,7 +15,7 @@
         <v-toolbar
           style="border-radius: .5rem"
           class="mx-auto"
-          max-width="700"
+          max-width="600"
           rounded
           dense
         >
@@ -76,11 +76,11 @@ export default {
           const osmRes = await axios.get(
             `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
           );
-          this.address = osmRes.data.address;
-          this.searchField = osmRes.data.address.postcode;
+          this.address = osmRes?.data?.address; // ANTON. OVER ?. moet je even wat lezen ;-)
+          this.searchField = osmRes?.data?.address?.postcode;
         },
         e => {
-          alert(e);
+          console.error(e);
         }
       );
     }
