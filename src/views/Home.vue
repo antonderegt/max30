@@ -38,6 +38,7 @@
 
 <script>
 import VenueList from "@/components/VenueList.vue";
+import axios from "axios";
 
 export default {
   name: "Home",
@@ -46,7 +47,8 @@ export default {
   },
   data() {
     return {
-      searchField: ""
+      searchField: "",
+      address: ""
     };
   },
   watch: {
@@ -57,8 +59,12 @@ export default {
   methods: {
     async requestLocation() {
       navigator.geolocation.getCurrentPosition(
-        res => {
+        async res => {
           console.log(res);
+          const osmRes = await axios.get(
+            `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
+          );
+          this.address = osmRes.data.address;
         },
         e => {
           alert(e);
