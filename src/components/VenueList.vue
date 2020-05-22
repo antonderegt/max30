@@ -43,6 +43,17 @@
                 size="80"
                 color="grey"
               ></v-list-item-avatar> -->
+              <v-card-actions v-if="venue.capacity === venue.present">
+                <v-btn
+                  :to="'venue/' + venue.id"
+                  class="ma-2"
+                  tile
+                  outlined
+                  color="success"
+                >
+                  <v-icon left>mdi-pencil</v-icon> Zet mij in de wachtrij
+                </v-btn>
+              </v-card-actions>
             </v-list-item>
 
             <v-card-actions>
