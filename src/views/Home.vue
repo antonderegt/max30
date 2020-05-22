@@ -60,29 +60,41 @@ export default {
   data() {
     return {
       searchField: "",
-      address: ""
+      address: "",
+      suggestions: [],
+      isLoading: false
     };
   },
   watch: {
-    searchField(newValue) {
-      console.log(newValue);
+    async searchField(newValue) {
+      await this.autoCompleteInput(newValue);
     }
   },
   methods: {
     async requestLocation() {
+      console.log("requesting");
       navigator.geolocation.getCurrentPosition(
         async res => {
-          console.log(res);
           const osmRes = await axios.get(
             `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
           );
-          this.address = osmRes?.data?.address; // ANTON. OVER ?. moet je even wat lezen ;-) // JEROEN. wow dat is vet! Veel problemen gehad met "can't get xxx of undefined"
+          this.address = osmRes?.data?.address;
           this.searchField = osmRes?.data?.address?.postcode;
         },
         e => {
           console.error(e);
         }
       );
+    },
+    async autoCompleteInput(query) {
+      this.isLoading = true;
+      const res = await axios.get(
+        `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
+      );
+      this.suggestions = res?.data.map(el => el?.display_name); // TODO for Tom: get lat, lon and calculate distance to venue with Geocoding api
+      this.suggestions = res.data;
+      console.log(this.suggestions);
+      this.isLoading = false;
     }
   }
 };
