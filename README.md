@@ -1,6 +1,6 @@
 # max30
 
-Demo at [max30-max100.web.app](https://max30-max100.web.app)
+Demo at [Plekkie.me](https://plekkie.me)
 
 ## Project setup
 ```
@@ -27,5 +27,67 @@ npm run test:unit
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Cloud Firestore Data Model
+
+### Users
+```
+users/{userID}
+ - name
+ - waitlist {
+     - venueID1: true,
+     - venueID2: true
+   }
+ - reservations {
+     - venueID1: true
+     - venueID2: true
+   }
+```
+   
+### Venues
+```
+venues/{venueID}
+ - name
+ - location
+    - city
+    - address
+ - category {
+     - categoryName1: true,
+     - categoryName2: true
+   }
+ - capacity
+ - presentCount
+ - owners {
+     - userID1: true,
+     - userID2: true
+   }
+```
+
+### Wait List
+```
+waitlist/{waitlistID}
+ - userID
+ - venueID
+ - status
+ - personCount
+ - timestamp
+```
+### Reservations
+```
+reservations/{reservationID}
+ - userID
+ - venueID
+ - status
+ - personCount
+ - createdTimestamp
+ - reservedTimestamp
+```
+### Chats
+```
+chats/{venueID_userID}
+ - userID
+ - venueID
+ - messages/{messageID}
+    - content
+    - sendBy: owner | user
+    - timestamp
+```
