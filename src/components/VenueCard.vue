@@ -88,7 +88,7 @@
               </v-col>
 
               <v-col cols="6">
-                <v-card-text>Aanwezig: {{ venue.present }}</v-card-text>
+                <v-card-text>Aanwezig: {{ venue.presentCount }}</v-card-text>
               </v-col>
             </v-row>
 
@@ -100,7 +100,9 @@
                   height="25"
                   reactive
                 >
-                  <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
+                  <strong
+                    >{{ venue.presentCount }} / {{ venue.capacity }}</strong
+                  >
                 </v-progress-linear>
               </v-col>
             </v-row>
@@ -115,14 +117,18 @@
               <v-col align="center">
                 <v-btn
                   color="warning"
-                  @click="updateMetaInfo('present', venue.present - 1)"
+                  @click="
+                    updateMetaInfo('presentCount', venue.presentCount - 1)
+                  "
                   >-</v-btn
                 >
               </v-col>
               <v-col align="center">
                 <v-btn
                   color="success"
-                  @click="updateMetaInfo('present', venue.present + 1)"
+                  @click="
+                    updateMetaInfo('presentCount', venue.presentCount + 1)
+                  "
                   >+</v-btn
                 >
               </v-col>
@@ -239,7 +245,7 @@ export default {
   props: ["isAdmin"],
   computed: {
     progress() {
-      return (this.venue.present / this.venue.capacity) * 100;
+      return (this.venue.presentCount / this.venue.capacity) * 100;
     },
     ...mapState(["venue", "waitList", "user"])
   },
@@ -277,17 +283,18 @@ export default {
         this.loadingWaitList = false;
       } catch (error) {
         alert("bindVenue: " + error);
+        console.log("bindVenue: " + error);
       }
     },
     async acceptOrDeclineGroup(userID, count, status) {
-      let newCount = this.venue.present;
+      let newCount = this.venue.personCount;
 
       if (status == "accepted") {
         newCount += parseInt(count);
       }
 
       try {
-        await this.updatePresent(newCount);
+        await this.updatePresentCount(newCount);
         const waitList = {
           venue: this.venue.id,
           user: userID,
@@ -299,11 +306,11 @@ export default {
       }
     },
     async updateMetaInfo(property, newValue) {
-      newValue = newValue < 0 ? 0 : newValue; // prevent new value from goging negative
+      newValue = newValue < 0 ? 0 : newValue; // prevent new value from going negative
 
       switch (property) {
-        case "present":
-          this.editedVenue.present = newValue;
+        case "presentCount":
+          this.editedVenue.presentCount = newValue;
           break;
         case "capacity":
           this.editedVenue.capacity = newValue;

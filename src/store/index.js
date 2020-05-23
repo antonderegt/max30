@@ -36,7 +36,7 @@ export default new Vuex.Store({
       state.waitList.push(waitList);
     },
     UPDATE_PRESENT(state, newPresent) {
-      state.venue.present = newPresent;
+      state.venue.presentCount = newPresent;
     }
   },
   actions: {
@@ -159,7 +159,7 @@ export default new Vuex.Store({
       } catch (error) {
         console.log(error);
       }
-      commit("UPDATE_PRESENT", venue.present);
+      commit("UPDATE_PRESENT", venue.presentCount);
     },
     async addVenue(_, venue) {
       try {
