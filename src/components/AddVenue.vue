@@ -77,8 +77,14 @@ export default {
             city: this.city,
             address: this.address
           },
+          owners: {
+            [this.user.data.uid]: true
+          },
+          category: {
+            bar: true
+          },
           capacity: this.capacity,
-          present: 0
+          presentCount: 0
         };
         await this.$store.dispatch("addVenue", venue);
         this.$router.push("/my-venues");

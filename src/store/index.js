@@ -2,7 +2,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { vuexfireMutations, firestoreAction } from "vuexfire";
 import { db, Timestamp } from "@/db";
-import firebase from "firebase/app";
 
 Vue.use(Vuex);
 
@@ -153,20 +152,9 @@ export default new Vuex.Store({
       commit("UPDATE_PRESENT", venue.presentCount);
     },
     async addVenue(_, venue) {
+      // Updated to new Data Model
       try {
-        const res = await db.collection("venues").add(venue);
-
-        var user = firebase.auth().currentUser;
-        await db
-          .collection("profiles")
-          .doc(user.uid)
-          .collection("venues")
-          .doc(res.id)
-          .set({
-            name: venue.name
-          });
-
-        this.dispatch("fetchUser", user);
+        await db.collection("venues").add(venue);
       } catch (error) {
         console.error("Error writing document: ", error);
       }
