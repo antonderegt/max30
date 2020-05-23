@@ -31,8 +31,9 @@ npm run lint
 
 ### Users
 ```
-users/{userID}
+profiles/{userID}
  - name
+ - owner: true | false
  - waitlist {
      - venueID1: true,
      - venueID2: true
@@ -64,7 +65,7 @@ venues/{venueID}
 
 ### Wait List
 ```
-waitlist/{waitlistID}
+waitlists/{waitlistID}
  - userID
  - venueID
  - status
