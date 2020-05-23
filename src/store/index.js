@@ -74,17 +74,15 @@ export default new Vuex.Store({
         );
       }
     ),
-    bindMyVenues: firestoreAction((bindFirestoreRef, id) => {
-      // Updating
+    bindMyVenues: firestoreAction((bindFirestoreRef, userID) => {
+      // Updated to new Data Model
       return bindFirestoreRef.bindFirestoreRef(
         "myVenues",
-        db
-          .collection("profiles")
-          .doc(id)
-          .collection("venues")
+        db.collection("venues").where(`owners.${userID}`, "==", true)
       );
     }),
     bindMessages: firestoreAction((bindFirestoreRef, waitListItem) => {
+      // Updating
       try {
         const ref = db
           .collection("venues")

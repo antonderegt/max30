@@ -16,16 +16,11 @@
 
 <script>
 import firebase from "firebase/app";
-import { mapGetters } from "vuex";
+import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 
 export default {
-  computed: {
-    ...mapGetters({
-      user: "user",
-      myVenues: "myVenues"
-    })
-  },
+  computed: mapState(["user", "myVenues"]),
   data() {
     return {
       loading: false
@@ -36,26 +31,17 @@ export default {
       this.loading = true;
       firebase.auth().onAuthStateChanged(async user => {
         if (user) {
-          await this.$store.dispatch("bindMyVenues", user.uid);
+          try {
+            await this.$store.dispatch("bindMyVenues", user.uid);
+          } catch (error) {
+            alert("bindMyVenues: " + error);
+          }
           this.loading = false;
         }
       });
     },
     goToVenue(id) {
       this.$router.push(`/my-venue/${id}`);
-    },
-    editVenue(id) {
-      console.log(id);
-      this.$router.push(`/edit-venue/${id}`);
-
-      alert("Jeroen bouw dit ff in.");
-    },
-    deleteVenue(id) {
-      const venue = {
-        venue: id,
-        user: this.user.data.uid
-      };
-      this.$store.dispatch("deleteVenue", venue);
     }
   },
   components: { Loading },
