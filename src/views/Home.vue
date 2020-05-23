@@ -2,7 +2,7 @@
   <div style="background-color:'red'">
     <v-parallax border="0" height="300">
       <v-layout align-center justify-center>
-        <v-flex xs12 class="text-center">
+        <v-flex cols="12" class="text-center">
           <h1 class="display-1 font-weight-thin mb-4">
             Geen zin om in de wachtrij te staan? <br /><br />
             <b> Op Plekkie zie je waar genoeg plek is!</b>

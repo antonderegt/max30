@@ -59,7 +59,7 @@
             <v-card-actions>
               <!-- <v-btn text>Button</v-btn> -->
               <v-progress-linear
-                xs12
+                cols="12"
                 :v-model="(venue.present / venue.capacity) * 100"
                 height="25"
                 :color="getProgressColor(venue)"

@@ -40,24 +40,26 @@ export default new Vuex.Store({
   },
   actions: {
     bindVenue: firestoreAction((bindFirestoreRef, id) => {
+      // checked
       return bindFirestoreRef.bindFirestoreRef(
         "venue",
         db.collection("venues").doc(id)
       );
     }),
     bindVenueList: firestoreAction(bindFirestoreRef => {
+      // checked
       return bindFirestoreRef.bindFirestoreRef(
         "venueList",
         db.collection("venues")
       );
     }),
-    bindWaitList: firestoreAction((bindFirestoreRef, id) => {
+    bindWaitList: firestoreAction((bindFirestoreRef, venueID) => {
+      // checked
       return bindFirestoreRef.bindFirestoreRef(
         "waitList",
         db
-          .collection("venues")
-          .doc(id)
           .collection("waitlist")
+          .where("venueID", "==", venueID)
           .where("status", "==", "waiting")
           .orderBy("timestamp")
       );

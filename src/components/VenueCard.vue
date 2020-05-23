@@ -94,7 +94,12 @@
 
             <v-row no-gutters>
               <v-col class="ma-3">
-                <v-progress-linear xs12 v-model="progress" height="25" reactive>
+                <v-progress-linear
+                  cols="12"
+                  v-model="progress"
+                  height="25"
+                  reactive
+                >
                   <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
                 </v-progress-linear>
               </v-col>
@@ -134,11 +139,11 @@
     </v-row>
 
     <v-row v-if="!isAdmin">
-      <v-col v-if="waitList.length === 0" xs12>
+      <v-col v-if="waitList.length === 0" cols="12">
         <v-card-text>Geen wachtrij, kom snel!</v-card-text>
       </v-col>
 
-      <v-col xs12 class="pa-3">
+      <v-col cols="12" class="pa-3">
         <v-btn outlined block @click="show = !show">Reserveer</v-btn>
         <JoinModal
           v-if="show"
@@ -152,16 +157,14 @@
 
     <v-row>
       <v-col>
-        <v-row v-if="waitList.length" xs12>
+        <v-row v-if="waitList.length">
           <v-col>
             Wachtrij:
           </v-col>
         </v-row>
         <div v-if="!isAdmin">
-          <v-row v-for="person in waitList" :key="person.id">
-            <v-col>
-              {{ person.name }}
-            </v-col>
+          <v-row v-for="person in waitList" :key="person.userID">
+            <v-col> Groep van: {{ person.personCount }} </v-col>
           </v-row>
         </div>
       </v-col>
@@ -174,23 +177,30 @@
         cols="12"
         md="3"
         v-for="(person, index) in waitList"
-        :key="person.id"
+        :key="person.userID"
       >
         <v-card>
           <v-card-title>
-            {{ person.name }}
+            <!-- TODO get name instead of userID -->
+            {{ person.userID }}
           </v-card-title>
-          <v-card-text> With {{ person.count }} people. </v-card-text>
+          <v-card-text> With {{ person.personCount }} people. </v-card-text>
           <chatCard
             v-if="openChat == index"
-            :userProp="person.id"
-            :venue="venue.id"
+            :userProp="person.userID"
+            :venue="venue.venueID"
           />
           <v-divider></v-divider>
           <v-card-actions>
             <v-btn
               color="success"
-              @click="acceptOrDeclineGroup(person.id, person.count, 'accepted')"
+              @click="
+                acceptOrDeclineGroup(
+                  person.userID,
+                  person.personCount,
+                  'accepted'
+                )
+              "
             >
               yes
             </v-btn>
@@ -202,7 +212,13 @@
             >
             <v-btn
               color="error"
-              @click="acceptOrDeclineGroup(person.id, person.count, 'declined')"
+              @click="
+                acceptOrDeclineGroup(
+                  person.userID,
+                  person.personCount,
+                  'declined'
+                )
+              "
               >no</v-btn
             >
           </v-card-actions>
