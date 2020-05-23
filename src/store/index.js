@@ -17,7 +17,8 @@ export default new Vuex.Store({
       profile: null
     },
     myVenues: [],
-    waitListItem: {},
+    waitListItem: {}, // TODO: deprecate when data models are updated
+    waitLists: [],
     messages: []
   },
   mutations: {
@@ -40,43 +41,41 @@ export default new Vuex.Store({
   },
   actions: {
     bindVenue: firestoreAction((bindFirestoreRef, id) => {
-      // checked
+      // Updated to new Data Model
       return bindFirestoreRef.bindFirestoreRef(
         "venue",
         db.collection("venues").doc(id)
       );
     }),
     bindVenueList: firestoreAction(bindFirestoreRef => {
-      // checked
+      // Updated to new Data Model
       return bindFirestoreRef.bindFirestoreRef(
         "venueList",
         db.collection("venues")
       );
     }),
     bindWaitList: firestoreAction((bindFirestoreRef, venueID) => {
-      // checked
+      // Updated to new Data Model
       return bindFirestoreRef.bindFirestoreRef(
         "waitList",
         db
-          .collection("waitlist")
+          .collection("waitlists")
           .where("venueID", "==", venueID)
           .where("status", "==", "waiting")
           .orderBy("timestamp")
       );
     }),
-    bindSingleWaitListItem: firestoreAction(
-      (bindFirestoreRef, waitlistItem) => {
+    bindWaitLists: firestoreAction(
+      // Updated to new Data Model
+      (bindFirestoreRef, userID) => {
         return bindFirestoreRef.bindFirestoreRef(
-          "waitListItem",
-          db
-            .collection("venues")
-            .doc(waitlistItem.venue)
-            .collection("waitlist")
-            .doc(waitlistItem.user)
+          "waitLists",
+          db.collection("waitlists").where("userID", "==", userID)
         );
       }
     ),
     bindMyVenues: firestoreAction((bindFirestoreRef, id) => {
+      // Updating
       return bindFirestoreRef.bindFirestoreRef(
         "myVenues",
         db

@@ -44,7 +44,7 @@ import Loading from "@/components/Loading.vue";
 
 export default {
   props: ["userProp", "venue"],
-  computed: mapState(["user", "waitListItem", "messages"]),
+  computed: mapState(["user", "messages"]),
   data() {
     return {
       loading: false,

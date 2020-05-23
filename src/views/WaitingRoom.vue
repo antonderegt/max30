@@ -1,19 +1,29 @@
 <template>
   <v-container grid-list-xl>
-    <v-row justify="center">
+    <v-row>
       <v-col cols="12" align="center">
         <h1>Welcome to the waiting room</h1>
       </v-col>
-      <Loading v-if="loading" />
-      <v-col v-else cols="12" md="6" align="center">
-        {{ user.profile.name }} your wait list status is:
+    </v-row>
+    <Loading v-if="loadingWaitLists" />
+    <v-row v-else-if="waitLists.length === 0">
+      <v-col>You are not on any wait list at the moment.</v-col>
+    </v-row>
+    <v-row
+      v-else
+      v-for="waitListItem in waitLists"
+      justify="center"
+      :key="waitListItem.venueID"
+    >
+      <v-col cols="12" md="6" align="center">
+        {{ user.profile.name }} your wait list status for
+        {{ waitListItem.venueID }} is:
         <span class="font-weight-bold text-uppercase">{{
           waitListItem.status
         }}</span>
       </v-col>
+      <ChatCard />
     </v-row>
-
-    <ChatCard />
   </v-container>
 </template>
 
@@ -24,30 +34,27 @@ import Loading from "@/components/Loading.vue";
 import ChatCard from "@/components/ChatCard.vue";
 
 export default {
-  computed: mapState(["user", "waitListItem", "messages"]),
+  computed: mapState(["user", "waitLists"]),
   data() {
     return {
-      loading: true,
+      loadingWaitLists: false,
       newMessage: ""
     };
   },
   methods: {
     async loadWaitListStatus() {
-      this.loading = true;
-      const waitListItem = {
-        venue: this.user.profile.waitingFor,
-        user: this.user.data.uid
-      };
+      this.loadingWaitLists = true;
       try {
-        await this.$store.dispatch("bindSingleWaitListItem", waitListItem);
-        this.loading = false;
+        await this.$store.dispatch("bindWaitLists", this.user.data.uid);
+        this.loadingWaitLists = false;
       } catch (error) {
-        alert("SingleWaitListItem: " + error);
+        alert("bindWaitLists: " + error);
       }
     }
   },
   components: { Loading, ChatCard },
   async created() {
+    this.loadingWaitLists = true;
     await firebase.getCurrentUser();
     await this.$store.dispatch("fetchProfile", this.user.data.uid);
     this.loadWaitListStatus();
