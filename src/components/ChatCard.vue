@@ -99,7 +99,6 @@ export default {
   async created() {
     this.loading = true;
     await firebase.getCurrentUser();
-    await this.$store.dispatch("fetchProfile", this.user.data.uid);
     this.getMessages();
   }
 };

@@ -19,7 +19,14 @@ import NavBar from "@/components/NavBar.vue";
 export default {
   data() {
     return {
-      items: [{ title: "Home", icon: "mdi-view-dashboard", link: "/" }]
+      items: [
+        { title: "Home", icon: "mdi-view-dashboard", link: "/" },
+        {
+          title: "Waiting Room",
+          icon: "mdi-paper-roll",
+          link: "/waiting-room"
+        }
+      ]
     };
   },
   computed: {

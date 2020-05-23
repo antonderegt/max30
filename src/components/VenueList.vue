@@ -43,7 +43,7 @@
                 size="80"
                 color="grey"
               ></v-list-item-avatar> -->
-              <v-card-actions v-if="venue.capacity === venue.present">
+              <v-card-actions v-if="venue.capacity === venue.presentCount">
                 <v-btn
                   :to="'venue/' + venue.id"
                   class="ma-2"
@@ -60,12 +60,12 @@
               <!-- <v-btn text>Button</v-btn> -->
               <v-progress-linear
                 cols="12"
-                :v-model="(venue.present / venue.capacity) * 100"
+                :v-model="(venue.presentCount / venue.capacity) * 100"
                 height="25"
                 :color="getProgressColor(venue)"
                 reactive
               >
-                <strong>{{ venue.present }} / {{ venue.capacity }}</strong>
+                <strong>{{ venue.presentCount }} / {{ venue.capacity }}</strong>
               </v-progress-linear>
               <v-list-item-subtitle
                 v-if="venue.waitlist && venue.waitlist.length > 0"
@@ -111,7 +111,7 @@ export default {
       }
     },
     getProgressColor(venue) {
-      let progess = (venue.present / venue.capacity) * 100;
+      let progess = (venue.presentCount / venue.capacity) * 100;
       if (progess < 80) return "green";
       if (progess < 99) return "orange";
       return "red";

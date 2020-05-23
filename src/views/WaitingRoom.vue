@@ -68,7 +68,6 @@ export default {
   async created() {
     this.loadingWaitLists = true;
     await firebase.getCurrentUser();
-    await this.$store.dispatch("fetchProfile", this.user.data.uid);
     this.loadWaitListStatus();
   }
 };

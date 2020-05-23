@@ -16,7 +16,6 @@ export default new Vuex.Store({
       profile: null
     },
     myVenues: [],
-    waitListItem: {}, // TODO: deprecate when data models are updated
     waitLists: [],
     chat: []
   },
@@ -40,21 +39,18 @@ export default new Vuex.Store({
   },
   actions: {
     bindVenue: firestoreAction((bindFirestoreRef, id) => {
-      // Updated to new Data Model
       return bindFirestoreRef.bindFirestoreRef(
         "venue",
         db.collection("venues").doc(id)
       );
     }),
     bindVenueList: firestoreAction(bindFirestoreRef => {
-      // Updated to new Data Model
       return bindFirestoreRef.bindFirestoreRef(
         "venueList",
         db.collection("venues")
       );
     }),
     bindWaitList: firestoreAction((bindFirestoreRef, venueID) => {
-      // Updated to new Data Model
       return bindFirestoreRef.bindFirestoreRef(
         "waitList",
         db
@@ -64,24 +60,19 @@ export default new Vuex.Store({
           .orderBy("timestamp")
       );
     }),
-    bindWaitLists: firestoreAction(
-      // Updated to new Data Model
-      (bindFirestoreRef, userID) => {
-        return bindFirestoreRef.bindFirestoreRef(
-          "waitLists",
-          db.collection("waitlists").where("userID", "==", userID)
-        );
-      }
-    ),
+    bindWaitLists: firestoreAction((bindFirestoreRef, userID) => {
+      return bindFirestoreRef.bindFirestoreRef(
+        "waitLists",
+        db.collection("waitlists").where("userID", "==", userID)
+      );
+    }),
     bindMyVenues: firestoreAction((bindFirestoreRef, userID) => {
-      // Updated to new Data Model
       return bindFirestoreRef.bindFirestoreRef(
         "myVenues",
         db.collection("venues").where(`owners.${userID}`, "==", true)
       );
     }),
     bindChat: firestoreAction((bindFirestoreRef, chat) => {
-      // Updated to new Data Model
       try {
         return bindFirestoreRef.bindFirestoreRef(
           "chat",
@@ -96,7 +87,6 @@ export default new Vuex.Store({
       }
     }),
     async updateWaitList(_, waitListItem) {
-      // Updated to new Data Model
       try {
         await db
           .collection("waitlists")
@@ -109,7 +99,6 @@ export default new Vuex.Store({
       }
     },
     async checkIfUserAlreadyInQueue(_, waitListItem) {
-      // Updated to new Data Model
       const doc = await db
         .collection("waitlists")
         .where("userID", "==", waitListItem.userID)
@@ -123,7 +112,6 @@ export default new Vuex.Store({
       }
     },
     async joinWaitList({ commit }, waitListItem) {
-      // Updated to new Data Model
       waitListItem.timestamp = Timestamp.fromDate(new Date());
       try {
         await db.collection("waitlists").add({
@@ -137,10 +125,8 @@ export default new Vuex.Store({
         console.log(error);
       }
       commit("ADD_TO_WAITLIST", waitListItem);
-      // this.dispatch("updateProfile", waitList);
     },
     async updateVenue({ commit }, venue) {
-      // Updated to new Data Model
       try {
         await db
           .collection("venues")
@@ -152,7 +138,6 @@ export default new Vuex.Store({
       commit("UPDATE_PRESENT", venue.presentCount);
     },
     async addVenue(_, venue) {
-      // Updated to new Data Model
       try {
         await db.collection("venues").add(venue);
       } catch (error) {
@@ -174,34 +159,14 @@ export default new Vuex.Store({
     },
     async deleteVenue(_, venue) {
       try {
-        // TODO: rewrite that deletevenue will automatically remove its reverence at the profiles relation instead of fetching user profile on venue delete request
-        // await db
-        //   .collection("profiles")
-        //   .doc(venue.user)
-        //   .collection("venues")
-        //   .doc(venue.venue)
-        //   .delete();
-
+        // TODO: chats and waitListItems still exist after delete (feature? or bug?)
         await db
           .collection("venues")
           .doc(venue.id)
           .delete();
       } catch (error) {
-        console.error("Error writing document: ", error);
+        console.error("Error deleting document: ", error);
       }
-    },
-    async updateProfile(_, profile) {
-      try {
-        await db
-          .collection("profiles")
-          .doc(profile.user)
-          .update({
-            waitingFor: profile.venue
-          });
-      } catch (error) {
-        console.error("Error writing document: ", error);
-      }
-      this.dispatch("fetchProfile", profile.user);
     },
     async createProfile({ commit }, profile) {
       try {
