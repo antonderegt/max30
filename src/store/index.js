@@ -19,7 +19,7 @@ export default new Vuex.Store({
     myVenues: [],
     waitListItem: {}, // TODO: deprecate when data models are updated
     waitLists: [],
-    messages: []
+    chat: []
   },
   mutations: {
     ...vuexfireMutations,
@@ -81,37 +81,18 @@ export default new Vuex.Store({
         db.collection("venues").where(`owners.${userID}`, "==", true)
       );
     }),
-    bindMessages: firestoreAction((bindFirestoreRef, waitListItem) => {
-      // Updating
+    bindChat: firestoreAction((bindFirestoreRef, chat) => {
+      // Updated to new Data Model
       try {
-        const ref = db
-          .collection("venues")
-          .doc(waitListItem.venue)
-          .collection("waitlist")
-          .doc(waitListItem.user)
-          .collection("messages");
-        ref.get().then(res => {
-          if (res.docs.length > 0) {
-            console.log("yea");
-          } else {
-            console.log("neej");
-            return {};
-          }
-        });
-
         return bindFirestoreRef.bindFirestoreRef(
-          "messages",
+          "chat",
           db
-            .collection("venues")
-            .doc(waitListItem.venue)
-            .collection("waitlist")
-            .doc(waitListItem.user)
+            .collection("chats")
+            .doc(`${chat.venueID}_${chat.userID}`)
             .collection("messages")
             .orderBy("timestamp")
         );
       } catch (error) {
-        console.log("errrorrr");
-
         console.log(error);
       }
     }),

@@ -193,8 +193,9 @@
           <v-card-text> With {{ person.personCount }} people. </v-card-text>
           <chatCard
             v-if="openChat == index"
-            :userProp="person.userID"
-            :venue="venue.venueID"
+            :userID="person.userID"
+            :venueID="venueID"
+            sender="owner"
           />
           <v-divider></v-divider>
           <v-card-actions>

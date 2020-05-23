@@ -3,17 +3,22 @@
     <Loading v-if="loading" />
     <v-row justify="center">
       <v-col cols="12">
-        <v-card v-if="messages.length > 0" class="messages-container">
+        <v-card v-if="chat.length > 0" class="messages-container">
           <div class="messages" v-chat-scroll>
-            <div class="message" v-for="message in messages" :key="message.id">
-              <div v-if="message.sendByOwner" class="chat-message owner">
-                <span class="green--text">{{ message.name }} - </span>
+            <div class="message" v-for="message in chat" :key="message.id">
+              <div v-if="message.sendBy === 'owner'" class="chat-message owner">
+                <span class="green--text">Owner - </span>
                 <span class="grey--text">{{ message.content }}</span>
+                <!-- TODO show timestamp with moment.js -->
                 <!-- <span class="grey--text">{{ message.timestamp }}</span> -->
               </div>
-              <div v-else class="text-right chat-message">
+              <div
+                v-else-if="message.sendBy === 'user'"
+                class="text-right chat-message"
+              >
                 <span class="grey--text">{{ message.content }} - </span>
-                <span class="green--text">{{ message.name }}</span>
+                <!-- TODO show users name -->
+                <span class="green--text">User</span>
                 <!-- <span class="grey--text">{{ message.timestamp }}</span> -->
               </div>
             </div>
@@ -43,8 +48,8 @@ import { db, Timestamp } from "@/db.js";
 import Loading from "@/components/Loading.vue";
 
 export default {
-  props: ["userProp", "venue"],
-  computed: mapState(["user", "messages"]),
+  props: ["venueID", "userID", "sender"],
+  computed: mapState(["user", "chat"]),
   data() {
     return {
       loading: false,
@@ -53,52 +58,37 @@ export default {
   },
   methods: {
     async getMessages() {
-      let waitListItem = {};
-      console.log(this.venue);
-      console.log(this.userProp);
-
-      if (this.userProp === undefined) {
-        waitListItem = {
-          venue: this.user.profile.waitingFor,
-          user: this.user.data.uid
-        };
+      this.loading = true;
+      let chat = {};
+      if (this.userID === undefined || this.venueID === undefined) {
+        console.log("No user or venue provided");
       } else {
-        waitListItem = {
-          venue: this.venue,
-          user: this.userProp
+        chat = {
+          venueID: this.venueID,
+          userID: this.userID
         };
       }
       try {
-        this.loading = true;
-        await this.$store.dispatch("bindMessages", waitListItem);
-        this.loading = false;
+        await this.$store.dispatch("bindChat", chat);
       } catch (error) {
-        this.loading = false;
         console.log(error);
       }
+      this.loading = false;
     },
     async sendMessage() {
       if (this.newMessage) {
-        let venueDoc = this.user.profile.waitingFor;
-        let name = this.user.profile.name;
-        let sendByOwner = false;
-        let userDoc = this.user.data.uid;
-        if (this.venue !== undefined) {
-          name = "Owner";
-          sendByOwner = true;
-          userDoc = this.userProp;
-          venueDoc = this.venue;
-        }
+        let venueID = this.venueID;
+        let userID = this.userID;
+        let sendBy = this.sender;
         await db
-          .collection("venues")
-          .doc(venueDoc)
-          .collection("waitlist")
-          .doc(userDoc)
+          .collection("chats")
+          .doc(`${venueID}_${userID}`)
           .collection("messages")
           .add({
-            name: name,
+            venueID,
+            userID,
+            sendBy,
             content: this.newMessage,
-            sendByOwner: sendByOwner,
             timestamp: Timestamp.fromDate(new Date())
           });
         this.newMessage = "";
@@ -107,6 +97,7 @@ export default {
   },
   components: { Loading },
   async created() {
+    this.loading = true;
     await firebase.getCurrentUser();
     await this.$store.dispatch("fetchProfile", this.user.data.uid);
     this.getMessages();

@@ -11,7 +11,7 @@
     </v-row>
     <v-row
       v-else
-      v-for="waitListItem in waitLists"
+      v-for="(waitListItem, index) in waitLists"
       justify="center"
       :key="waitListItem.venueID"
     >
@@ -22,7 +22,18 @@
           waitListItem.status
         }}</span>
       </v-col>
-      <ChatCard />
+      <v-btn v-if="showChat !== index" @click="showChat = index"
+        >Show chat</v-btn
+      >
+      <v-btn v-else-if="showChat === index" @click="showChat = -1"
+        >Hide chat</v-btn
+      >
+      <ChatCard
+        v-if="showChat === index"
+        :venueID="waitListItem.venueID"
+        :userID="waitListItem.userID"
+        sender="user"
+      />
     </v-row>
   </v-container>
 </template>
@@ -38,6 +49,7 @@ export default {
   data() {
     return {
       loadingWaitLists: false,
+      showChat: -1,
       newMessage: ""
     };
   },
