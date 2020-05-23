@@ -96,42 +96,52 @@ export default new Vuex.Store({
         console.log(error);
       }
     }),
-    async updateWaitList(_, waitlist) {
-      waitlist.timestamp = Timestamp.fromDate(new Date());
+    async updateWaitList(_, waitListItem) {
+      // Updated to new Data Model
       try {
         await db
-          .collection("venues")
-          .doc(waitlist.venue)
-          .collection("waitlist")
-          .doc(waitlist.user)
+          .collection("waitlists")
+          .doc(waitListItem.waitListID)
           .update({
-            status: waitlist.status
+            status: waitListItem.status
           });
       } catch (error) {
         console.log(error);
       }
     },
-    async joinWaitList({ commit }, waitList) {
-      waitList.timestamp = Timestamp.fromDate(new Date());
+    async checkIfUserAlreadyInQueue(_, waitListItem) {
+      // Updated to new Data Model
+      const doc = await db
+        .collection("waitlists")
+        .where("userID", "==", waitListItem.userID)
+        .where("venueID", "==", waitListItem.venueID)
+        .where("status", "==", "waiting")
+        .get();
+      if (doc?.docs[0]?.id) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    async joinWaitList({ commit }, waitListItem) {
+      // Updated to new Data Model
+      waitListItem.timestamp = Timestamp.fromDate(new Date());
       try {
-        await db
-          .collection("venues")
-          .doc(waitList.venue)
-          .collection("waitlist")
-          .doc(waitList.user)
-          .set({
-            name: waitList.username,
-            count: waitList.count,
-            timestamp: waitList.timestamp,
-            status: waitList.status
-          });
+        await db.collection("waitlists").add({
+          userID: waitListItem.userID,
+          venueID: waitListItem.venueID,
+          personCount: waitListItem.personCount,
+          timestamp: waitListItem.timestamp,
+          status: waitListItem.status
+        });
       } catch (error) {
         console.log(error);
       }
-      commit("ADD_TO_WAITLIST", waitList);
-      this.dispatch("updateProfile", waitList);
+      commit("ADD_TO_WAITLIST", waitListItem);
+      // this.dispatch("updateProfile", waitList);
     },
     async updateVenue({ commit }, venue) {
+      // Updated to new Data Model
       try {
         await db
           .collection("venues")

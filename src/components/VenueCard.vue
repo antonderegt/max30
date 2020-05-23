@@ -181,7 +181,7 @@
     <v-row v-if="isAdmin" class="pa-3" justify="center">
       <v-col
         cols="12"
-        md="3"
+        md="6"
         v-for="(person, index) in waitList"
         :key="person.userID"
       >
@@ -203,6 +203,7 @@
               color="success"
               @click="
                 acceptOrDeclineGroup(
+                  index,
                   person.userID,
                   person.personCount,
                   'accepted'
@@ -221,6 +222,7 @@
               color="error"
               @click="
                 acceptOrDeclineGroup(
+                  index,
                   person.userID,
                   person.personCount,
                   'declined'
@@ -263,11 +265,15 @@ export default {
     };
   },
   watch: {
+    // TODO fix bug when clicked +/- buttons fast
     venue(newValue) {
+      console.log("running watch venue");
+
       this.editedVenue = newValue; // prefill edit fields
     },
     editedVenue: {
       async handler(newValue) {
+        console.log("running watch editedVenue");
         await this.$store.dispatch("updateVenue", newValue);
       },
       deep: true
@@ -283,27 +289,21 @@ export default {
         await this.$store.dispatch("bindWaitList", this.venueID);
         this.loadingWaitList = false;
       } catch (error) {
-        alert("bindVenue: " + error);
         console.log("bindVenue: " + error);
       }
     },
-    async acceptOrDeclineGroup(userID, count, status) {
-      let newCount = this.venue.personCount;
-
-      if (status == "accepted") {
-        newCount += parseInt(count);
-      }
-
+    async acceptOrDeclineGroup(index, userID, count, status) {
       try {
-        await this.updatePresentCount(newCount);
-        const waitList = {
-          venue: this.venue.id,
-          user: userID,
+        if (status == "accepted") {
+          this.updateMetaInfo("presentCount", this.venue.presentCount + count);
+        }
+        const waitListItem = {
+          waitListID: this.waitList[index].id,
           status
         };
-        await this.$store.dispatch("updateWaitList", waitList);
+        await this.$store.dispatch("updateWaitList", waitListItem);
       } catch (error) {
-        alert(error);
+        console.log("acceptOrDeclineGroup: " + error);
       }
     },
     async updateMetaInfo(property, newValue) {

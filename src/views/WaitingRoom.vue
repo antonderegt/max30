@@ -13,7 +13,7 @@
       v-else
       v-for="(waitListItem, index) in waitLists"
       justify="center"
-      :key="waitListItem.venueID"
+      :key="waitListItem.id"
     >
       <v-col cols="12" md="6" align="center">
         {{ user.profile.name }} your wait list status for

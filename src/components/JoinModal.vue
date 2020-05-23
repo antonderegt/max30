@@ -46,15 +46,23 @@ export default {
   },
   methods: {
     async agree() {
-      const waitList = {
-        user: this.user.data.uid,
-        username: this.user.profile.name,
-        venue: this.venue.id,
-        count: parseInt(this.newCount),
+      const waitListItem = {
+        userID: this.user.data.uid,
+        venueID: this.venue.id,
+        personCount: parseInt(this.newCount),
         status: "waiting"
       };
 
-      await this.$store.dispatch("joinWaitList", waitList);
+      const alreadyInQueue = await this.$store.dispatch(
+        "checkIfUserAlreadyInQueue",
+        waitListItem
+      );
+
+      if (alreadyInQueue) {
+        alert("You're already in the queue");
+      } else {
+        await this.$store.dispatch("joinWaitList", waitListItem);
+      }
       this.$router.push("/waiting-room");
       this.$emit("update:show", false);
     }
