@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <Loading v-if="loadingWaitLists" />
-    <v-row v-else-if="waitLists.length === 0">
+    <v-row v-else-if="waitListLength == 0">
       <v-col>You are not on any wait list at the moment.</v-col>
     </v-row>
     <v-row
@@ -15,25 +15,36 @@
       justify="center"
       :key="waitListItem.id"
     >
-      <v-col cols="12" md="6" align="center">
-        {{ user.profile.name }} your wait list status for
-        {{ waitListItem.venueID }} is:
-        <span class="font-weight-bold text-uppercase">{{
-          waitListItem.status
-        }}</span>
-      </v-col>
-      <v-btn v-if="showChat !== index" @click="showChat = index"
-        >Show chat</v-btn
-      >
-      <v-btn v-else-if="showChat === index" @click="showChat = -1"
-        >Hide chat</v-btn
-      >
-      <ChatCard
-        v-if="showChat === index"
-        :venueID="waitListItem.venueID"
-        :userID="waitListItem.userID"
-        sender="user"
-      />
+      <v-container v-if="waitListItem.status !== 'deleted'">
+        <v-col cols="12" md="6" align="center">
+          {{ user.profile.name }} your wait list status for
+          {{ waitListItem.venueID }} is:
+          <span class="font-weight-bold text-uppercase">{{
+            waitListItem.status
+          }}</span>
+        </v-col>
+        <v-col cols="12">
+          <v-btn v-if="showChat !== index" @click="showChat = index"
+            >Show chat</v-btn
+          >
+          <v-btn v-else-if="showChat === index" @click="showChat = -1"
+            >Hide chat</v-btn
+          >
+          <v-btn
+            color="error"
+            @click="cancelWaitListItem(waitListItem.id, waitListItem.venueID)"
+            >Cancel</v-btn
+          >
+        </v-col>
+        <v-col cols="12">
+          <ChatCard
+            v-if="showChat === index"
+            :venueID="waitListItem.venueID"
+            :userID="waitListItem.userID"
+            sender="user"
+          />
+        </v-col>
+      </v-container>
     </v-row>
   </v-container>
 </template>
@@ -50,7 +61,8 @@ export default {
     return {
       loadingWaitLists: false,
       showChat: -1,
-      newMessage: ""
+      newMessage: "",
+      waitListLength: 0
     };
   },
   methods: {
@@ -58,10 +70,28 @@ export default {
       this.loadingWaitLists = true;
       try {
         await this.$store.dispatch("bindWaitLists", this.user.data.uid);
+        this.countWaitListItems();
         this.loadingWaitLists = false;
       } catch (error) {
         alert("bindWaitLists: " + error);
       }
+    },
+    async cancelWaitListItem(waitListID) {
+      const waitListItem = {
+        waitListID,
+        status: "deleted"
+      };
+      try {
+        await this.$store.dispatch("updateWaitList", waitListItem);
+        this.countWaitListItems();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    countWaitListItems() {
+      this.waitListLength = this.waitLists.filter(
+        item => item.status !== "deleted"
+      ).length;
     }
   },
   components: { Loading, ChatCard },

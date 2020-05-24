@@ -169,7 +169,7 @@
           </v-col>
         </v-row>
         <div v-if="!isAdmin">
-          <v-row v-for="person in waitList" :key="person.userID">
+          <v-row v-for="person in waitList" :key="person.id">
             <v-col> Groep van: {{ person.personCount }} </v-col>
           </v-row>
         </div>
