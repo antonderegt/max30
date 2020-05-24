@@ -34,14 +34,6 @@ npm run lint
 profiles/{userID}
  - name
  - owner: true | false
- - waitlist {
-     - venueID1: true,
-     - venueID2: true
-   }
- - reservations {
-     - venueID1: true
-     - venueID2: true
-   }
 ```
    
 ### Venues
