@@ -1,39 +1,37 @@
 <template>
-  <div style="background-color:'red'">
-    <v-parallax border="0" height="300">
-      <v-layout align-center justify-center>
-        <v-flex cols="12" class="text-center">
+  <v-container fluid class="pa-0" style="background-color:'red'">
+    <v-parallax
+      height="350"
+      src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
+    >
+      <v-row align="center" justify="center">
+        <v-col cols="12" class="text-center">
           <h1 class="display-1 font-weight-thin mb-4">
             Geen zin om in de wachtrij te staan? <br /><br />
             <b> Op Plekkie zie je waar genoeg plek is!</b>
           </h1>
           <h4 class="subheading"></h4>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col cols="12" sm="6" md="4">
+          <v-toolbar style="border-radius: .5rem" rounded dense>
+            <v-text-field
+              v-model="searchField"
+              hide-details
+              autofocus
+              clearable
+              placeholder="Plaatsnaam of postcode"
+              prepend-icon="search"
+              single-line
+            ></v-text-field>
 
-      <v-layout row justify-center ma-2>
-        <v-toolbar
-          style="border-radius: .5rem"
-          class="mx-auto"
-          max-width="600"
-          rounded
-          dense
-        >
-          <v-text-field
-            v-model="searchField"
-            hide-details
-            autofocus
-            clearable
-            placeholder="Plaatsnaam of postcode"
-            prepend-icon="search"
-            single-line
-          ></v-text-field>
-
-          <v-btn @click="requestLocation()" icon>
-            <v-icon>my_location</v-icon>
-          </v-btn>
-        </v-toolbar>
-      </v-layout>
+            <v-btn @click="requestLocation()" icon>
+              <v-icon>my_location</v-icon>
+            </v-btn>
+          </v-toolbar>
+        </v-col>
+      </v-row>
     </v-parallax>
     <v-container class="my-5">
       <v-row justify="center" class="pa-3">
@@ -42,7 +40,7 @@
         </v-col>
       </v-row>
     </v-container>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -99,9 +97,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.v-parallax {
-  background-color: #54bfeb;
-}
-</style>
