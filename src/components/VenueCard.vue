@@ -75,7 +75,7 @@
                 {{ venue.location.city }}, {{ venue.location.address }}
               </v-card-subtitle>
             </v-col>
-            <v-col v-show="isAdmin" @click="isEdit = !isEdit" cols="1 pt-4">
+            <v-col v-show="isAdmin" @click="toggleEdit()" cols="1 pt-4">
               <v-icon>{{ isEdit ? "done" : "create" }}</v-icon>
             </v-col>
           </v-row>
@@ -265,18 +265,10 @@ export default {
     };
   },
   watch: {
-    // TODO fix bug when clicked +/- buttons fast
     venue(newValue) {
       console.log("running watch venue");
 
       this.editedVenue = newValue; // prefill edit fields
-    },
-    editedVenue: {
-      async handler(newValue) {
-        console.log("running watch editedVenue");
-        await this.$store.dispatch("updateVenue", newValue);
-      },
-      deep: true
     }
   },
   methods: {
@@ -329,6 +321,12 @@ export default {
         this.$router.replace("/");
         await this.$store.dispatch("deleteVenue", this.venue);
       }
+    },
+    async toggleEdit() {
+      if (this.isEdit) {
+        await this.$store.dispatch("updateVenue", this.editedVenue);
+      }
+      this.isEdit = !this.isEdit;
     }
   },
   components: {
