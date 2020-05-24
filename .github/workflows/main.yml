@@ -1,12 +1,12 @@
 name: DEPLOY ON PUSH TO MASTER
-
 on:
   push:
     branches:
       - master
 
 jobs:
-  firebase-deploy:
+  build:
+  name: firebase-deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
