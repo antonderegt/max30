@@ -1,4 +1,6 @@
-# max30
+![Build and Deploy](https://github.com/antonderegt/max30/workflows/Build%20and%20Deploy/badge.svg?branch=master)
+
+# Plekkie
 
 Demo at [Plekkie.me](https://plekkie.me)
 
