@@ -1,7 +1,6 @@
 <template>
   <div class="hello">
     <Loading v-show="loading" />
-
     <v-list two-line subheader>
       <!-- <v-list-item
         :to="'venue/' + venue.id"
@@ -20,7 +19,7 @@
       <v-row>
         <v-col
           :to="'venue/' + venue.id"
-          v-for="venue in venueList"
+          v-for="venue in filteredVenues"
           :key="venue.id"
           cols="12"
         >
@@ -80,18 +79,25 @@
 <script>
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
+import { getDistance } from "geolib";
+
 export default {
   props: {
-    filter: {
-      type: String,
-      default: ""
+    geo: {
+      type: Object
     }
   },
   computed: mapState(["venueList"]),
   data() {
     return {
-      loading: false
+      loading: false,
+      filteredVenues: {}
     };
+  },
+  watch: {
+    geo: function() {
+      this.calculateDistance();
+    }
   },
   components: {
     Loading
@@ -101,10 +107,29 @@ export default {
       this.loading = true;
       try {
         await this.$store.dispatch("bindVenueList");
+        this.calculateDistance();
+
         this.loading = false;
       } catch (error) {
         alert("bindLocations: " + error);
       }
+    },
+    calculateDistance() {
+      this.venueList.map(venue => {
+        const coord = {
+          latitude: venue.location.geo.latitude,
+          longitude: venue.location.geo.longitude
+        };
+        venue.distance = getDistance(coord, this.geo);
+      });
+      this.filteredVenues = this.venueList.sort((a, b) => {
+        if (a.distance < b.distance) {
+          return -1;
+        } else if (a.distance > b.distance) {
+          return 1;
+        }
+        return 0;
+      });
     },
     getProgressColor(venue) {
       let progess = (venue.presentCount / venue.capacity) * 100;

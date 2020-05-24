@@ -24,6 +24,7 @@
               placeholder="Plaatsnaam of postcode"
               prepend-icon="search"
               single-line
+              @keyup.enter="getCoordinates(searchField)"
             ></v-text-field>
 
             <v-btn @click="requestLocation()" icon>
@@ -36,7 +37,7 @@
     <v-container class="my-5">
       <v-row justify="center" class="pa-3">
         <v-col cols="12" md="6">
-          <VenueList :filter="searchField" />
+          <VenueList :geo="geo" />
         </v-col>
       </v-row>
     </v-container>
@@ -60,14 +61,15 @@ export default {
       searchField: "",
       address: "",
       suggestions: [],
-      isLoading: false
+      isLoading: false,
+      geo: {}
     };
   },
-  watch: {
-    async searchField(newValue) {
-      await this.autoCompleteInput(newValue);
-    }
-  },
+  // watch: {
+  //   async searchField(newValue) {
+  //     await this.autoCompleteInput(newValue);
+  //   }
+  // },
   methods: {
     async requestLocation() {
       console.log("requesting");
@@ -76,6 +78,10 @@ export default {
           const osmRes = await axios.get(
             `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
           );
+          this.geo = {
+            latitude: res.coords.latitude,
+            longitude: res.coords.longitude
+          };
           this.address = osmRes?.data?.address;
           this.searchField = osmRes?.data?.address?.postcode;
         },
@@ -84,16 +90,26 @@ export default {
         }
       );
     },
-    async autoCompleteInput(query) {
-      this.isLoading = true;
+    async getCoordinates(query) {
       const res = await axios.get(
         `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
       );
-      this.suggestions = res?.data.map(el => el?.display_name); // TODO for Tom: get lat, lon and calculate distance to venue with Geocoding api
-      this.suggestions = res.data;
-      console.log(this.suggestions);
-      this.isLoading = false;
+      const coords = {
+        latitude: res.data[0].lat,
+        longitude: res.data[0].lon
+      };
+      this.geo = coords;
     }
+    // async autoCompleteInput(query) {
+    //   this.isLoading = true;
+    //   const res = await axios.get(
+    //     `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
+    //   );
+    //   this.suggestions = res?.data.map(el => el?.display_name); // TODO for Tom: get lat, lon and calculate distance to venue with Geocoding api
+    //   this.suggestions = res.data;
+    //   console.log(this.suggestions);
+    //   this.isLoading = false;
+    // }
   }
 };
 </script>
