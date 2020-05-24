@@ -37,13 +37,28 @@
                   venue.location.city
                 }}</v-list-item-subtitle>
               </v-list-item-content>
-              <!-- 
-              <v-list-item-avatar
-                tile
-                size="80"
-                color="grey"
-              ></v-list-item-avatar> -->
-              <v-card-actions v-if="venue.capacity === venue.presentCount">
+            </v-list-item>
+
+            <v-progress-linear
+              cols="12"
+              :value="(venue.presentCount / venue.capacity) * 100"
+              height="25"
+              :color="getProgressColor(venue)"
+              reactive
+            >
+              <strong>{{ venue.presentCount }} / {{ venue.capacity }}</strong>
+            </v-progress-linear>
+            <v-card-actions>
+              <v-list-item-subtitle
+                v-if="venue.waitinglist && venue.waitlist.length > 0"
+              >
+                Er staan
+                <b>{{ venue.waitlist && venue.waitinglist.length }}</b> mensen
+                in de wachtrij
+              </v-list-item-subtitle>
+              <v-list-item-subtitle
+                v-if="venue.capacity === venue.presentCount"
+              >
                 <v-btn
                   :to="'venue/' + venue.id"
                   class="ma-2"
@@ -53,25 +68,6 @@
                 >
                   <v-icon left>post_add</v-icon> Zet mij in de wachtrij
                 </v-btn>
-              </v-card-actions>
-            </v-list-item>
-
-            <v-card-actions>
-              <!-- <v-btn text>Button</v-btn> -->
-              <v-progress-linear
-                cols="12"
-                :v-model="(venue.presentCount / venue.capacity) * 100"
-                height="25"
-                :color="getProgressColor(venue)"
-                reactive
-              >
-                <strong>{{ venue.presentCount }} / {{ venue.capacity }}</strong>
-              </v-progress-linear>
-              <v-list-item-subtitle
-                v-if="venue.waitlist && venue.waitlist.length > 0"
-              >
-                Er staan <b>{{ venue.waitlist.length }}</b> mensen in de
-                wachtrij
               </v-list-item-subtitle>
             </v-card-actions>
           </v-card>

@@ -64,6 +64,7 @@ export default new Vuex.Store({
       return bindFirestoreRef.bindFirestoreRef(
         "waitLists",
         db.collection("waitlists").where("userID", "==", userID)
+        //TODO: needs relation to venue to also query venue info or waitinglist should be an object property of venue itself
       );
     }),
     bindMyVenues: firestoreAction((bindFirestoreRef, userID) => {
