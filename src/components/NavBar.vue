@@ -21,7 +21,7 @@
     <v-navigation-drawer v-model="drawer" app>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="title white--text text-uppercase">
+          <v-list-item-title class="title gray--text text-uppercase">
             <span class="font-weight-light">Plek</span>
             <span>kie</span>
           </v-list-item-title>
