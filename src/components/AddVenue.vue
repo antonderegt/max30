@@ -1,5 +1,6 @@
 <template>
-  <v-container>
+  <Loading v-if="loading" />
+  <v-container v-else>
     <v-card width="400" class="mx-auto mt-5">
       <v-card-title>
         <h1 class="display-1">Add Venue</h1>
@@ -48,17 +49,15 @@
 
 <script>
 import firebase from "firebase/app";
-import { mapGetters } from "vuex";
+import { mapState } from "vuex";
+import Loading from "@/components/Loading.vue";
+import axios from "axios";
 
 export default {
-  name: "signup",
-  computed: {
-    ...mapGetters({
-      user: "user"
-    })
-  },
+  computed: mapState(["user"]),
   data() {
     return {
+      loading: false,
       valid: true,
       lazy: true,
       name: "",
@@ -70,12 +69,23 @@ export default {
   },
   methods: {
     async addVenue() {
+      this.loading = true;
       if (this.$refs.form.validate()) {
+        const query = this.address + ", " + this.city;
+        const res = await axios.get(
+          `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
+        );
+        const coords = {
+          latitude: res.data[0].lat,
+          longitude: res.data[0].lon
+        };
+        this.geo = coords;
         const venue = {
           name: this.name,
           location: {
             city: this.city,
-            address: this.address
+            address: this.address,
+            geo: coords
           },
           owners: {
             [this.user.data.uid]: true
@@ -88,6 +98,7 @@ export default {
         };
         await this.$store.dispatch("addVenue", venue);
         this.$router.push("/my-venues");
+        this.loading = false;
       }
     },
     async signUp() {
@@ -108,6 +119,7 @@ export default {
         alert(error.message);
       }
     }
-  }
+  },
+  components: { Loading }
 };
 </script>
