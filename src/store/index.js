@@ -112,6 +112,24 @@ export default new Vuex.Store({
         return false;
       }
     },
+    async getVenueName(_, venueID) {
+      // return await db
+      //   .collection("venues")
+      //   .doc(venueID)
+      //   .get();
+
+      const docRef = db.collection("venues").doc(venueID);
+      try {
+        const doc = await docRef.get();
+        if (doc.exists) {
+          return doc.data().name;
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.log("Error getting document:", error);
+      }
+    },
     async joinWaitList({ commit }, waitListItem) {
       waitListItem.timestamp = Timestamp.fromDate(new Date());
       try {
