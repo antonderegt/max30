@@ -74,7 +74,10 @@
               <v-card-subtitle v-if="venue.location">
                 {{ venue.location.city }}, {{ venue.location.address }}
               </v-card-subtitle>
+              <!-- <v-row justify-items="space-between">
+                <v-col> -->
               <ShareNetwork
+                class="mr-4"
                 network="WhatsApp"
                 :url="'https://plekkie.me/venue/' + venue.id"
                 :title="venue.name"
@@ -87,9 +90,29 @@
                 "
               >
                 <v-btn color="success" class="white--text">
-                  Deel met WhatsApp
+                  <v-icon>fab fa-whatsapp</v-icon>
                 </v-btn>
               </ShareNetwork>
+              <ShareNetwork
+                network="Facebook"
+                :url="'https://plekkie.me/venue/' + venue.id"
+                :title="venue.name"
+                :description="
+                  'Is er nog plek bij ' +
+                    venue.name +
+                    '? Op Plekkie.me is altijd te zien waar er nog plek is! Is er geen plek meer bij ' +
+                    venue.name +
+                    ', kijk dan op onze site om andere locaties te checken'
+                "
+                quote="Plekkie houdt mijn alcoholisme in stand. - Kroeg Tijger"
+                hashtags="feest,wachtrij,reserveren,plekkie"
+              >
+                <v-btn color="info" class="white--text">
+                  <v-icon>fab fa-facebook-f</v-icon>
+                </v-btn>
+              </ShareNetwork>
+              <!-- </v-col>
+              </v-row> -->
             </v-col>
             <v-col v-show="isAdmin" @click="toggleEdit()" cols="1 pt-4">
               <v-icon>{{ isEdit ? "done" : "create" }}</v-icon>
@@ -166,7 +189,9 @@
       </v-col>
 
       <v-col cols="12" class="pa-3">
-        <v-btn outlined block @click="show = !show">Reserveer</v-btn>
+        <v-btn outlined block @click="checkUser(venue.id)"
+          >Stap in de rij</v-btn
+        >
         <JoinModal
           v-if="show"
           :show.sync="show"
@@ -176,18 +201,6 @@
         />
       </v-col>
     </v-row>
-
-    <!-- <v-row
-      ><ShareNetwork
-        network="whatsapp"
-        url="https://plekkie.me/venue/3m5SQZShcQZiHC0LOIms"
-        :title="'Zie hier hoeveel plek er nog is bij ' + venue.name"
-        description="Op Plekkie.me is altijd te zien waar er nog plek is!"
-      >
-        Deel met WhatSapp
-      </ShareNetwork></v-row
-    > -->
-
     <v-row>
       <v-col>
         <v-row v-if="waitList.length">
@@ -270,6 +283,7 @@ import Loading from "@/components/Loading.vue";
 import JoinModal from "@/components/JoinModal.vue";
 import ChatCard from "@/components/ChatCard.vue";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
+import firebase from "firebase/app";
 
 export default {
   props: ["isAdmin"],
@@ -354,6 +368,16 @@ export default {
         await this.$store.dispatch("updateVenue", this.editedVenue);
       }
       this.isEdit = !this.isEdit;
+    },
+    async checkUser(venueID) {
+      if (!(await firebase.getCurrentUser())) {
+        this.$router.push({
+          name: "Login",
+          query: { redirect: `/venue/${venueID}` }
+        });
+      } else {
+        this.show = !this.show;
+      }
     }
   },
   components: {
