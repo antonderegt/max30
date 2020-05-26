@@ -7,8 +7,8 @@
       <v-row align="center" justify="center">
         <v-col cols="12" class="text-center">
           <h1 class="display-1 font-weight-thin mb-4">
-            Geen zin om in de wachtrij te staan? <br /><br />
-            <b> Op Plekkie zie je waar genoeg plek is!</b>
+            Wachtrij overzicht. Waar is plek? <br /><br />
+            <b> Plekkie. Wij laten zien waar plek is!</b>
           </h1>
           <h4 class="subheading"></h4>
         </v-col>
@@ -65,22 +65,25 @@ export default {
       geo: {}
     };
   },
-  // watch: {
-  //   async searchField(newValue) {
-  //     await this.autoCompleteInput(newValue);
-  //   }
-  // },
+  watch: {
+    searchField(newValue) {
+      this.handleSearch(newValue);
+    }
+  },
   methods: {
     async requestLocation() {
       console.log("requesting current location");
       navigator.geolocation.getCurrentPosition(
         async res => {
+          if (!res?.coords) {
+            return; // no coordinated from geolocation api web
+          }
           const osmRes = await axios.get(
             `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
           );
           this.geo = {
-            latitude: res.coords.latitude,
-            longitude: res.coords.longitude
+            latitude: res?.coords?.latitude,
+            longitude: res?.coords?.longitude
           };
           this.address = osmRes?.data?.address;
           this.searchField = osmRes?.data?.address?.postcode;
@@ -91,39 +94,37 @@ export default {
       );
     },
     async getCoordinates() {
-      if (this.searchField !== "") {
-        const res = await axios.get(
-          `https://nominatim.openstreetmap.org/search/${this.searchField}?format=json&countrycodes=NL&limit=3`
-        );
-        if (res.data[0] === undefined) {
-          this.$store.dispatch("setSnackbar", {
-            show: true,
-            text: "Onvindbare locatie, probeer het nog een keer."
-          });
-        } else {
-          const coords = {
-            latitude: res.data[0].lat,
-            longitude: res.data[0].lon
-          };
-          this.geo = coords;
-        }
-      } else {
+      if (!this.searchField?.length) {
         this.$store.dispatch("setSnackbar", {
           show: true,
           text: "Vul eerst een locatie in."
         });
+        return;
       }
+      const res = await axios.get(
+        `https://nominatim.openstreetmap.org/search/${this.searchField}?format=json&countrycodes=NL&limit=3`
+      );
+      if (res.data[0] === undefined) {
+        return; // TODO: fix with indicator on hot reloading
+      } else {
+        const coords = {
+          latitude: res.data[0].lat,
+          longitude: res.data[0].lon
+        };
+        this.geo = coords;
+      }
+    },
+    handleSearch(query) {
+      if (!query?.length) {
+        return;
+      }
+
+      if (this.timeout) clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        //search function
+        this.getCoordinates();
+      }, 300);
     }
-    // async autoCompleteInput(query) {
-    //   this.isLoading = true;
-    //   const res = await axios.get(
-    //     `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
-    //   );
-    //   this.suggestions = res?.data.map(el => el?.display_name); // TODO for Tom: get lat, lon and calculate distance to venue with Geocoding api
-    //   this.suggestions = res.data;
-    //   console.log(this.suggestions);
-    //   this.isLoading = false;
-    // }
   }
 };
 </script>
