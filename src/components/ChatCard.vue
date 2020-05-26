@@ -8,18 +8,29 @@
             <div class="message" v-for="message in chat" :key="message.id">
               <div v-if="message.sendBy === 'owner'" class="chat-message owner">
                 <span class="green--text">Owner - </span>
-                <span class="grey--text">{{ message.content }}</span>
-                <!-- TODO show timestamp with moment.js -->
-                <!-- <span class="grey--text">{{ message.timestamp }}</span> -->
+                <span class="darkgrey--text">{{ message.content }}</span>
+                <span class="grey--text">
+                  {{
+                    message.timestamp
+                      .toDate()
+                      .toLocaleTimeString(undefined, options)
+                  }}
+                </span>
               </div>
               <div
                 v-else-if="message.sendBy === 'user'"
                 class="text-right chat-message"
               >
-                <span class="grey--text">{{ message.content }} - </span>
+                <span class="darkgrey--text">{{ message.content }} - </span>
                 <!-- TODO show users name -->
                 <span class="green--text">User</span>
-                <!-- <span class="grey--text">{{ message.timestamp }}</span> -->
+                <span class="grey--text">
+                  {{
+                    message.timestamp
+                      .toDate()
+                      .toLocaleTimeString(undefined, options)
+                  }}</span
+                >
               </div>
             </div>
           </div>
@@ -53,7 +64,11 @@ export default {
   data() {
     return {
       loading: false,
-      newMessage: ""
+      newMessage: "",
+      options: {
+        hour: "numeric",
+        minute: "numeric"
+      }
     };
   },
   methods: {
