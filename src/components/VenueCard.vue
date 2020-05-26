@@ -70,10 +70,27 @@
               </v-row>
             </v-col>
             <v-col v-else cols="11">
-              <v-card-title>{{ venue.name }}</v-card-title>
+              <v-card-title>{{ venue.name }} </v-card-title>
               <v-card-subtitle v-if="venue.location">
                 {{ venue.location.city }}, {{ venue.location.address }}
               </v-card-subtitle>
+              <v-btn color="success">
+                <ShareNetwork
+                  class="white--text"
+                  network="WhatsApp"
+                  :url="'https://plekkie.me/venue/' + venue.id"
+                  :title="venue.name"
+                  :description="
+                    'Is er nog plek bij ' +
+                      venue.name +
+                      '? Op Plekkie.me is altijd te zien waar er nog plek is! Is er geen plek meer bij ' +
+                      venue.name +
+                      ', kijk dan op onze site om andere locaties te checken'
+                  "
+                >
+                  Deel met WhatsApp
+                </ShareNetwork>
+              </v-btn>
             </v-col>
             <v-col v-show="isAdmin" @click="toggleEdit()" cols="1 pt-4">
               <v-icon>{{ isEdit ? "done" : "create" }}</v-icon>
@@ -160,6 +177,17 @@
         />
       </v-col>
     </v-row>
+
+    <!-- <v-row
+      ><ShareNetwork
+        network="whatsapp"
+        url="https://plekkie.me/venue/3m5SQZShcQZiHC0LOIms"
+        :title="'Zie hier hoeveel plek er nog is bij ' + venue.name"
+        description="Op Plekkie.me is altijd te zien waar er nog plek is!"
+      >
+        Deel met WhatSapp
+      </ShareNetwork></v-row
+    > -->
 
     <v-row>
       <v-col>
