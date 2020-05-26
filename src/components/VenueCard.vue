@@ -74,6 +74,7 @@
               <v-card-title
                 >{{ venue.name
                 }}<v-btn
+                  v-if="!isAdmin"
                   @click="showReportModal = !showReportModal"
                   text
                   icon
@@ -286,15 +287,7 @@
       v-if="showReportModal"
       :venueID="venue.id"
       :showReportModal.sync="showReportModal"
-      :snackbar.sync="snackbar"
-      :snackbarText.sync="snackbarText"
     />
-    <v-snackbar v-model="snackbar">
-      {{ snackbarText }}
-      <v-btn color="pink" text @click="snackbar = false">
-        Close
-      </v-btn>
-    </v-snackbar>
   </v-container>
 </template>
 
@@ -325,9 +318,7 @@ export default {
       openChat: -1,
       isEdit: false,
       editedVenue: null,
-      showReportModal: false,
-      snackbar: false,
-      snackbarText: ""
+      showReportModal: false
     };
   },
   watch: {

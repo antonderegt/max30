@@ -75,10 +75,10 @@ export default {
         const res = await axios.get(
           `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
         );
-        const coords = {
-          latitude: res.data[0].lat,
-          longitude: res.data[0].lon
-        };
+        const coords = new firebase.firestore.GeoPoint(
+          parseFloat(res.data[0].lat),
+          parseFloat(res.data[0].lon)
+        );
         this.geo = coords;
         const venue = {
           name: this.name,

@@ -50,8 +50,10 @@ export default {
         reason: this.reason,
         timestamp
       });
-      this.$emit("update:snackbarText", "Bedankt voor het rapporteren!");
-      this.$emit("update:snackbar", true);
+      this.$store.dispatch("setSnackbar", {
+        show: true,
+        text: "Bedankt voor het rapporteren!"
+      });
       this.$emit("update:showReportModal", false);
     }
   },

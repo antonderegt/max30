@@ -2,13 +2,16 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { vuexfireMutations, firestoreAction } from "vuexfire";
 import { db, Timestamp } from "@/db";
+import firebase from "firebase/app";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     waitList: [],
-    venueList: [],
+    venueListAll: [],
+    venueListGeoBounded: [],
+
     venue: {},
     user: {
       loggedIn: false,
@@ -17,7 +20,11 @@ export default new Vuex.Store({
     },
     myVenues: [],
     waitListsByUser: [],
-    chat: []
+    chat: [],
+    snackbar: {
+      show: false,
+      text: ""
+    }
   },
   mutations: {
     ...vuexfireMutations,
@@ -35,6 +42,9 @@ export default new Vuex.Store({
     },
     UPDATE_PRESENT(state, newPresent) {
       state.venue.presentCount = newPresent;
+    },
+    SET_SNACKBAR(state, snackbar) {
+      state.snackbar = snackbar;
     }
   },
   actions: {
@@ -44,10 +54,28 @@ export default new Vuex.Store({
         db.collection("venues").doc(id)
       );
     }),
-    bindVenueList: firestoreAction(bindFirestoreRef => {
+    // bindAllVenues: firestoreAction(bindFirestoreRef => {
+    //   return bindFirestoreRef.bindFirestoreRef(
+    //     "venueListAll",
+    //     db.collection("venues")
+    //   );
+    // }),
+    bindGeoBoundedVenues: firestoreAction((bindFirestoreRef, boundingBox) => {
+      const lowerBound = new firebase.firestore.GeoPoint(
+        boundingBox[0].latitude,
+        boundingBox[0].longitude
+      );
+      const upperBound = new firebase.firestore.GeoPoint(
+        boundingBox[1].latitude,
+        boundingBox[1].longitude
+      );
+
       return bindFirestoreRef.bindFirestoreRef(
-        "venueList",
-        db.collection("venues")
+        "venueListGeoBounded",
+        db
+          .collection("venues")
+          .where("location.geo", ">", lowerBound)
+          .where("location.geo", "<", upperBound)
       );
     }),
     bindWaitList: firestoreAction((bindFirestoreRef, venueID) => {
@@ -223,8 +251,12 @@ export default new Vuex.Store({
       } else {
         commit("SET_USER", null);
       }
+    },
+    setSnackbar({ commit }, snackbar) {
+      commit("SET_SNACKBAR", snackbar);
     }
   },
+
   getters: {
     user(state) {
       return state.user;

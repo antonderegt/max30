@@ -24,7 +24,7 @@
               placeholder="Plaatsnaam of postcode"
               prepend-icon="search"
               single-line
-              @keyup.enter="getCoordinates(searchField)"
+              @keyup.enter="getCoordinates"
             ></v-text-field>
 
             <v-btn @click="requestLocation()" icon>
@@ -72,7 +72,7 @@ export default {
   // },
   methods: {
     async requestLocation() {
-      console.log("requesting");
+      console.log("requesting current location");
       navigator.geolocation.getCurrentPosition(
         async res => {
           const osmRes = await axios.get(
@@ -90,15 +90,29 @@ export default {
         }
       );
     },
-    async getCoordinates(query) {
-      const res = await axios.get(
-        `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
-      );
-      const coords = {
-        latitude: res.data[0].lat,
-        longitude: res.data[0].lon
-      };
-      this.geo = coords;
+    async getCoordinates() {
+      if (this.searchField !== "") {
+        const res = await axios.get(
+          `https://nominatim.openstreetmap.org/search/${this.searchField}?format=json&countrycodes=NL&limit=3`
+        );
+        if (res.data[0] === undefined) {
+          this.$store.dispatch("setSnackbar", {
+            show: true,
+            text: "Onvindbare locatie, probeer het nog een keer."
+          });
+        } else {
+          const coords = {
+            latitude: res.data[0].lat,
+            longitude: res.data[0].lon
+          };
+          this.geo = coords;
+        }
+      } else {
+        this.$store.dispatch("setSnackbar", {
+          show: true,
+          text: "Vul eerst een locatie in."
+        });
+      }
     }
     // async autoCompleteInput(query) {
     //   this.isLoading = true;

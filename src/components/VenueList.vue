@@ -79,7 +79,7 @@
 <script>
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
-import { getDistance } from "geolib";
+import { getDistance, getBoundsOfDistance } from "geolib";
 
 export default {
   props: {
@@ -87,7 +87,7 @@ export default {
       type: Object
     }
   },
-  computed: mapState(["venueList"]),
+  computed: mapState(["venueListAll", "venueListGeoBounded"]),
   data() {
     return {
       loading: false,
@@ -95,7 +95,8 @@ export default {
     };
   },
   watch: {
-    geo: function() {
+    geo: async function() {
+      await this.getVenueList(10000);
       this.calculateDistance();
     }
   },
@@ -103,26 +104,54 @@ export default {
     Loading
   },
   methods: {
-    async getVenueList() {
+    async getVenueList(boxDistance) {
       this.loading = true;
-      try {
-        await this.$store.dispatch("bindVenueList");
-        this.calculateDistance();
+      let boundingBox;
 
-        this.loading = false;
+      if (this.geo.latitude !== undefined && this.geo.longitude !== undefined) {
+        // Define a box (default = 10km) around coordinates
+        boundingBox = getBoundsOfDistance(
+          {
+            latitude: this.geo.latitude,
+            longitude: this.geo.longitude
+          },
+          boxDistance
+        );
+      } else {
+        boundingBox = getBoundsOfDistance(
+          { latitude: 52.37454030000001, longitude: 4.897975505617977 },
+          boxDistance
+        );
+      }
+
+      try {
+        await this.$store.dispatch("bindGeoBoundedVenues", boundingBox);
+        if (this.venueListGeoBounded.length === 0) {
+          // Vergroot zoek gebied tot een venue is gevonden
+          if (boxDistance < 500000) {
+            this.getVenueList(boxDistance * 2);
+          } else {
+            this.$store.dispatch("setSnackbar", {
+              show: true,
+              text: "Onvindbare locatie, probeer het nog een keer."
+            });
+          }
+        }
+        this.calculateDistance();
       } catch (error) {
         alert("bindLocations: " + error);
       }
+      this.loading = false;
     },
     calculateDistance() {
-      this.venueList.map(venue => {
+      this.venueListGeoBounded.map(venue => {
         const coord = {
           latitude: venue.location.geo.latitude,
           longitude: venue.location.geo.longitude
         };
         venue.distance = getDistance(coord, this.geo);
       });
-      this.filteredVenues = this.venueList.sort((a, b) => {
+      this.filteredVenues = this.venueListGeoBounded.sort((a, b) => {
         if (a.distance < b.distance) {
           return -1;
         } else if (a.distance > b.distance) {
@@ -139,7 +168,7 @@ export default {
     }
   },
   created() {
-    this.getVenueList();
+    this.getVenueList(10000);
   }
 };
 </script>

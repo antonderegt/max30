@@ -8,6 +8,7 @@
         'background-size': 'cover'
       }"
     >
+      <Snackbar />
       <router-view />
     </v-content>
   </v-app>
@@ -15,6 +16,7 @@
 
 <script>
 import NavBar from "@/components/NavBar.vue";
+import Snackbar from "@/components/Snackbar.vue";
 
 export default {
   data() {
@@ -36,6 +38,6 @@ export default {
         : "";
     }
   },
-  components: { NavBar }
+  components: { NavBar, Snackbar }
 };
 </script>
