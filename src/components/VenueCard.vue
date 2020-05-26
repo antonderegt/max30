@@ -69,15 +69,24 @@
                 </v-col>
               </v-row>
             </v-col>
+
             <v-col v-else cols="11">
-              <v-card-title>{{ venue.name }} </v-card-title>
+              <v-card-title
+                >{{ venue.name
+                }}<v-btn
+                  @click="showReportModal = !showReportModal"
+                  text
+                  icon
+                  color="red lighten-2"
+                >
+                  <v-icon>mdi-alert-circle-outline</v-icon>
+                </v-btn>
+              </v-card-title>
               <v-card-subtitle v-if="venue.location">
                 {{ venue.location.city }}, {{ venue.location.address }}
               </v-card-subtitle>
-              <!-- <v-row justify-items="space-between">
-                <v-col> -->
               <ShareNetwork
-                class="mr-4"
+                class="mx-4"
                 network="WhatsApp"
                 :url="'https://plekkie.me/venue/' + venue.id"
                 :title="venue.name"
@@ -94,6 +103,7 @@
                 </v-btn>
               </ShareNetwork>
               <ShareNetwork
+                class="mx-4"
                 network="Facebook"
                 :url="'https://plekkie.me/venue/' + venue.id"
                 :title="venue.name"
@@ -111,8 +121,6 @@
                   <v-icon>fab fa-facebook-f</v-icon>
                 </v-btn>
               </ShareNetwork>
-              <!-- </v-col>
-              </v-row> -->
             </v-col>
             <v-col v-show="isAdmin" @click="toggleEdit()" cols="1 pt-4">
               <v-icon>{{ isEdit ? "done" : "create" }}</v-icon>
@@ -274,6 +282,19 @@
         </v-card>
       </v-col>
     </v-row>
+    <ReportModal
+      v-if="showReportModal"
+      :venueID="venue.id"
+      :showReportModal.sync="showReportModal"
+      :snackbar.sync="snackbar"
+      :snackbarText.sync="snackbarText"
+    />
+    <v-snackbar v-model="snackbar">
+      {{ snackbarText }}
+      <v-btn color="pink" text @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -281,6 +302,7 @@
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 import JoinModal from "@/components/JoinModal.vue";
+import ReportModal from "@/components/ReportModal.vue";
 import ChatCard from "@/components/ChatCard.vue";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import firebase from "firebase/app";
@@ -302,7 +324,10 @@ export default {
       count: 1,
       openChat: -1,
       isEdit: false,
-      editedVenue: null
+      editedVenue: null,
+      showReportModal: false,
+      snackbar: false,
+      snackbarText: ""
     };
   },
   watch: {
@@ -383,6 +408,7 @@ export default {
   components: {
     Loading,
     JoinModal,
+    ReportModal,
     ChatCard,
     VueQrcode
   },
