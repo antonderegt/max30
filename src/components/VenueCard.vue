@@ -74,23 +74,22 @@
               <v-card-subtitle v-if="venue.location">
                 {{ venue.location.city }}, {{ venue.location.address }}
               </v-card-subtitle>
-              <v-btn color="success">
-                <ShareNetwork
-                  class="white--text"
-                  network="WhatsApp"
-                  :url="'https://plekkie.me/venue/' + venue.id"
-                  :title="venue.name"
-                  :description="
-                    'Is er nog plek bij ' +
-                      venue.name +
-                      '? Op Plekkie.me is altijd te zien waar er nog plek is! Is er geen plek meer bij ' +
-                      venue.name +
-                      ', kijk dan op onze site om andere locaties te checken'
-                  "
-                >
+              <ShareNetwork
+                network="WhatsApp"
+                :url="'https://plekkie.me/venue/' + venue.id"
+                :title="venue.name"
+                :description="
+                  'Is er nog plek bij ' +
+                    venue.name +
+                    '? Op Plekkie.me is altijd te zien waar er nog plek is! Is er geen plek meer bij ' +
+                    venue.name +
+                    ', kijk dan op onze site om andere locaties te checken'
+                "
+              >
+                <v-btn color="success" class="white--text">
                   Deel met WhatsApp
-                </ShareNetwork>
-              </v-btn>
+                </v-btn>
+              </ShareNetwork>
             </v-col>
             <v-col v-show="isAdmin" @click="toggleEdit()" cols="1 pt-4">
               <v-icon>{{ isEdit ? "done" : "create" }}</v-icon>
