@@ -16,7 +16,7 @@ export default new Vuex.Store({
       profile: null
     },
     myVenues: [],
-    waitLists: [],
+    waitListsByUser: [],
     chat: []
   },
   mutations: {
@@ -60,9 +60,9 @@ export default new Vuex.Store({
           .orderBy("timestamp")
       );
     }),
-    bindWaitLists: firestoreAction((bindFirestoreRef, userID) => {
+    bindWaitListsByUser: firestoreAction((bindFirestoreRef, userID) => {
       return bindFirestoreRef.bindFirestoreRef(
-        "waitLists",
+        "waitListsByUser",
         db.collection("waitlists").where("userID", "==", userID)
         //TODO: needs relation to venue to also query venue info or waitinglist should be an object property of venue itself
       );
@@ -113,11 +113,6 @@ export default new Vuex.Store({
       }
     },
     async getVenueName(_, venueID) {
-      // return await db
-      //   .collection("venues")
-      //   .doc(venueID)
-      //   .get();
-
       const docRef = db.collection("venues").doc(venueID);
       try {
         const doc = await docRef.get();
@@ -129,6 +124,38 @@ export default new Vuex.Store({
       } catch (error) {
         console.log("Error getting document:", error);
       }
+    },
+    async getWaitListInFrontOfUser(_, waitListItem) {
+      const doc = await db
+        .collection("waitlists")
+        .where("venueID", "==", waitListItem.venueID)
+        .where("timestamp", "<", waitListItem.timestamp)
+        .get();
+      // console.log(doc);
+
+      if (!doc.empty) {
+        return doc.docs;
+      } else {
+        console.log("No such document!");
+      }
+      // console.log("doc");
+
+      // console.log(doc);
+
+      // const docRef = db.collection("waitlists");
+      // .where("venueID", "==", waitListItem.venueID)
+      // .where("timestamp", "<", waitListItem.timestamp);
+      // try {
+      //   const doc = await docRef.get();
+      //   if (doc.exists) {
+      //     console.log(doc.data());
+      //     return doc.data();
+      //   } else {
+      //     console.log("No such document!");
+      //   }
+      // } catch (error) {
+      //   console.log("Error getting document:", error);
+      // }
     },
     async joinWaitList({ commit }, waitListItem) {
       waitListItem.timestamp = Timestamp.fromDate(new Date());

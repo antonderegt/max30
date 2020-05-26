@@ -15,25 +15,34 @@
       justify="center"
       :key="waitListItem.id"
     >
-      <v-col cols="12" md="6" align="center">
-        {{ user.profile.name }} your wait list status for
-        <b>{{ waitListItem.name }} {{ names[index] }}</b> is:
-        <span class="font-weight-bold text-uppercase">{{
-          waitListItem.status
-        }}</span>
-      </v-col>
-      <v-col cols="12">
-        <v-btn v-if="showChat !== index" @click="showChat = index"
-          >Show chat</v-btn
-        >
-        <v-btn v-else-if="showChat === index" @click="showChat = -1"
-          >Hide chat</v-btn
-        >
-        <v-btn
-          color="error"
-          @click="cancelWaitListItem(waitListItem.id, waitListItem.venueID)"
-          >Cancel</v-btn
-        >
+      <v-col cols="12" md="6">
+        <v-card>
+          <v-card-title>{{ waitListItem.name }}</v-card-title>
+          <v-card-subtitle>{{
+            waitListItem.timestamp
+              .toDate()
+              .toLocaleDateString(undefined, options)
+          }}</v-card-subtitle>
+          <v-card-text>
+            {{ user.profile.name }} de status is: {{ waitListItem.status }}, met
+            {{ waitListItem.peopleInFront }} mensen voor je.
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-btn v-if="showChat !== index" @click="showChat = index"
+              >Show chat</v-btn
+            >
+            <v-btn v-else-if="showChat === index" @click="showChat = -1"
+              >Hide chat</v-btn
+            >
+            <v-spacer></v-spacer>
+            <v-btn
+              color="error"
+              @click="cancelWaitListItem(waitListItem.id, waitListItem.venueID)"
+              >Cancel</v-btn
+            >
+          </v-card-actions>
+        </v-card>
       </v-col>
       <v-col cols="12">
         <ChatCard
@@ -54,7 +63,7 @@ import Loading from "@/components/Loading.vue";
 import ChatCard from "@/components/ChatCard.vue";
 
 export default {
-  computed: mapState(["user", "waitLists"]),
+  computed: mapState(["user", "waitListsByUser"]),
   data() {
     return {
       loadingWaitLists: false,
@@ -62,22 +71,30 @@ export default {
       newMessage: "",
       waitListLength: 0,
       waitListsWithName: [],
-      names: []
+      options: {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric"
+      }
     };
   },
   methods: {
     async loadWaitListStatus() {
       this.loadingWaitLists = true;
       try {
-        await this.$store.dispatch("bindWaitLists", this.user.data.uid);
-        await this.getVenueNames();
+        await this.$store.dispatch("bindWaitListsByUser", this.user.data.uid);
+        await this.filterVenues();
+
         this.loadingWaitLists = false;
       } catch (error) {
-        alert("bindWaitLists: " + error);
+        alert("bindWaitListsByUser: " + error);
       }
     },
-    async getVenueNames() {
-      this.waitListsWithName = this.waitLists.filter(waitListItem => {
+    async filterVenues() {
+      this.waitListsWithName = this.waitListsByUser.filter(waitListItem => {
         if (waitListItem.status !== "deleted") {
           return waitListItem;
         }
@@ -88,7 +105,31 @@ export default {
             "getVenueName",
             waitListItem.venueID
           );
-          waitListItem.name = res;
+          if (res === undefined) {
+            waitListItem.name = "Deze venue bestaat niet meer";
+            waitListItem.peopleInFront = 0;
+          } else {
+            waitListItem.name = res;
+            const venueIDTimestamp = {
+              venueID: waitListItem.venueID,
+              timestamp: waitListItem.timestamp
+            };
+
+            const waitList = await this.$store.dispatch(
+              "getWaitListInFrontOfUser",
+              venueIDTimestamp
+            );
+
+            if (waitList !== undefined) {
+              let people = 0;
+              waitList.forEach(i => {
+                people += parseInt(i.data().personCount);
+              });
+              waitListItem.peopleInFront = people;
+            } else {
+              waitListItem.peopleInFront = 0;
+            }
+          }
         })
       );
     },
@@ -99,7 +140,7 @@ export default {
       };
       try {
         await this.$store.dispatch("updateWaitList", waitListItem);
-        this.countWaitListItems();
+        this.filterVenues();
       } catch (error) {
         console.log(error);
       }
