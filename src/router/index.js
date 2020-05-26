@@ -14,10 +14,7 @@ const routes = [
   {
     path: "/venue/:venue",
     name: "Venue",
-    component: () => import("@/components/VenueCard.vue"),
-    meta: {
-      requiresAuth: true
-    }
+    component: () => import("@/components/VenueCard.vue")
   },
   {
     path: "/login",
@@ -38,23 +35,35 @@ const routes = [
   {
     path: "/add-venue",
     name: "AddVenue",
-    component: () => import("@/views/owner/AddVenue.vue")
+    component: () => import("@/views/owner/AddVenue.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/my-venues",
     name: "MyVenues",
-    component: () => import("@/views/owner/MyVenues.vue")
+    component: () => import("@/views/owner/MyVenues.vue"),
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/my-venue/:venue",
     name: "MyVenue",
     component: () => import("@/components/VenueCard.vue"),
-    props: { isAdmin: true }
+    props: { isAdmin: true },
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     path: "/waiting-room",
     name: "WaitingRoom",
-    component: () => import("@/views/WaitingRoom.vue")
+    component: () => import("@/views/WaitingRoom.vue"),
+    meta: {
+      requiresAuth: true
+    }
   }
 ];
 
