@@ -66,17 +66,6 @@
             @click:append="showPassword = !showPassword"
             required
           ></v-text-field>
-          <v-text-field
-            @keyup.enter="signUp"
-            v-model="passwordVerification"
-            :rules="passwordVerificationRules"
-            label="Herhaal wachtwoord"
-            :type="showPassword ? 'text' : 'password'"
-            prepend-icon="mdi-lock"
-            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-            @click:append="showPassword = !showPassword"
-            required
-          ></v-text-field>
         </v-form>
       </v-card-text>
       <v-divider></v-divider>
@@ -131,11 +120,6 @@ export default {
       passwordRules: [
         v => !!v || "Password is required",
         v => (v && v.length >= 6) || "Password must be at least 6 characters"
-      ],
-      passwordVerification: "",
-      passwordVerificationRules: [
-        v => !!v || "Password Verification is required",
-        v => (v && v === this.password) || "Passwords must be the same"
       ],
       showPassword: false,
       owner: this.isVenue

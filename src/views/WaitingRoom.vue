@@ -123,7 +123,9 @@ export default {
             if (waitList !== undefined) {
               let people = 0;
               waitList.forEach(i => {
-                people += parseInt(i.data().personCount);
+                if (i.data().status === "waiting") {
+                  people += parseInt(i.data().personCount);
+                }
               });
               waitListItem.peopleInFront = people;
             } else {
