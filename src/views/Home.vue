@@ -24,11 +24,15 @@
               placeholder="Plaatsnaam of postcode"
               prepend-icon="search"
               single-line
-              @keyup.enter="getCoordinates"
             ></v-text-field>
 
             <v-btn @click="requestLocation()" icon>
-              <v-icon>my_location</v-icon>
+              <v-progress-circular
+                v-if="loading"
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
+              <v-icon v-else>my_location</v-icon>
             </v-btn>
           </v-toolbar>
         </v-col>
@@ -61,7 +65,7 @@ export default {
       searchField: "",
       address: "",
       suggestions: [],
-      isLoading: false,
+      loading: true,
       geo: {}
     };
   },
@@ -72,21 +76,23 @@ export default {
   },
   methods: {
     async requestLocation() {
+      this.loading = true;
       console.log("requesting current location");
       navigator.geolocation.getCurrentPosition(
         async res => {
           if (!res?.coords) {
-            return; // no coordinated from geolocation api web
+            return; // no coordinates from geolocation api web
           }
           const osmRes = await axios.get(
             `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
           );
+          this.address = osmRes?.data?.address;
+          this.searchField = osmRes?.data?.address?.postcode;
           this.geo = {
             latitude: res?.coords?.latitude,
             longitude: res?.coords?.longitude
           };
-          this.address = osmRes?.data?.address;
-          this.searchField = osmRes?.data?.address?.postcode;
+          this.loading = false;
         },
         e => {
           console.error(e);

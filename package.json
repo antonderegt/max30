@@ -15,6 +15,7 @@
     "firebase": "^7.14.3",
     "geolib": "^3.3.1",
     "material-design-icons-iconfont": "^5.0.1",
+    "ngeohash": "^0.6.3",
     "vue": "^2.6.11",
     "vue-chat-scroll": "^1.4.0",
     "vue-router": "^3.1.6",

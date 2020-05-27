@@ -45,7 +45,10 @@
               :color="getProgressColor(venue)"
               reactive
             >
-              <strong>{{ venue.presentCount }} / {{ venue.capacity }}</strong>
+              <strong v-if="venue.presentCount >= venue.capacity">VOL</strong>
+              <strong v-else
+                >{{ venue.presentCount }} / {{ venue.capacity }}</strong
+              >
             </v-progress-linear>
             <v-card-actions>
               <v-list-item-subtitle
@@ -55,9 +58,7 @@
                 <b>{{ venue.waitlist && venue.waitinglist.length }}</b> mensen
                 in de wachtrij
               </v-list-item-subtitle>
-              <v-list-item-subtitle
-                v-if="venue.capacity === venue.presentCount"
-              >
+              <v-list-item-subtitle v-if="venue.capacity <= venue.presentCount">
                 <v-btn
                   :to="'venue/' + venue.id"
                   class="ma-2"
@@ -79,7 +80,7 @@
 <script>
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
-import { getDistance, getBoundsOfDistance } from "geolib";
+import { getDistance } from "geolib";
 
 export default {
   props: {
@@ -87,7 +88,7 @@ export default {
       type: Object
     }
   },
-  computed: mapState(["venueListAll", "venueListGeoBounded"]),
+  computed: mapState(["venueListGeoBounded"]),
   data() {
     return {
       loading: false,
@@ -95,41 +96,34 @@ export default {
     };
   },
   watch: {
-    geo: async function() {
-      await this.getVenueList(10000);
-      this.calculateDistance();
+    geo: function() {
+      this.getVenueList(3);
     }
   },
   components: {
     Loading
   },
   methods: {
-    async getVenueList(boxDistance) {
+    async getVenueList(distance) {
       this.loading = true;
-      let boundingBox;
 
-      if (this.geo.latitude !== undefined && this.geo.longitude !== undefined) {
-        // Define a box (default = 10km) around coordinates
-        boundingBox = getBoundsOfDistance(
-          {
-            latitude: this.geo.latitude,
-            longitude: this.geo.longitude
-          },
-          boxDistance
-        );
-      } else {
-        boundingBox = getBoundsOfDistance(
-          { latitude: 52.37454030000001, longitude: 4.897975505617977 },
-          boxDistance
-        );
+      if (this.geo.latitude == undefined || this.geo.longitude == undefined) {
+        console.log("lat or lon undefined");
+        return;
       }
 
+      const location = {
+        latitude: parseFloat(this.geo.latitude),
+        longitude: parseFloat(this.geo.longitude),
+        distance
+      };
+
       try {
-        await this.$store.dispatch("bindGeoBoundedVenues", boundingBox);
-        if (this.venueListGeoBounded.length === 0) {
+        await this.$store.dispatch("bindGeoBoundedVenues", location);
+        if (!this.venueListGeoBounded?.length) {
           // Vergroot zoek gebied tot een venue is gevonden
-          if (boxDistance < 500000) {
-            this.getVenueList(boxDistance * 2);
+          if (distance < 500) {
+            this.getVenueList(distance + 1.5);
           } else {
             this.$store.dispatch("setSnackbar", {
               show: true,
@@ -138,10 +132,10 @@ export default {
           }
         }
         this.calculateDistance();
+        this.loading = false;
       } catch (error) {
-        alert("bindLocations: " + error);
+        alert("bindGeoBoundedVenues: " + error);
       }
-      this.loading = false;
     },
     calculateDistance() {
       this.venueListGeoBounded.map(venue => {
@@ -152,12 +146,7 @@ export default {
         venue.distance = getDistance(coord, this.geo);
       });
       this.filteredVenues = this.venueListGeoBounded.sort((a, b) => {
-        if (a.distance < b.distance) {
-          return -1;
-        } else if (a.distance > b.distance) {
-          return 1;
-        }
-        return 0;
+        return a.distance === b.distance ? 0 : a.distance < b.distance ? -1 : 1;
       });
     },
     getProgressColor(venue) {
@@ -168,7 +157,7 @@ export default {
     }
   },
   created() {
-    this.getVenueList(10000);
+    this.getVenueList(3);
   }
 };
 </script>

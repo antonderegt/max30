@@ -2,7 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { vuexfireMutations, firestoreAction } from "vuexfire";
 import { db, Timestamp } from "@/db";
-import firebase from "firebase/app";
+import geohash from "ngeohash";
 
 Vue.use(Vuex);
 
@@ -54,28 +54,27 @@ export default new Vuex.Store({
         db.collection("venues").doc(id)
       );
     }),
-    // bindAllVenues: firestoreAction(bindFirestoreRef => {
-    //   return bindFirestoreRef.bindFirestoreRef(
-    //     "venueListAll",
-    //     db.collection("venues")
-    //   );
-    // }),
-    bindGeoBoundedVenues: firestoreAction((bindFirestoreRef, boundingBox) => {
-      const lowerBound = new firebase.firestore.GeoPoint(
-        boundingBox[0].latitude,
-        boundingBox[0].longitude
-      );
-      const upperBound = new firebase.firestore.GeoPoint(
-        boundingBox[1].latitude,
-        boundingBox[1].longitude
-      );
+    bindGeoBoundedVenues: firestoreAction((bindFirestoreRef, location) => {
+      const kmPerLat = 111;
+      const kmPerLon = 150 - 1.6 * location.latitude;
+      const lat = 1 / kmPerLat;
+      const lon = 1 / kmPerLon;
+
+      const lowerLat = location.latitude - lat * location.distance;
+      const lowerLon = location.longitude - lon * location.distance;
+
+      const upperLat = location.latitude + lat * location.distance;
+      const upperLon = location.longitude + lon * location.distance;
+
+      const lower = geohash.encode(lowerLat, lowerLon);
+      const upper = geohash.encode(upperLat, upperLon);
 
       return bindFirestoreRef.bindFirestoreRef(
         "venueListGeoBounded",
         db
           .collection("venues")
-          .where("location.geo", ">", lowerBound)
-          .where("location.geo", "<", upperBound)
+          .where("location.geohash", ">", lower)
+          .where("location.geohash", "<", upper)
       );
     }),
     bindWaitList: firestoreAction((bindFirestoreRef, venueID) => {
@@ -193,6 +192,10 @@ export default new Vuex.Store({
       commit("UPDATE_PRESENT", venue.presentCount);
     },
     async addVenue(_, venue) {
+      venue.location.geohash = geohash.encode(
+        venue.location.geo.latitude,
+        venue.location.geo.longitude
+      );
       try {
         await db.collection("venues").add(venue);
       } catch (error) {
