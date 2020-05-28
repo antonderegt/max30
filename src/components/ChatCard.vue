@@ -7,7 +7,7 @@
           <div class="messages" v-chat-scroll>
             <div class="message" v-for="message in chat" :key="message.id">
               <div v-if="message.sendBy === 'owner'" class="chat-message owner">
-                <span class="green--text">Owner - </span>
+                <span class="green--text">Eigenaar - </span>
                 <span class="darkgrey--text">{{ message.content }}</span>
                 <span class="grey--text">
                   {{
@@ -23,7 +23,7 @@
               >
                 <span class="darkgrey--text">{{ message.content }} - </span>
                 <!-- TODO show users name -->
-                <span class="green--text">User</span>
+                <span class="green--text">Klant</span>
                 <span class="grey--text">
                   {{
                     message.timestamp
@@ -34,18 +34,24 @@
               </div>
             </div>
           </div>
-        </v-card>
-        <v-card>
-          <v-form @submit.prevent="sendMessage">
-            <v-text-field
-              class="pa-3"
-              :label="user.profile.name"
-              v-model="newMessage"
-            ></v-text-field>
-          </v-form>
-          <v-card-actions>
-            <v-btn color="success" @click="sendMessage">Send</v-btn>
-          </v-card-actions>
+          <v-divider></v-divider>
+          <v-container fluid>
+            <v-row justify="center">
+              <v-col cols="10" md="11">
+                <v-form @submit.prevent="sendMessage">
+                  <v-text-field
+                    :label="user.profile.name"
+                    v-model="newMessage"
+                  ></v-text-field>
+                </v-form>
+              </v-col>
+              <v-col cols="2" md="1" class="text-center">
+                <v-btn color="success" @click="sendMessage" class="pt-3" icon>
+                  <v-icon>mdi-send</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
         </v-card>
       </v-col>
     </v-row>
@@ -136,6 +142,6 @@ export default {
 }
 
 .owner {
-  background-color: lightblue;
+  background-color: rgb(242, 255, 236);
 }
 </style>

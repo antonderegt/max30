@@ -1,8 +1,7 @@
 <template>
-  <div class="hello">
-    <Loading v-show="loading" />
-    <v-list two-line subheader>
-      <!-- <v-list-item
+  <Loading v-if="loading" />
+  <v-list v-else two-line subheader>
+    <!-- <v-list-item
         :to="'venue/' + venue.id"
         v-for="venue in venueList"
         :key="venue.id"
@@ -15,66 +14,65 @@
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item> -->
-      <!-- TODO: hadere restaruants: in Zwolle (postcode) -->
-      <v-row>
-        <v-col
-          :to="'venue/' + venue.id"
-          v-for="venue in filteredVenues"
-          :key="venue.id"
-          cols="12"
-        >
-          <v-card class="mx-auto" max-width="700" outlined>
-            <v-list-item three-line>
-              <v-list-item-content>
-                <v-list-item-title class="headline mb-1">{{
-                  venue.name
-                }}</v-list-item-title>
-                <v-list-item-subtitle>{{
-                  venue.location.address
-                }}</v-list-item-subtitle>
-                <v-list-item-subtitle>{{
-                  venue.location.city
-                }}</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+    <!-- TODO: hadere restaruants: in Zwolle (postcode) -->
+    <v-row>
+      <v-col
+        :to="'venue/' + venue.id"
+        v-for="venue in filteredVenues"
+        :key="venue.id"
+        cols="12"
+      >
+        <v-card class="mx-auto" max-width="700" outlined>
+          <v-list-item three-line>
+            <v-list-item-content>
+              <v-list-item-title class="headline mb-1">{{
+                venue.name
+              }}</v-list-item-title>
+              <v-list-item-subtitle>{{
+                venue.location.address
+              }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{
+                venue.location.city
+              }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
 
-            <v-progress-linear
-              cols="12"
-              :value="(venue.presentCount / venue.capacity) * 100"
-              height="25"
-              :color="getProgressColor(venue)"
-              reactive
+          <v-progress-linear
+            cols="12"
+            :value="(venue.presentCount / venue.capacity) * 100"
+            height="25"
+            :color="getProgressColor(venue)"
+            reactive
+          >
+            <strong v-if="venue.presentCount >= venue.capacity">VOL</strong>
+            <strong v-else
+              >{{ venue.presentCount }} / {{ venue.capacity }}</strong
             >
-              <strong v-if="venue.presentCount >= venue.capacity">VOL</strong>
-              <strong v-else
-                >{{ venue.presentCount }} / {{ venue.capacity }}</strong
+          </v-progress-linear>
+          <v-card-actions>
+            <v-list-item-subtitle
+              v-if="venue.waitinglist && venue.waitlist.length > 0"
+            >
+              Er staan
+              <b>{{ venue.waitlist && venue.waitinglist.length }}</b> mensen in
+              de wachtrij
+            </v-list-item-subtitle>
+            <v-list-item-subtitle v-if="venue.capacity <= venue.presentCount">
+              <v-btn
+                :to="'venue/' + venue.id"
+                class="ma-2"
+                tile
+                outlined
+                color="success"
               >
-            </v-progress-linear>
-            <v-card-actions>
-              <v-list-item-subtitle
-                v-if="venue.waitinglist && venue.waitlist.length > 0"
-              >
-                Er staan
-                <b>{{ venue.waitlist && venue.waitinglist.length }}</b> mensen
-                in de wachtrij
-              </v-list-item-subtitle>
-              <v-list-item-subtitle v-if="venue.capacity <= venue.presentCount">
-                <v-btn
-                  :to="'venue/' + venue.id"
-                  class="ma-2"
-                  tile
-                  outlined
-                  color="success"
-                >
-                  <v-icon left>post_add</v-icon> Zet mij in de wachtrij
-                </v-btn>
-              </v-list-item-subtitle>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-list>
-  </div>
+                <v-icon left>post_add</v-icon> Zet mij in de wachtrij
+              </v-btn>
+            </v-list-item-subtitle>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-list>
 </template>
 
 <script>
@@ -124,6 +122,10 @@ export default {
         if (!this.venueListGeoBounded?.length) {
           // Vergroot zoek gebied tot een venue is gevonden
           if (distance < 500) {
+            this.$store.dispatch("setSnackbar", {
+              show: true,
+              text: "Zoek gebied wordt vergroot."
+            });
             this.getVenueList(distance + 1.5);
           } else {
             this.$store.dispatch("setSnackbar", {
@@ -131,7 +133,12 @@ export default {
               text: "Onvindbare locatie, probeer het nog een keer."
             });
           }
+          return;
         }
+        this.$store.dispatch("setSnackbar", {
+          show: false,
+          text: ""
+        });
         this.calculateDistance();
         this.loading = false;
       } catch (error) {

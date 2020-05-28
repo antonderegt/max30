@@ -1,14 +1,14 @@
 <template>
   <v-container fluid class="pa-0" style="background-color:'red'">
     <v-parallax
-      height="350"
+      height="250"
       src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
     >
       <v-row align="center" justify="center">
         <v-col cols="12" class="text-center">
           <h1 class="display-1 font-weight-thin mb-4">
-            Wachtrij overzicht. Waar is plek? <br /><br />
-            <b> Plekkie. Wij laten zien waar plek is!</b>
+            <!-- Er is meer mogelijk dan je denkt. <br /><br /> -->
+            <b> Plekkie laat zien waar plek is!</b>
           </h1>
           <h4 class="subheading"></h4>
         </v-col>
@@ -38,8 +38,8 @@
         </v-col>
       </v-row>
     </v-parallax>
-    <v-container class="my-5">
-      <v-row justify="center" class="pa-3">
+    <v-container>
+      <v-row justify="center">
         <v-col cols="12" md="6">
           <VenueList :geo="geo" />
         </v-col>
@@ -97,6 +97,10 @@ export default {
             this.loading = false;
           },
           error => {
+            this.$store.dispatch("setSnackbar", {
+              show: true,
+              text: "Locatie bepaling niet mogelijk, vul handmatig in."
+            });
             this.loading = false;
             console.error(error);
           }

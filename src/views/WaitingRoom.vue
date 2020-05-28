@@ -62,14 +62,12 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="12">
-        <ChatCard
-          v-if="showChat === index"
-          :venueID="item.venueID"
-          :userID="item.userID"
-          sender="user"
-        />
-      </v-col>
+      <ChatCard
+        v-if="showChat === index"
+        :venueID="item.venueID"
+        :userID="item.userID"
+        sender="user"
+      />
     </v-row>
   </v-container>
 </template>
