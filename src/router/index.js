@@ -30,7 +30,8 @@ const routes = [
   {
     path: "/signup",
     name: "Signup",
-    component: () => import("@/views/Signup.vue")
+    component: () => import("@/views/Signup.vue"),
+    props: { isVenue: false }
   },
   {
     path: "/add-venue",

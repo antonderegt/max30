@@ -16,7 +16,14 @@
         <span>Sign out</span>
         <v-icon right>exit_to_app</v-icon>
       </v-btn>
-      <v-btn v-else text color="white" to="/signup">
+      <v-btn
+        v-else-if="
+          this.$route.path !== '/signup' && this.$route.path !== '/login'
+        "
+        text
+        color="white"
+        to="/signup"
+      >
         <span>Meld je aan</span>
         <v-icon right>exit_to_app</v-icon>
       </v-btn>

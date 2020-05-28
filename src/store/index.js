@@ -208,8 +208,10 @@ export default new Vuex.Store({
         const doc = await docRef.get();
         if (doc.exists) {
           commit("UPDATE_PROFILE", doc.data());
+          return true;
         } else {
           console.log("No such document!");
+          return false;
         }
       } catch (error) {
         console.log("Error getting document:", error);

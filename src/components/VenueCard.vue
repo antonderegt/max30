@@ -375,7 +375,7 @@ export default {
     async deleteVenue() {
       // TODO: use Vuetify modal for confirmation
       if (confirm("Weet je zeker dat je het bedrijf wilt verwijderen?")) {
-        this.$router.replace("/");
+        this.$router.replace("/my-venues");
         await this.$store.dispatch("deleteVenue", this.venue);
       }
     },

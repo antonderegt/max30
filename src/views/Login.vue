@@ -1,17 +1,20 @@
 <template>
   <v-container>
+    <Loading v-if="loading" />
     <v-card width="400" class="mx-auto mt-5">
       <v-card-title>
         <h1 class="display-1">Login</h1>
       </v-card-title>
       <v-card-text>
-        <v-btn @click="loginWithSocial('google')" class="mr-2">
-          <v-icon class="mr-2">fab fa-google</v-icon>
-          google</v-btn
-        ><v-btn @click="loginWithSocial('facebook')">
-          <v-icon class="mr-2">fab fa-facebook</v-icon>
-          facebook</v-btn
-        >
+        <v-row justify="center">
+          <v-btn @click="loginWithSocial('google')" class="ma-2">
+            <v-icon class="mr-2">fab fa-google</v-icon>
+            google</v-btn
+          ><v-btn @click="loginWithSocial('facebook')" class="ma-2">
+            <v-icon class="mr-2">fab fa-facebook</v-icon>
+            facebook</v-btn
+          >
+        </v-row>
         <v-form ref="form" v-model="valid" :lazy-validation="lazy">
           <v-text-field
             @keyup.enter="login"
@@ -39,8 +42,8 @@
       <v-card-actions>
         <v-btn color="info" @click.prevent="login">Login</v-btn>
         <v-spacer></v-spacer>
-        <router-link to="/signup">
-          New Here? Create a new account
+        <router-link :to="signup">
+          Account nodig?
         </router-link>
       </v-card-actions>
     </v-card>
@@ -49,10 +52,12 @@
 
 <script>
 import firebase from "firebase/app";
+import Loading from "@/components/Loading.vue";
 
 export default {
   data: function() {
     return {
+      loading: false,
       valid: true,
       lazy: true,
       email: "",
@@ -65,11 +70,15 @@ export default {
         v => !!v || "Password is required",
         v => (v && v.length >= 6) || "Password must be at least 6 characters"
       ],
-      showPassword: false
+      showPassword: false,
+      signup: this.$route.query.redirect
+        ? `/signup?redirect=${this.$route.query.redirect}`
+        : "/signup"
     };
   },
   methods: {
     async loginWithSocial(provider) {
+      this.loading = true;
       switch (provider) {
         case "google":
           provider = new firebase.auth.GoogleAuthProvider();
@@ -80,10 +89,12 @@ export default {
       }
       try {
         const result = await firebase.auth().signInWithPopup(provider);
+
         const hasProfile = await this.$store.dispatch(
           "fetchProfile",
           result.user.uid
         );
+
         if (!hasProfile) {
           const profile = {
             id: result.user.uid,
@@ -93,25 +104,19 @@ export default {
           await this.$store.dispatch("createProfile", profile);
         }
         this.$router.push(this.$route.query.redirect || "/");
+        this.loading = false;
       } catch (error) {
         console.log("signInWithSocial: " + error);
-
-        // Handle Errors here.
-        // var errorCode = error.code;
-        // var errorMessage = error.message;
-        // // The email of the user's account used.
-        // var email = error.email;
-        // // The firebase.auth.AuthCredential type that was used.
-        // var credential = error.credential;
-        // ...
       }
     },
     async login() {
       if (this.$refs.form.validate()) {
+        this.loading = true;
         try {
           await firebase
             .auth()
             .signInWithEmailAndPassword(this.email, this.password);
+          this.loading = false;
         } catch (err) {
           alert(err.message);
         }
@@ -144,6 +149,7 @@ export default {
     resetValidation() {
       this.$refs.form.resetValidation();
     }
-  }
+  },
+  components: { Loading }
 };
 </script>
