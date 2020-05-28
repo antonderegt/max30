@@ -9,9 +9,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     waitList: [],
-    venueListAll: [],
     venueListGeoBounded: [],
-
     venue: {},
     user: {
       loggedIn: false,
@@ -24,7 +22,8 @@ export default new Vuex.Store({
     snackbar: {
       show: false,
       text: ""
-    }
+    },
+    waitListInFrontOfUser: {}
   },
   mutations: {
     ...vuexfireMutations,
@@ -87,6 +86,18 @@ export default new Vuex.Store({
           .orderBy("timestamp")
       );
     }),
+    bindWaitListInFrontOfUser: firestoreAction(
+      (bindFirestoreRef, waitListItem) => {
+        return bindFirestoreRef.bindFirestoreRef(
+          "waitListInFrontOfUser",
+          db
+            .collection("waitlists")
+            .where("venueID", "==", waitListItem.venueID)
+            .where("status", "==", "waiting")
+            .where("timestamp", "<", waitListItem.timestamp)
+        );
+      }
+    ),
     bindWaitListsByUser: firestoreAction((bindFirestoreRef, userID) => {
       return bindFirestoreRef.bindFirestoreRef(
         "waitListsByUser",
@@ -130,7 +141,6 @@ export default new Vuex.Store({
       const doc = await db
         .collection("waitlists")
         .where("userID", "==", waitListItem.userID)
-        .where("venueID", "==", waitListItem.venueID)
         .where("status", "==", "waiting")
         .get();
       if (doc?.docs[0]?.id) {
