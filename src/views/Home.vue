@@ -57,16 +57,16 @@ export default {
   components: {
     VenueList
   },
-  mounted() {
-    this.requestLocation();
-  },
   data() {
     return {
       searchField: "",
       address: "",
       suggestions: [],
-      loading: true,
-      geo: {}
+      loading: false,
+      geo: {
+        latitude: 52.37454030000001,
+        longitude: 4.897975505617977
+      }
     };
   },
   watch: {
@@ -78,26 +78,32 @@ export default {
     async requestLocation() {
       this.loading = true;
       console.log("requesting current location");
-      navigator.geolocation.getCurrentPosition(
-        async res => {
-          if (!res?.coords) {
-            return; // no coordinates from geolocation api web
+      try {
+        navigator.geolocation.getCurrentPosition(
+          async res => {
+            if (!res?.coords) {
+              this.loading = false;
+              return; // no coordinates from geolocation api web
+            }
+            const osmRes = await axios.get(
+              `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
+            );
+            this.address = osmRes?.data?.address;
+            this.searchField = osmRes?.data?.address?.postcode;
+            this.geo = {
+              latitude: res?.coords?.latitude,
+              longitude: res?.coords?.longitude
+            };
+            this.loading = false;
+          },
+          error => {
+            this.loading = false;
+            console.error(error);
           }
-          const osmRes = await axios.get(
-            `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
-          );
-          this.address = osmRes?.data?.address;
-          this.searchField = osmRes?.data?.address?.postcode;
-          this.geo = {
-            latitude: res?.coords?.latitude,
-            longitude: res?.coords?.longitude
-          };
-          this.loading = false;
-        },
-        e => {
-          console.error(e);
-        }
-      );
+        );
+      } catch (error) {
+        console.log("error with location " + error);
+      }
     },
     async getCoordinates() {
       if (!this.searchField?.length) {
@@ -131,6 +137,9 @@ export default {
         this.getCoordinates();
       }, 300);
     }
+  },
+  mounted() {
+    this.requestLocation();
   }
 };
 </script>

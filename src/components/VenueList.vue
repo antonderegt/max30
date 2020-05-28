@@ -109,6 +109,7 @@ export default {
 
       if (this.geo.latitude == undefined || this.geo.longitude == undefined) {
         console.log("lat or lon undefined");
+        this.loading = false;
         return;
       }
 
