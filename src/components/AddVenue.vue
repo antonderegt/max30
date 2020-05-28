@@ -10,6 +10,41 @@
           <v-text-field
             v-model="name"
             :rules="nameRules"
+            label="Naam"
+            prepend-icon="mdi-card-account-details"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="address.postcode"
+            :rules="postcodeRules"
+            label="Postcode"
+            prepend-icon="mdi-home"
+            v-on:blur="fetchLocation()"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="address.number"
+            :rules="numberRules"
+            label="Huisnummer"
+            prepend-icon="mdi-numeric"
+            v-on:blur="fetchLocation()"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-model="address.street"
+            label="Straat"
+            prepend-icon="mdi-road"
+            disabled
+          ></v-text-field>
+          <v-text-field
+            v-model="address.city"
+            label="Stad"
+            prepend-icon="mdi-city"
+            disabled
+          ></v-text-field>
+          <!-- <v-text-field
+            v-model="name"
+            :rules="nameRules"
             label="Name"
             prepend-icon="mdi-account"
             required
@@ -28,7 +63,7 @@
             label="Address"
             prepend-icon="mdi-account"
             required
-          ></v-text-field>
+          ></v-text-field> -->
           <!-- TODO: add category -->
 
           <v-divider></v-divider>
@@ -61,44 +96,77 @@ export default {
       valid: true,
       lazy: true,
       name: "",
-      city: "",
-      address: "",
       nameRules: [v => !!v || "Field is required"],
+      postcodeRules: [
+        v => !!v || "Postcode is verplicht",
+        v =>
+          /^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i.test(v) ||
+          "Voer een geldig postcode in"
+      ],
+      numberRules: [v => !!v || "Huisnummer is verplicht"],
+      address: {
+        postcode: "",
+        number: "",
+        street: ""
+      },
       capacity: 30
     };
   },
   methods: {
     async addVenue() {
       this.loading = true;
-      if (this.$refs.form.validate()) {
-        const query = this.address + ", " + this.city;
-        const res = await axios.get(
-          `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
-        );
-        const coords = new firebase.firestore.GeoPoint(
-          parseFloat(res.data[0].lat),
-          parseFloat(res.data[0].lon)
-        );
-        this.geo = coords;
-        const venue = {
-          name: this.name,
-          location: {
-            city: this.city,
-            address: this.address,
-            geo: coords
-          },
-          owners: {
-            [this.user.data.uid]: true
-          },
-          category: {
-            bar: true
-          },
-          capacity: this.capacity,
-          presentCount: 0
-        };
-        await this.$store.dispatch("addVenue", venue);
-        this.$router.push("/my-venues");
-        this.loading = false;
+      if (!this.$refs.form.validate()) {
+        console.log("Error with validation of form");
+        return;
+      }
+      const query =
+        this.address.street +
+        " " +
+        this.address.number +
+        ", " +
+        this.address.city;
+      const res = await axios.get(
+        `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
+      );
+      const coords = new firebase.firestore.GeoPoint(
+        parseFloat(res.data[0].lat),
+        parseFloat(res.data[0].lon)
+      );
+      this.geo = coords;
+      const venue = {
+        name: this.name,
+        location: {
+          city: this.address.city,
+          address: `${this.address.street} ${this.address.number}`,
+          geo: coords
+        },
+        owners: {
+          [this.user.data.uid]: true
+        },
+        category: {
+          bar: true
+        },
+        capacity: this.capacity,
+        presentCount: 0
+      };
+      await this.$store.dispatch("addVenue", venue);
+      this.$router.push("/my-venues");
+      this.loading = false;
+    },
+    async fetchLocation() {
+      if (this.address.postcode.length && this.address.number.length) {
+        try {
+          const res = await axios.get(
+            `http://api.postcodedata.nl/v1/postcode/?postcode=${this.address.postcode}&streetnumber=${this.address.number}&ref=domeinnaam.nl&type=json`
+          );
+          if (res.data.status === "ok") {
+            this.address = { ...this.address, ...res.data.details[0] };
+          } else {
+            this.address.street = "Kan geen geldige locatie vinden";
+          }
+        } catch (error) {
+          console.log("fetchLocation: " + error);
+        }
       }
     }
   },

@@ -212,13 +212,8 @@ export default {
       }
     },
     async addVenue(uid) {
-      console.log("adding venue");
-
-      console.log(this.$refs.form.validate());
-
       if (!this?.$refs?.form?.validate()) {
-        console.log("error with validate");
-
+        console.log("Error with validation of form");
         return;
       }
       const query =
@@ -260,10 +255,8 @@ export default {
           const res = await axios.get(
             `http://api.postcodedata.nl/v1/postcode/?postcode=${this.address.postcode}&streetnumber=${this.address.number}&ref=domeinnaam.nl&type=json`
           );
-          console.log(res);
           if (res.data.status === "ok") {
             this.address = { ...this.address, ...res.data.details[0] };
-            console.log(this.address);
           } else {
             this.address.street = "Kan geen geldige locatie vinden";
           }
