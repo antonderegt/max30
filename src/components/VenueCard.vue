@@ -143,18 +143,30 @@
                   reactive
                 >
                   <strong
-                    v-if="!isAdmin"
+                    v-if="venue.presentCount >= venue.capacity"
                     :class="getProgressColor(venue).text"
-                    >{{
-                      venue.presentCount >= venue.capacity
-                        ? `${venue.capacity} / ${venue.capacity}`
-                        : `${venue.presentCount} / ${venue.capacity}`
-                    }}</strong
+                    >{{ `VOL` }}
+                  </strong>
+
+                  <strong
+                    v-else-if="!isAdmin"
+                    :class="getProgressColor(venue).text"
+                    >{{ `${venue.capacity} / ${venue.capacity}` }}</strong
                   >
                   <strong v-else :class="getProgressColor(venue).text">{{
                     `${venue.presentCount} / ${venue.capacity}`
                   }}</strong>
                 </v-progress-linear>
+
+                <v-row>
+                  <!-- TODO: think about design for waitingcount. Something like the progress for capacity -->
+                  <v-col cols="2" class="pa-3">
+                    <v-badge color="green" :content="totalWaiting" overlap>
+                      <v-icon>mdi-account-group</v-icon>
+                    </v-badge>
+                  </v-col>
+                  <span> {{ `${totalWaiting} wachtenden voor u` }}</span>
+                </v-row>
               </v-col>
             </v-row>
 
@@ -178,17 +190,6 @@
                   :venue="venue"
                   :user="user"
                 />
-              </v-col>
-
-              <v-col
-                v-for="person in waitList"
-                :key="person.id"
-                cols="2"
-                class="pa-3"
-              >
-                <v-badge color="green" :content="person.personCount" overlap>
-                  <v-icon>mdi-account-group</v-icon>
-                </v-badge>
               </v-col>
             </v-row>
 
@@ -305,6 +306,11 @@ export default {
   computed: {
     progress() {
       return (this.venue.presentCount / this.venue.capacity) * 100;
+    },
+    totalWaiting() {
+      return this.waitList.reduce((a, b) => {
+        return a + b.personCount;
+      }, 0);
     },
     ...mapState(["venue", "waitList", "user"])
   },
