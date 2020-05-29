@@ -139,15 +139,19 @@
                   cols="12"
                   :value="(venue.presentCount / venue.capacity) * 100"
                   height="25"
-                  :color="getProgressColor(venue)"
+                  :color="getProgressColor(venue).background"
                   reactive
                 >
-                  <strong v-if="!isAdmin" :class="progressTextColor">{{
-                    venue.presentCount >= venue.capacity
-                      ? `${venue.capacity} / ${venue.capacity}`
-                      : `${venue.presentCount} / ${venue.capacity}`
-                  }}</strong>
-                  <strong v-else :class="progressTextColor">{{
+                  <strong
+                    v-if="!isAdmin"
+                    :class="getProgressColor(venue).text"
+                    >{{
+                      venue.presentCount >= venue.capacity
+                        ? `${venue.capacity} / ${venue.capacity}`
+                        : `${venue.presentCount} / ${venue.capacity}`
+                    }}</strong
+                  >
+                  <strong v-else :class="getProgressColor(venue).text">{{
                     `${venue.presentCount} / ${venue.capacity}`
                   }}</strong>
                 </v-progress-linear>
@@ -314,8 +318,7 @@ export default {
       openChat: -1,
       isEdit: false,
       editedVenue: null,
-      showReportModal: false,
-      progressTextColor: "black--text"
+      showReportModal: false
     };
   },
   watch: {
@@ -394,12 +397,9 @@ export default {
     },
     getProgressColor(venue) {
       let progress = (venue.presentCount / venue.capacity) * 100;
-      if (progress >= 80) {
-        this.progressTextColor = "white--text";
-      } else this.progressTextColor = "black--text";
-      if (progress < 80) return "green";
-      if (progress < 99) return "orange";
-      return "red";
+      if (progress < 80) return { background: "green", text: "black--text" };
+      if (progress < 99) return { background: "orange", text: "white--text" };
+      return { background: "red", text: "white--text" };
     }
   },
   components: {
