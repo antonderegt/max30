@@ -10,7 +10,7 @@
             </v-col>
           </v-row>
 
-          <v-row v-else class="pa-3" no-gutters>
+          <v-row v-else class="pa-0" no-gutters>
             <v-col v-if="isEdit && editedVenue" cols="11">
               <!-- Venue info fields -->
               <v-text-field
@@ -29,10 +29,8 @@
                 :value="editedVenue.location.address"
               ></v-text-field>
 
-              <v-divider></v-divider>
-
               <!-- Venue capacity -->
-              <v-row v-show="isAdmin" class="pa-3" justify="center" no-gutters>
+              <v-row v-show="isAdmin" class="pa-2" justify="center" no-gutters>
                 <v-col>
                   Pas capaciteit aan. Huidig: <b>{{ venue.capacity }}</b>
                 </v-col>
@@ -54,11 +52,10 @@
                   >
                 </v-col>
               </v-row>
-              <v-divider></v-divider>
 
               <v-row
                 v-show="isAdmin"
-                class="pa-3 mt-10"
+                class="pa-2 mt-10"
                 justify="center"
                 no-gutters
               >
@@ -86,8 +83,9 @@
               <v-card-subtitle v-if="venue.location">
                 {{ venue.location.city }}, {{ venue.location.address }}
               </v-card-subtitle>
+
               <ShareNetwork
-                class="mx-4"
+                class="ma-4"
                 network="WhatsApp"
                 :url="'https://plekkie.me/venue/' + venue.id"
                 :title="venue.name"
@@ -103,6 +101,7 @@
                   <v-icon>fab fa-whatsapp</v-icon>
                 </v-btn>
               </ShareNetwork>
+
               <ShareNetwork
                 class="mx-4"
                 network="Facebook"
@@ -127,39 +126,69 @@
               <v-icon>{{ isEdit ? "done" : "create" }}</v-icon>
             </v-col>
           </v-row>
-          <v-divider></v-divider>
+          <v-divider class="my-4"></v-divider>
 
           <div class="venueInfo" v-if="!isEdit">
             <v-row no-gutters>
-              <v-col cols="6">
-                <v-card-text>Capaciteit: {{ venue.capacity }}</v-card-text>
-              </v-col>
-
-              <v-col cols="6">
-                <v-card-text>Aanwezig: {{ venue.presentCount }}</v-card-text>
-              </v-col>
+              <v-card-title>Is er nog een plekkie?</v-card-title>
             </v-row>
 
             <v-row no-gutters>
-              <v-col class="ma-3">
+              <v-col class="my-2">
                 <v-progress-linear
                   cols="12"
-                  v-model="progress"
+                  :value="(venue.presentCount / venue.capacity) * 100"
                   height="25"
+                  :color="getProgressColor(venue)"
                   reactive
                 >
-                  <strong
-                    >{{ venue.presentCount }} / {{ venue.capacity }}</strong
-                  >
+                  <strong v-if="!isAdmin" :class="progressTextColor">{{
+                    venue.presentCount >= venue.capacity
+                      ? `${venue.capacity} / ${venue.capacity}`
+                      : `${venue.presentCount} / ${venue.capacity}`
+                  }}</strong>
+                  <strong v-else :class="progressTextColor">{{
+                    `${venue.presentCount} / ${venue.capacity}`
+                  }}</strong>
                 </v-progress-linear>
               </v-col>
             </v-row>
 
-            <v-row v-show="isAdmin" class="pa-3" justify="center" no-gutters>
-              <v-col>
-                Pas aanwezigen aan:
+            <v-row v-if="!isAdmin" no-gutters>
+              <v-col v-if="waitList.length === 0" cols="12">
+                <v-card-text>Ja er is nog plek, kom snel!</v-card-text>
+              </v-col>
+
+              <v-col
+                cols="12"
+                class="pa-4"
+                v-if="venue.presentCount >= venue.capacity"
+              >
+                <v-btn outlined block @click="checkUser(venue.id)"
+                  >Stap in de rij</v-btn
+                >
+                <JoinModal
+                  v-if="show"
+                  :show.sync="show"
+                  :count.sync="count"
+                  :venue="venue"
+                  :user="user"
+                />
+              </v-col>
+
+              <v-col
+                v-for="person in waitList"
+                :key="person.id"
+                cols="2"
+                class="pa-3"
+              >
+                <v-badge color="green" :content="person.personCount" overlap>
+                  <v-icon>mdi-account-group</v-icon>
+                </v-badge>
               </v-col>
             </v-row>
+
+            <v-card-title v-show="isAdmin">Pas aanwezigen aan:</v-card-title>
 
             <v-row v-show="isAdmin">
               <v-col align="center">
@@ -192,39 +221,6 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="!isAdmin">
-      <v-col v-if="waitList.length === 0" cols="12">
-        <v-card-text>Geen wachtrij, kom snel!</v-card-text>
-      </v-col>
-
-      <v-col cols="12" class="pa-3">
-        <v-btn outlined block @click="checkUser(venue.id)"
-          >Stap in de rij</v-btn
-        >
-        <JoinModal
-          v-if="show"
-          :show.sync="show"
-          :count.sync="count"
-          :venue="venue"
-          :user="user"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-row v-if="waitList.length">
-          <v-col>
-            Wachtrij:
-          </v-col>
-        </v-row>
-        <div v-if="!isAdmin">
-          <v-row v-for="person in waitList" :key="person.id">
-            <v-col> Groep van: {{ person.personCount }} </v-col>
-          </v-row>
-        </div>
-      </v-col>
-    </v-row>
-
     <Loading v-if="loadingWaitList" />
 
     <v-row v-if="isAdmin" class="pa-3" justify="center">
@@ -232,14 +228,14 @@
         cols="12"
         md="6"
         v-for="(person, index) in waitList"
-        :key="person.userID"
+        :key="person.id"
       >
         <v-card>
           <v-card-title>
             <!-- TODO get name instead of userID -->
             {{ person.userID }}
           </v-card-title>
-          <v-card-text> With {{ person.personCount }} people. </v-card-text>
+          <v-card-text> Met {{ person.personCount }} personen. </v-card-text>
           <chatCard
             v-if="openChat == index"
             :userID="person.userID"
@@ -318,7 +314,8 @@ export default {
       openChat: -1,
       isEdit: false,
       editedVenue: null,
-      showReportModal: false
+      showReportModal: false,
+      progressTextColor: "black--text"
     };
   },
   watch: {
@@ -394,6 +391,15 @@ export default {
       } else {
         this.show = !this.show;
       }
+    },
+    getProgressColor(venue) {
+      let progress = (venue.presentCount / venue.capacity) * 100;
+      if (progress >= 80) {
+        this.progressTextColor = "white--text";
+      } else this.progressTextColor = "black--text";
+      if (progress < 80) return "green";
+      if (progress < 99) return "orange";
+      return "red";
     }
   },
   components: {

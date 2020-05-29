@@ -22,7 +22,12 @@
         :key="venue.id"
         cols="12"
       >
-        <v-card class="mx-auto" max-width="700" outlined>
+        <v-card
+          class="mx-auto"
+          max-width="700"
+          outlined
+          :to="'venue/' + venue.id"
+        >
           <v-list-item three-line>
             <v-list-item-content>
               <v-list-item-title class="headline mb-1">{{
@@ -44,8 +49,12 @@
             :color="getProgressColor(venue)"
             reactive
           >
-            <strong v-if="venue.presentCount >= venue.capacity">VOL</strong>
-            <strong v-else
+            <strong
+              v-if="venue.presentCount >= venue.capacity"
+              :class="progressTextColor"
+              >VOL</strong
+            >
+            <strong v-else :class="progressTextColor"
               >{{ venue.presentCount }} / {{ venue.capacity }}</strong
             >
           </v-progress-linear>
@@ -90,7 +99,8 @@ export default {
   data() {
     return {
       loading: false,
-      filteredVenues: {}
+      filteredVenues: {},
+      progressTextColor: "black--text"
     };
   },
   watch: {
@@ -158,9 +168,12 @@ export default {
       });
     },
     getProgressColor(venue) {
-      let progess = (venue.presentCount / venue.capacity) * 100;
-      if (progess < 80) return "green";
-      if (progess < 99) return "orange";
+      let progress = (venue.presentCount / venue.capacity) * 100;
+      if (progress >= 80) {
+        this.progressTextColor = "white--text";
+      } else this.progressTextColor = "black--text";
+      if (progress < 80) return "green";
+      if (progress < 99) return "orange";
       return "red";
     }
   },

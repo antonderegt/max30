@@ -7,7 +7,6 @@
       <v-row align="center" justify="center">
         <v-col cols="12" class="text-center">
           <h1 class="display-1 font-weight-thin mb-4">
-            <!-- Er is meer mogelijk dan je denkt. <br /><br /> -->
             <b> Plekkie laat zien waar plek is!</b>
           </h1>
           <h4 class="subheading"></h4>
