@@ -157,7 +157,7 @@ export default {
       if (this.address.postcode.length && this.address.number.length) {
         try {
           const res = await axios.get(
-            `http://api.postcodedata.nl/v1/postcode/?postcode=${this.address.postcode}&streetnumber=${this.address.number}&ref=domeinnaam.nl&type=json`
+            `https://api.postcodedata.nl/v1/postcode/?postcode=${this.address.postcode}&streetnumber=${this.address.number}&ref=domeinnaam.nl&type=json`
           );
           if (res.data.status === "ok") {
             this.address = { ...this.address, ...res.data.details[0] };
