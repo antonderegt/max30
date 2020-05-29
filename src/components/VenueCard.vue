@@ -130,7 +130,10 @@
 
           <div class="venueInfo" v-if="!isEdit">
             <v-row no-gutters>
-              <v-card-title>Is er nog een plekkie?</v-card-title>
+              <v-card-title v-if="!isAdmin"
+                >Is er nog een plekkie?</v-card-title
+              >
+              <v-card-title v-else>Huidige bezetting:</v-card-title>
             </v-row>
 
             <v-row no-gutters>
@@ -159,9 +162,9 @@
             </v-row>
 
             <v-row v-if="!isAdmin" no-gutters>
-              <v-col v-if="waitList.length === 0" cols="12">
+              <!-- <v-col v-if="waitList.length === 0" cols="12">
                 <v-card-text>Ja er is nog plek, kom snel!</v-card-text>
-              </v-col>
+              </v-col> -->
 
               <v-col
                 cols="12"
@@ -179,9 +182,15 @@
                   :user="user"
                 />
               </v-col>
-
+              <v-col cols="12">
+                <v-card-title>{{
+                  totalWaiting == 0
+                    ? "Ja, er is geen wachtrij!"
+                    : `${totalWaiting} wachtenden voor u`
+                }}</v-card-title>
+              </v-col>
               <v-col
-                v-for="person in waitList"
+                v-for="person in waitList.slice(0, 5)"
                 :key="person.id"
                 cols="2"
                 class="pa-3"
@@ -190,6 +199,7 @@
                   <v-icon>mdi-account-group</v-icon>
                 </v-badge>
               </v-col>
+              <v-icon v-if="waitList.length > 5">mdi-dots-horizontal</v-icon>
             </v-row>
 
             <v-card-title v-show="isAdmin">Pas aanwezigen aan:</v-card-title>
@@ -306,7 +316,12 @@ export default {
     progress() {
       return (this.venue.presentCount / this.venue.capacity) * 100;
     },
-    ...mapState(["venue", "waitList", "user"])
+    ...mapState(["venue", "waitList", "user"]),
+    totalWaiting() {
+      return this.waitList.reduce((a, b) => {
+        return a + b.personCount;
+      }, 0);
+    }
   },
   data() {
     return {
