@@ -65,6 +65,11 @@ const routes = [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: "/privacy-policy",
+    name: "PrivacyPolicy",
+    component: () => import("@/views/PrivacyPolicy.vue")
   }
 ];
 
