@@ -3,7 +3,7 @@
   <v-container v-else>
     <v-card width="400" class="mx-auto mt-5">
       <v-card-title>
-        <h1 class="display-1">Add Venue</h1>
+        <h1 class="display-1">Plek</h1>
       </v-card-title>
       <v-card-text>
         <v-form ref="form" v-model="valid" :lazy-validation="lazy">
@@ -42,33 +42,12 @@
             prepend-icon="mdi-city"
             disabled
           ></v-text-field>
-          <!-- <v-text-field
-            v-model="name"
-            :rules="nameRules"
-            label="Name"
-            prepend-icon="mdi-account"
-            required
-          ></v-text-field>
-          <v-text-field
-            v-model="city"
-            :rules="nameRules"
-            label="City"
-            prepend-icon="mdi-account"
-            required
-          ></v-text-field>
-          <v-text-field
-            @keyup.enter="addVenue"
-            v-model="address"
-            :rules="nameRules"
-            label="Address"
-            prepend-icon="mdi-account"
-            required
-          ></v-text-field> -->
+
           <!-- TODO: add category -->
 
           <v-divider></v-divider>
           <v-slider
-            :label="'Capacity: ' + capacity"
+            :label="'Capaciteit: ' + capacity"
             v-model="capacity"
             thumb-label
           ></v-slider>
@@ -76,7 +55,7 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="info" @click="addVenue">Add</v-btn>
+        <v-btn color="info" @click="addVenue">Toevoegen</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>

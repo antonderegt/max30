@@ -33,11 +33,11 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title gray--text text-uppercase">
-            <span class="font-weight-light">Plek</span>
-            <span>kie</span>
+            <span>Plek</span>
+            <span class="font-weight-light">kie</span>
           </v-list-item-title>
           <v-list-item-subtitle>
-            Join the fun
+            Vind een plekkie
             <span v-if="user.profile !== null">{{ user.profile.name }}</span>
           </v-list-item-subtitle>
         </v-list-item-content>
@@ -55,12 +55,14 @@
           </v-list-item-content>
         </v-list-item>
         <div v-if="user.profile !== null && user.profile.owner">
+          Beheerders
+          <v-divider></v-divider>
           <v-list-item to="/add-venue">
             <v-list-item-icon>
               <v-icon>mdi-map-plus</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Add Venue</v-list-item-title>
+              <v-list-item-title>Plek Toevoegen</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/my-venues">
@@ -68,7 +70,7 @@
               <v-icon>mdi-map-marker</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>My Venues</v-list-item-title>
+              <v-list-item-title>Mijn Plekken</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </div>

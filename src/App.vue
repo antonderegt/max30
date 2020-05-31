@@ -24,9 +24,14 @@ export default {
       items: [
         { title: "Home", icon: "mdi-view-dashboard", link: "/" },
         {
-          title: "Waiting Room",
+          title: "Wachtruimte",
           icon: "mdi-paper-roll",
           link: "/waiting-room"
+        },
+        {
+          title: "FAQ",
+          icon: "mdi-comment-question",
+          link: "/faq"
         }
       ]
     };
