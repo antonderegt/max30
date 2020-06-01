@@ -191,6 +191,10 @@ export default new Vuex.Store({
       commit("ADD_TO_WAITLIST", waitListItem);
     },
     async updateVenue({ commit }, venue) {
+      venue.location.geohash = geohash.encode(
+        venue.location.geo.latitude,
+        venue.location.geo.longitude
+      );
       try {
         await db
           .collection("venues")

@@ -16,7 +16,6 @@
               <v-text-field
                 label="Naam"
                 v-model="editedVenue.name"
-                :value="editedVenue.name"
                 prepend-icon="mdi-card-account-details-outline"
               ></v-text-field>
               <v-textarea
@@ -28,25 +27,21 @@
               <v-text-field
                 label="URL"
                 v-model="editedVenue.url"
-                :value="editedVenue.url"
                 prepend-icon="mdi-web"
               ></v-text-field>
               <v-text-field
                 label="Tel"
                 v-model="editedVenue.phone"
-                :value="editedVenue.phone"
                 prepend-icon="mdi-cellphone"
               ></v-text-field>
               <v-text-field
                 label="Stad"
                 v-model="editedVenue.location.city"
-                :value="editedVenue.location.city"
                 prepend-icon="mdi-city"
               ></v-text-field>
               <v-text-field
                 label="Adres"
                 v-model="editedVenue.location.address"
-                :value="editedVenue.location.address"
                 prepend-icon="mdi-road"
               ></v-text-field>
 
@@ -337,6 +332,7 @@ import ReportModal from "@/components/ReportModal.vue";
 import ChatCard from "@/components/ChatCard.vue";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import firebase from "firebase/app";
+import axios from "axios";
 
 export default {
   props: ["isAdmin"],
@@ -424,6 +420,17 @@ export default {
     },
     async toggleEdit() {
       if (this.isEdit) {
+        const query =
+          this.editedVenue.location.address +
+          ", " +
+          this.editedVenue.location.city;
+        const res = await axios.get(
+          `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
+        );
+        this.editedVenue.location.geo = new firebase.firestore.GeoPoint(
+          parseFloat(res.data[0].lat),
+          parseFloat(res.data[0].lon)
+        );
         await this.$store.dispatch("updateVenue", this.editedVenue);
       }
       this.isEdit = !this.isEdit;
