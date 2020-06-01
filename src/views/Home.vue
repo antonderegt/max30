@@ -59,9 +59,8 @@ export default {
   data() {
     return {
       searchField: "",
-      address: "",
-      suggestions: [],
       loading: false,
+      requestedLocation: false,
       geo: {
         latitude: 52.37454030000001,
         longitude: 4.897975505617977
@@ -70,6 +69,10 @@ export default {
   },
   watch: {
     searchField(newValue) {
+      if (this.requestedLocation == true) {
+        this.requestedLocation = false;
+        return;
+      }
       this.handleSearch(newValue);
     }
   },
@@ -87,7 +90,7 @@ export default {
             const osmRes = await axios.get(
               `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
             );
-            this.address = osmRes?.data?.address;
+            this.requestedLocation = true;
             this.searchField = osmRes?.data?.address?.postcode;
             this.geo = {
               latitude: res?.coords?.latitude,
@@ -119,20 +122,15 @@ export default {
       const res = await axios.get(
         `https://nominatim.openstreetmap.org/search/${this.searchField}?format=json&countrycodes=NL&limit=3`
       );
-      if (res.data[0] === undefined) {
-        return; // TODO: fix with indicator on hot reloading
-      } else {
-        const coords = {
-          latitude: res.data[0].lat,
-          longitude: res.data[0].lon
-        };
-        this.geo = coords;
-      }
+      if (res.data[0] === undefined) return; // TODO: fix with indicator on hot reloading
+
+      this.geo = {
+        latitude: res.data[0].lat,
+        longitude: res.data[0].lon
+      };
     },
     handleSearch(query) {
-      if (!query?.length) {
-        return;
-      }
+      if (!query?.length) return;
 
       if (this.timeout) clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
