@@ -23,6 +23,7 @@
               placeholder="Plaatsnaam of postcode"
               prepend-icon="search"
               single-line
+              :disabled="loading"
             ></v-text-field>
 
             <v-btn @click="requestLocation()" icon>

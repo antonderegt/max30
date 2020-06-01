@@ -68,6 +68,7 @@
         :userID="item.userID"
         sender="user"
       />
+      {{ index == 0 ? "Verleden" : "" }}
     </v-row>
   </v-container>
 </template>
