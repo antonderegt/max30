@@ -11,8 +11,24 @@
             v-model="name"
             :rules="nameRules"
             label="Naam"
-            prepend-icon="mdi-card-account-details"
+            prepend-icon="mdi-card-account-details-outline"
             required
+          ></v-text-field>
+          <v-textarea
+            v-model="description"
+            label="Beschrijving"
+            prepend-icon="mdi-information-outline"
+            auto-grow
+          ></v-textarea>
+          <v-text-field
+            v-model="url"
+            label="Website"
+            prepend-icon="mdi-web"
+          ></v-text-field>
+          <v-text-field
+            v-model="phone"
+            label="Telefoon"
+            prepend-icon="mdi-cellphone"
           ></v-text-field>
           <v-text-field
             v-model="address.postcode"
@@ -75,7 +91,11 @@ export default {
       valid: true,
       lazy: true,
       name: "",
-      nameRules: [v => !!v || "Field is required"],
+      description: "",
+      nameRules: [v => !!v || "Veld is verplicht"],
+      phone: "",
+      url: "",
+      urlRules: [v => !!v || "Veld is verplicht"],
       postcodeRules: [
         v => !!v || "Postcode is verplicht",
         v =>
@@ -114,6 +134,9 @@ export default {
       this.geo = coords;
       const venue = {
         name: this.name,
+        description: this.description,
+        phone: this.phone,
+        url: this.url,
         location: {
           city: this.address.city,
           address: `${this.address.street} ${this.address.number}`,

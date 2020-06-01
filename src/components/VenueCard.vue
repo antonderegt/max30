@@ -11,22 +11,43 @@
           </v-row>
 
           <v-row v-else class="pa-0" no-gutters>
-            <v-col v-if="isEdit && editedVenue" cols="11">
+            <v-col v-if="isEdit && editedVenue" cols="10" class="ma-4">
               <!-- Venue info fields -->
               <v-text-field
                 label="Naam"
                 v-model="editedVenue.name"
                 :value="editedVenue.name"
+                prepend-icon="mdi-card-account-details-outline"
+              ></v-text-field>
+              <v-textarea
+                label="Beschrijving"
+                v-model="editedVenue.description"
+                prepend-icon="mdi-information-outline"
+                auto-grow
+              ></v-textarea>
+              <v-text-field
+                label="URL"
+                v-model="editedVenue.url"
+                :value="editedVenue.url"
+                prepend-icon="mdi-web"
+              ></v-text-field>
+              <v-text-field
+                label="Tel"
+                v-model="editedVenue.phone"
+                :value="editedVenue.phone"
+                prepend-icon="mdi-cellphone"
               ></v-text-field>
               <v-text-field
                 label="Stad"
                 v-model="editedVenue.location.city"
                 :value="editedVenue.location.city"
+                prepend-icon="mdi-city"
               ></v-text-field>
               <v-text-field
                 label="Adres"
                 v-model="editedVenue.location.address"
                 :value="editedVenue.location.address"
+                prepend-icon="mdi-road"
               ></v-text-field>
 
               <!-- Venue capacity -->
@@ -69,8 +90,8 @@
 
             <v-col v-else cols="11">
               <v-card-title
-                >{{ venue.name
-                }}<v-btn
+                >{{ venue.name }}
+                <v-btn
                   v-if="!isAdmin"
                   @click="showReportModal = !showReportModal"
                   text
@@ -83,6 +104,13 @@
               <v-card-subtitle v-if="venue.location">
                 {{ venue.location.city }}, {{ venue.location.address }}
               </v-card-subtitle>
+              <v-card-text>
+                <p v-if="venue.description">{{ venue.description }}</p>
+                <a :href="'//' + venue.url" v-if="venue.url" target="_blank">{{
+                  venue.url
+                }}</a>
+                <p v-if="venue.phone">Tel: {{ venue.phone }}</p>
+              </v-card-text>
 
               <ShareNetwork
                 class="ma-4"
