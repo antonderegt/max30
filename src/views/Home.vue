@@ -31,7 +31,10 @@
                 v-if="loading"
                 indeterminate
                 color="primary"
-              ></v-progress-circular>
+                @click.stop="cancelRequestLocation"
+              >
+                <v-icon>mdi-close-circle</v-icon></v-progress-circular
+              >
               <v-icon v-else>my_location</v-icon>
             </v-btn>
           </v-toolbar>
@@ -61,6 +64,7 @@ export default {
     return {
       searchField: "",
       loading: false,
+      requestCancelled: false,
       requestedLocation: false,
       geo: {
         latitude: 52.37454030000001,
@@ -80,6 +84,7 @@ export default {
   methods: {
     async requestLocation() {
       this.loading = true;
+      this.requestCancelled = false;
       console.log("requesting current location");
       try {
         navigator.geolocation.getCurrentPosition(
@@ -88,9 +93,15 @@ export default {
               this.loading = false;
               return; // no coordinates from geolocation api web
             }
+
             const osmRes = await axios.get(
-              `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
+              `http://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
             );
+
+            if (this.requestCancelled) {
+              this.requestCancelled = false;
+              return;
+            }
             this.requestedLocation = true;
             this.searchField = osmRes?.data?.address?.postcode;
             this.geo = {
@@ -129,6 +140,10 @@ export default {
         latitude: res.data[0].lat,
         longitude: res.data[0].lon
       };
+    },
+    cancelRequestLocation() {
+      this.loading = false;
+      this.requestCancelled = true;
     },
     handleSearch(query) {
       if (!query?.length) return;
