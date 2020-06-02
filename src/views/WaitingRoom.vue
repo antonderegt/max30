@@ -27,8 +27,8 @@
           <v-card-text v-if="item.status === 'waiting'">
             <v-row
               ><v-col
-                >{{ user.profile.name }} de status van jou reservering is:
-                {{ status[item.status] }}</v-col
+                >{{ user.profile.name }} de status van jou reservering:
+                <b>{{ status[item.status] }}</b></v-col
               >
             </v-row>
             <v-row
@@ -43,7 +43,7 @@
               </v-col>
             </v-row>
           </v-card-text>
-          <v-card-text v-else> Status: {{ item.status }} </v-card-text>
+          <v-card-text v-else>{{ status[item.status] }} </v-card-text>
           <v-divider v-if="item.status == 'waiting'"></v-divider>
           <v-card-actions v-if="item.status !== 'deleted'">
             <v-spacer></v-spacer>
@@ -56,7 +56,10 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      {{ index == 0 ? "Verleden" : "" }}
+      <v-col cols="12" class="text-center">
+        <h1>{{ index == 0 ? "Verleden" : "" }}</h1>
+        <v-divider></v-divider>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -92,9 +95,9 @@ export default {
         waiting: ""
       },
       status: {
-        waiting: "WACHT UIT",
-        declined: "Afgekeurd",
-        accepted: "Succes!"
+        waiting: "Nog even geduld a.u.b.",
+        declined: "Je aanvraag is helaas afgekeurd",
+        accepted: "Je mag naar binnen!"
       }
     };
   },
