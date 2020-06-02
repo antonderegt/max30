@@ -17,7 +17,6 @@
     "material-design-icons-iconfont": "^5.0.1",
     "ngeohash": "^0.6.3",
     "vue": "^2.6.11",
-    "vue-chat-scroll": "^1.4.0",
     "vue-router": "^3.1.6",
     "vue-social-sharing": "^3.0.0-beta.10",
     "vuefire": "^2.2.2",

@@ -4,11 +4,8 @@ import router from "./router";
 import store from "./store";
 import vuetify from "./plugins/vuetify";
 import firebase from "firebase/app";
-import VueChatScroll from "vue-chat-scroll";
 import SocialSharing from "vue-social-sharing";
 Vue.use(SocialSharing);
-
-Vue.use(VueChatScroll);
 
 Vue.config.productionTip = false;
 

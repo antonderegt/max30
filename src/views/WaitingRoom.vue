@@ -44,14 +44,8 @@
             </v-row>
           </v-card-text>
           <v-card-text v-else> Status: {{ item.status }} </v-card-text>
-          <v-divider v-if="item.status !== 'deleted'"></v-divider>
+          <v-divider v-if="item.status == 'waiting'"></v-divider>
           <v-card-actions v-if="item.status !== 'deleted'">
-            <v-btn v-if="showChat === -1" @click="showChat = index"
-              >Show chat</v-btn
-            >
-            <v-btn v-else-if="showChat === index" @click="showChat = -1"
-              >Hide chat</v-btn
-            >
             <v-spacer></v-spacer>
             <v-btn
               v-if="item.status === 'waiting'"
@@ -62,12 +56,6 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <ChatCard
-        v-if="showChat === index"
-        :venueID="item.venueID"
-        :userID="item.userID"
-        sender="user"
-      />
       {{ index == 0 ? "Verleden" : "" }}
     </v-row>
   </v-container>
@@ -77,14 +65,12 @@
 import { mapState } from "vuex";
 import firebase from "firebase/app";
 import Loading from "@/components/Loading.vue";
-import ChatCard from "@/components/ChatCard.vue";
 
 export default {
   computed: mapState(["user", "waitListsByUser", "waitListInFrontOfUser"]),
   data() {
     return {
       loadingWaitLists: false,
-      showChat: -1,
       newMessage: "",
       waitListLength: 0,
       waitListsWithName: [],
@@ -207,7 +193,7 @@ export default {
       }
     }
   },
-  components: { Loading, ChatCard },
+  components: { Loading },
   async created() {
     this.loadingWaitLists = true;
     await firebase.getCurrentUser();
@@ -215,24 +201,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.messages-container {
-  overflow-y: auto;
-}
-
-.messages {
-  max-height: 150px;
-  overflow-x: hidden;
-}
-
-.chat-message {
-  margin: 4px;
-  padding: 4px;
-  border-radius: 6px;
-}
-
-.owner {
-  background-color: lightblue;
-}
-</style>

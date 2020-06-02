@@ -273,12 +273,6 @@
             {{ person.userID }}
           </v-card-title>
           <v-card-text> Met {{ person.personCount }} personen. </v-card-text>
-          <chatCard
-            v-if="openChat == index"
-            :userID="person.userID"
-            :venueID="venueID"
-            sender="owner"
-          />
           <v-divider></v-divider>
           <v-card-actions>
             <v-btn
@@ -294,12 +288,6 @@
             >
               yes
             </v-btn>
-            <v-btn v-if="openChat != index" @click="openChat = index"
-              >Chat</v-btn
-            >
-            <v-btn v-if="openChat == index" @click="openChat = -1"
-              >Close Chat</v-btn
-            >
             <v-btn
               color="error"
               @click="
@@ -329,7 +317,6 @@ import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 import JoinModal from "@/components/JoinModal.vue";
 import ReportModal from "@/components/ReportModal.vue";
-import ChatCard from "@/components/ChatCard.vue";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import firebase from "firebase/app";
 import axios from "axios";
@@ -354,7 +341,6 @@ export default {
       loadingWaitList: false,
       show: false,
       count: 1,
-      openChat: -1,
       isEdit: false,
       editedVenue: null,
       showReportModal: false
@@ -456,7 +442,6 @@ export default {
     Loading,
     JoinModal,
     ReportModal,
-    ChatCard,
     VueQrcode
   },
   created() {

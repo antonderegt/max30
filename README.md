@@ -76,13 +76,3 @@ reservations/{reservationID}
  - createdTimestamp
  - reservedTimestamp
 ```
-### Chats
-```
-chats/{venueID_userID}
- - userID
- - venueID
- - messages/{messageID}
-    - content
-    - sendBy: owner | user
-    - timestamp
-```

@@ -18,7 +18,6 @@ export default new Vuex.Store({
     },
     myVenues: [],
     waitListsByUser: [],
-    chat: [],
     snackbar: {
       show: false,
       text: ""
@@ -110,20 +109,6 @@ export default new Vuex.Store({
         "myVenues",
         db.collection("venues").where(`owners.${userID}`, "==", true)
       );
-    }),
-    bindChat: firestoreAction((bindFirestoreRef, chat) => {
-      try {
-        return bindFirestoreRef.bindFirestoreRef(
-          "chat",
-          db
-            .collection("chats")
-            .doc(`${chat.venueID}_${chat.userID}`)
-            .collection("messages")
-            .orderBy("timestamp")
-        );
-      } catch (error) {
-        console.log(error);
-      }
     }),
     async updateWaitList(_, waitListItem) {
       try {
@@ -233,7 +218,7 @@ export default new Vuex.Store({
     },
     async deleteVenue(_, venue) {
       try {
-        // TODO: chats and waitListItems still exist after delete (feature? or bug?)
+        // TODO: waitListItems still exist after delete (feature? or bug?)
         await db
           .collection("venues")
           .doc(venue.id)
