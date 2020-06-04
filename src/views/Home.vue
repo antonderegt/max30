@@ -95,7 +95,7 @@ export default {
             }
 
             const osmRes = await axios.get(
-              `http://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
+              `https://nominatim.openstreetmap.org/reverse?lat=${res.coords.latitude}&lon=${res.coords.longitude}&format=json`
             );
 
             if (this.requestCancelled) {
