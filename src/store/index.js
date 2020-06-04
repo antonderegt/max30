@@ -29,6 +29,10 @@ export default new Vuex.Store({
     SET_LOGGED_IN(state, value) {
       state.user.loggedIn = value;
     },
+    SET_LOGGED_OUT(state) {
+      state.user.loggedIn = false;
+      state.user.profile = null;
+    },
     SET_USER(state, data) {
       state.user.data = data;
     },
@@ -242,6 +246,11 @@ export default new Vuex.Store({
       commit("UPDATE_PROFILE", profile);
     },
     fetchUser({ commit }, user) {
+      if (user === null) {
+        commit("SET_LOGGED_OUT");
+        return;
+      }
+
       commit("SET_LOGGED_IN", user !== null);
 
       if (user) {
