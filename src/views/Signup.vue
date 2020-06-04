@@ -43,6 +43,14 @@
           ></v-text-field>
           <v-text-field
             v-if="method === 'email'"
+            v-model="email"
+            :rules="emailRules"
+            label="Email"
+            prepend-icon="mdi-email"
+            required
+          ></v-text-field>
+          <v-text-field
+            v-if="method === 'email'"
             v-model="password"
             :rules="passwordRules"
             label="Wachtwoord"
@@ -52,18 +60,10 @@
             @click:append="showPassword = !showPassword"
             required
           ></v-text-field>
-          <v-text-field
-            v-if="method === 'email'"
-            v-model="email"
-            :rules="emailRules"
-            label="Email"
-            prepend-icon="mdi-email"
-            required
-          ></v-text-field>
           <span v-if="owner">Vul de gegevens in van je eerste zaak</span>
           <v-text-field
             v-if="owner"
-            v-model="name"
+            v-model="venue.name"
             :rules="nameRules"
             label="Naam"
             prepend-icon="mdi-card-account-details"
@@ -71,7 +71,7 @@
           ></v-text-field>
           <v-text-field
             v-if="owner"
-            v-model="address.postcode"
+            v-model="venue.address.postcode"
             :rules="postcodeRules"
             label="Postcode"
             prepend-icon="mdi-home"
@@ -80,7 +80,7 @@
           ></v-text-field>
           <v-text-field
             v-if="owner"
-            v-model="address.number"
+            v-model="venue.address.number"
             :rules="numberRules"
             label="Huisnummer"
             prepend-icon="mdi-numeric"
@@ -89,14 +89,14 @@
           ></v-text-field>
           <v-text-field
             v-if="owner"
-            v-model="address.street"
+            v-model="venue.address.street"
             label="Straat"
             prepend-icon="mdi-road"
             disabled
           ></v-text-field>
           <v-text-field
             v-if="owner"
-            v-model="address.city"
+            v-model="venue.address.city"
             label="Stad"
             prepend-icon="mdi-city"
             disabled
@@ -156,10 +156,13 @@ export default {
           "Voer een geldig postcode in"
       ],
       numberRules: [v => !!v || "Huisnummer is verplicht"],
-      address: {
-        postcode: "",
-        number: "",
-        street: ""
+      venue: {
+        name: "",
+        address: {
+          postcode: "",
+          number: "",
+          street: ""
+        }
       },
       password: "",
       passwordRules: [
@@ -217,11 +220,11 @@ export default {
         return;
       }
       const query =
-        this.address.street +
+        this.venue.address.street +
         " " +
-        this.address.number +
+        this.venue.address.number +
         ", " +
-        this.address.city;
+        this.venue.address.city;
       const res = await axios.get(
         `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
       );
@@ -231,10 +234,10 @@ export default {
       );
       this.geo = coords;
       const venue = {
-        name: this.name,
+        name: this.venue.name,
         location: {
-          city: this.address.city,
-          address: `${this.address.street} ${this.address.number}`,
+          city: this.venue.address.city,
+          address: `${this.venue.address.street} ${this.venue.address.number}`,
           geo: coords
         },
         owners: {
@@ -250,15 +253,19 @@ export default {
       console.log("added Venue");
     },
     async fetchLocation() {
-      if (this.address.postcode.length && this.address.number.length) {
+      const { address } = this.venue;
+      if (address.postcode.length && address.number.length) {
         try {
           const res = await axios.get(
-            `https://api.postcodedata.nl/v1/postcode/?postcode=${this.address.postcode}&streetnumber=${this.address.number}&ref=domeinnaam.nl&type=json`
+            `https://api.postcodedata.nl/v1/postcode/?postcode=${address.postcode}&streetnumber=${address.number}&ref=domeinnaam.nl&type=json`
           );
           if (res.data.status === "ok") {
-            this.address = { ...this.address, ...res.data.details[0] };
+            this.venue.address = {
+              ...address,
+              ...res.data.details[0]
+            };
           } else {
-            this.address.street = "Kan geen geldige locatie vinden";
+            address.street = "Kan geen geldige locatie vinden";
           }
         } catch (error) {
           console.log("fetchLocation: " + error);
@@ -282,8 +289,15 @@ export default {
           name: this.name,
           owner: this.owner
         };
-        this.$store.dispatch("createProfile", profile);
-        this.$router.replace("/login");
+
+        await this.$store.dispatch("createProfile", profile);
+        if (!this.owner) {
+          this.$router.push(this.$route.query.redirect || "/");
+          return;
+        }
+        // Else create venue for owner type
+        await this.addVenue(res.user.uid);
+        this.$router.push(this.$route.query.redirect || "/my-venues");
       } catch (error) {
         alert(error.message);
       }
