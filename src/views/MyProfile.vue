@@ -57,7 +57,8 @@ export default {
     return {
       loading: true,
       isEdit: false,
-      editedUser: null
+      editedUser: null,
+      currUser: null
     };
   },
   watch: {
@@ -65,25 +66,50 @@ export default {
       deep: true,
       handler(newValue) {
         this.loading = false;
-        this.editedUser = newValue; // prefill edit fields
+        this.editedUser = JSON.parse(JSON.stringify(newValue)); // prefill edit fields
       }
     }
   },
   methods: {
     async toggleEdit() {
       if (this.isEdit) {
-        console.log(this.editedUser);
-        //TODO: update profile and user
-        // await this.$store.dispatch("createProfile", this.editedUser.data.profile);
+        this.loading = true;
+        try {
+          // Update displayname if changed
+          if (this.editedUser.data.displayName !== this.user.data.displayName) {
+            await this.currUser.updateProfile({
+              displayName: this.editedUser.data.displayName
+            });
+          }
+          // Update email if changed
+          if (this.editedUser.data.email !== this.user.data.email) {
+            await this.currUser.updateEmail(this.editedUser.data.email);
+          }
+
+          // If new password is set
+          // if (this.editedUser.data.email !== this.user.data.email) {
+          //   this.currUser.updateEmail(this.editedUser.data.email);
+          // }
+
+          // Refetch user
+          this.fetchUser();
+        } catch (e) {
+          console.error(e);
+        }
       }
+
+      // Toggle edit view and disable loading indicator
+      this.loading = false;
       this.isEdit = !this.isEdit;
+    },
+    async fetchUser() {
+      this.currUser = await firebase.getCurrentUser();
+      await this.$store.dispatch("fetchUser", this.currUser);
     }
   },
   components: { Loading },
   async created() {
-    const currUser = await firebase.getCurrentUser();
-    console.log(currUser);
-    await this.$store.dispatch("fetchUser", currUser);
+    this.fetchUser();
   }
 };
 </script>
