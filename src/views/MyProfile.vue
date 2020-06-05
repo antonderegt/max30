@@ -41,10 +41,47 @@
               ></v-text-field>
               <v-row class="pa-2 mt-10" justify="center" no-gutters>
                 <v-col>
-                  <v-btn small color="error" class="ma-2" @click="deleteVenue()"
+                  <v-btn
+                    small
+                    color="error"
+                    class="ma-2"
+                    @click="dialog = !dialog"
                     >Verwijder Profiel en Venues uit Plekkie</v-btn
                   >
                 </v-col>
+                <v-dialog v-model="dialog">
+                  <v-card>
+                    <v-card-title class="headline"
+                      >Verwijderen profiel</v-card-title
+                    >
+                    <v-card-text
+                      >Weet je zeker dat je jouw profiel wilt verwijderen?
+                      <br />Je verwijderd je profiel, maar ook alle plekkies die
+                      gekoppeld zijn aan jouw account.</v-card-text
+                    >
+                    <v-text-field
+                      class="ml-4 mr-10"
+                      v-if="provider === 'password'"
+                      v-model="oldPassword"
+                      :rules="passwordRules"
+                      label="Wachtwoord"
+                      :type="showPassword ? 'text' : 'password'"
+                      prepend-icon="mdi-lock"
+                      :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                      @click:append="showPassword = !showPassword"
+                      required
+                    ></v-text-field>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="green darken-1" text @click="dialog = false"
+                        >Nee, annuleer</v-btn
+                      >
+                      <v-btn color="red darken-1" text @click="deleteAccount()"
+                        >Ja, verwijder</v-btn
+                      >
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
               </v-row>
             </v-col>
 
@@ -78,6 +115,7 @@ export default {
   data() {
     return {
       loading: true,
+      dialog: false,
       isEdit: false,
       editedUser: null,
       currUser: null,
@@ -164,6 +202,37 @@ export default {
       // Toggle edit view and disable loading indicator
       this.loading = false;
       this.isEdit = !this.isEdit;
+    },
+    async deleteAccount() {
+      let resMsg = "Account succesvol verwijderd!";
+      let resColor = "success";
+      try {
+        const credential = firebase.auth.EmailAuthProvider.credential(
+          this.user.data.email,
+          this.oldPassword
+        );
+        await this.currUser.reauthenticateWithCredential(credential);
+        await this.currUser.delete();
+      } catch (e) {
+        resColor = "error";
+        resMsg = "Kan profiel niet verwijderen.";
+        if (e.code === "auth/wrong-password") {
+          resMsg = "Verkeerd wachtwoord ingevoerd. Verwijderen mislukt";
+          // Clear password fields
+          this.oldPassword = "";
+        }
+      }
+
+      this.$store.dispatch("setSnackbar", {
+        show: true,
+        text: resMsg,
+        color: resColor
+      });
+
+      if (resColor === "success") {
+        //succesfull deleted, redirect home
+        this.$router.push("/");
+      }
     },
     async fetchUser() {
       this.currUser = await firebase.getCurrentUser();
