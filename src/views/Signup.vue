@@ -101,12 +101,21 @@
             prepend-icon="mdi-city"
             disabled
           ></v-text-field>
-          <v-slider
-            v-if="owner"
-            :label="'Capacity: ' + capacity"
-            v-model="capacity"
-            thumb-label
-          ></v-slider>
+          <br />
+          <span v-if="owner">Capaciteit</span>
+          <v-slider v-if="owner" v-model="capacity" thumb-label="always">
+            <template v-slot:prepend>
+              <v-icon @click="capacity--">
+                mdi-minus
+              </v-icon>
+            </template>
+
+            <template v-slot:append>
+              <v-icon @click="capacity++">
+                mdi-plus
+              </v-icon>
+            </template>
+          </v-slider>
         </v-form>
       </v-card-text>
       <v-divider></v-divider>

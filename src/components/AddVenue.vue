@@ -60,13 +60,22 @@
           ></v-text-field>
 
           <!-- TODO: add category -->
+          <!-- TODO: Create generic solution with signup -->
+          <br />
+          <span>Capaciteit</span>
+          <v-slider v-model="capacity" thumb-label="always">
+            <template v-slot:prepend>
+              <v-icon @click="capacity--">
+                mdi-minus
+              </v-icon>
+            </template>
 
-          <v-divider></v-divider>
-          <v-slider
-            :label="'Capaciteit: ' + capacity"
-            v-model="capacity"
-            thumb-label
-          ></v-slider>
+            <template v-slot:append>
+              <v-icon @click="capacity++">
+                mdi-plus
+              </v-icon>
+            </template>
+          </v-slider>
         </v-form>
       </v-card-text>
       <v-divider></v-divider>
