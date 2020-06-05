@@ -1,7 +1,7 @@
 <template>
-  <v-snackbar v-model="snackbar.show">
+  <v-snackbar v-model="snackbar.show" :color="snackbar.color">
     {{ snackbar.text }}
-    <v-btn color="pink" text @click="toggleSnackbar">
+    <v-btn text @click="toggleSnackbar">
       Close
     </v-btn>
   </v-snackbar>
@@ -22,7 +22,8 @@ export default {
     toggleSnackbar() {
       const snackbar = {
         show: false,
-        text: ""
+        text: "",
+        color: ""
       };
       this.$store.dispatch("setSnackbar", snackbar);
     }

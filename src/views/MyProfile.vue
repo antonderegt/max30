@@ -17,6 +17,28 @@
                 v-model="editedUser.data.email"
                 prepend-icon="mdi-email"
               ></v-text-field>
+              <v-text-field
+                v-if="provider === 'password'"
+                v-model="oldPassword"
+                :rules="passwordRules"
+                label="Oude wachtwoord"
+                :type="showPassword ? 'text' : 'password'"
+                prepend-icon="mdi-lock"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="showPassword = !showPassword"
+                required
+              ></v-text-field>
+              <v-text-field
+                v-if="provider === 'password'"
+                v-model="newPassword"
+                :rules="passwordRules"
+                label="Verander wachtwoord"
+                :type="showPassword ? 'text' : 'password'"
+                prepend-icon="mdi-lock"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                @click:append="showPassword = !showPassword"
+                required
+              ></v-text-field>
               <v-row class="pa-2 mt-10" justify="center" no-gutters>
                 <v-col>
                   <v-btn small color="error" class="ma-2" @click="deleteVenue()"
@@ -58,7 +80,21 @@ export default {
       loading: true,
       isEdit: false,
       editedUser: null,
-      currUser: null
+      currUser: null,
+      provider: "",
+      showPassword: false,
+      oldPassword: "",
+      newPassword: "",
+      //TODO: move general rules to vuex store?
+      passwordRules: [
+        v => !!v || "Wachtwoord is verplicht",
+        v =>
+          (v && v.length >= 6) || "Wachtwoord moet minstens 6 characters zijn"
+      ],
+      emailRules: [
+        v => !!v || "E-mail is verplicht",
+        v => /.+@.+\..+/.test(v) || "E-mail moet geldig zijn"
+      ]
     };
   },
   watch: {
@@ -87,14 +123,41 @@ export default {
           }
 
           // If new password is set
-          // if (this.editedUser.data.email !== this.user.data.email) {
-          //   this.currUser.updateEmail(this.editedUser.data.email);
-          // }
+          if (this?.newPassword?.length > 5 && this.provider === "password") {
+            const credential = firebase.auth.EmailAuthProvider.credential(
+              this.user.data.email,
+              this.oldPassword
+            );
+            await this.currUser.reauthenticateWithCredential(credential);
+            await this.currUser.updatePassword(this.newPassword);
+          }
 
           // Refetch user
-          this.fetchUser();
+          await this.fetchUser();
+
+          // return snackbar message
+          this.$store.dispatch("setSnackbar", {
+            show: true,
+            text: "Je profiel is gewijzigd!",
+            color: "success"
+          });
         } catch (e) {
           console.error(e);
+          let text = "";
+          if (e.code === "auth/wrong-password") {
+            text = "Verkeerd wachtwoord ingevoerd. Wijzigen mislukt";
+
+            // Clear password fields
+            this.newPassword = "";
+            this.oldPassword = "";
+          }
+
+          // Display correct error message to user
+          this.$store.dispatch("setSnackbar", {
+            show: true,
+            text,
+            color: "error"
+          });
         }
       }
 
@@ -104,6 +167,7 @@ export default {
     },
     async fetchUser() {
       this.currUser = await firebase.getCurrentUser();
+      this.provider = this.currUser.providerData[0].providerId; // password = mail, google.com or facebook.com etc.
       await this.$store.dispatch("fetchUser", this.currUser);
     }
   },

@@ -20,7 +20,8 @@ export default new Vuex.Store({
     waitListsByUser: [],
     snackbar: {
       show: false,
-      text: ""
+      text: "",
+      color: ""
     },
     waitListInFrontOfUser: {}
   },
