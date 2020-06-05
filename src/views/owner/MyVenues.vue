@@ -18,6 +18,18 @@
         {{ venue.name }}
       </v-card-title>
     </v-card>
+    <v-btn
+      to="/add-venue"
+      color="pink"
+      class="ma-10"
+      dark
+      absolute
+      bottom
+      right
+      fab
+    >
+      <v-icon>mdi-plus</v-icon>
+    </v-btn>
   </v-container>
 </template>
 

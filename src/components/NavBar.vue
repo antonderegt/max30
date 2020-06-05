@@ -57,12 +57,12 @@
         <div v-if="user.profile !== null && user.profile.owner">
           Beheerders
           <v-divider></v-divider>
-          <v-list-item to="/add-venue">
+          <v-list-item to="/my-profile">
             <v-list-item-icon>
-              <v-icon>mdi-map-plus</v-icon>
+              <v-icon>mdi-account-circle</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title>Plek Toevoegen</v-list-item-title>
+              <v-list-item-title>Mijn Profiel</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/my-venues">

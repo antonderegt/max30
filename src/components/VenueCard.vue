@@ -348,8 +348,6 @@ export default {
   },
   watch: {
     venue(newValue) {
-      console.log("running watch venue");
-
       this.editedVenue = newValue; // prefill edit fields
     }
   },

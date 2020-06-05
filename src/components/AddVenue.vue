@@ -3,7 +3,7 @@
   <v-container v-else>
     <v-card width="400" class="mx-auto mt-5">
       <v-card-title>
-        <h1 class="display-1">Plek</h1>
+        <h1 class="display-1">Nieuwe plek</h1>
       </v-card-title>
       <v-card-text>
         <v-form ref="form" v-model="valid" :lazy-validation="lazy">
