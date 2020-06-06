@@ -13,10 +13,6 @@
           </v-col>
         </v-row>
         <v-row justify="center">
-          <v-btn @click="method = 'email'" class="ma-2">
-            <v-icon class="mr-2">mdi-email</v-icon>
-            Email</v-btn
-          >
           <v-btn @click="method = 'google'" class="ma-2">
             <v-icon class="mr-2">fab fa-google</v-icon>
             Google</v-btn
@@ -24,6 +20,10 @@
           <v-btn @click="method = 'facebook'" class="ma-2">
             <v-icon class="mr-2">fab fa-facebook</v-icon>
             Facebook</v-btn
+          >
+          <v-btn @click="method = 'email'" class="ma-2">
+            <v-icon class="mr-2">mdi-email</v-icon>
+            Email</v-btn
           >
         </v-row>
       </v-card-text>

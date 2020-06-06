@@ -6,7 +6,7 @@
         <h1 class="display-1">Login</h1>
       </v-card-title>
       <v-card-text>
-        <v-row justify="center">
+        <v-row v-if="!resetPassword" justify="center">
           <v-btn @click="loginWithSocial('google')" class="ma-2">
             <v-icon class="mr-2">fab fa-google</v-icon>
             google</v-btn
@@ -36,15 +36,13 @@
             required
           ></v-text-field>
         </v-form>
-        <a @click="sendPasswordResetEmail">Wachtwoord vergeten</a>
+        <router-link :to="passwordReset">Wachtwoord vergeten?</router-link>
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
         <v-btn color="info" @click.prevent="login">Login</v-btn>
         <v-spacer></v-spacer>
-        <router-link :to="signup">
-          Account nodig?
-        </router-link>
+        <v-btn text small :to="signup">Account nodig?</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -60,6 +58,7 @@ export default {
       loading: false,
       valid: true,
       lazy: true,
+      resetPassword: false,
       email: "",
       emailRules: [
         v => !!v || "E-mail is required",
@@ -73,7 +72,10 @@ export default {
       showPassword: false,
       signup: this.$route.query.redirect
         ? `/signup?redirect=${this.$route.query.redirect}`
-        : "/signup"
+        : "/signup",
+      passwordReset: this.$route.query.redirect
+        ? `/password-reset?redirect=${this.$route.query.redirect}`
+        : "/password-reset"
     };
   },
   methods: {
@@ -123,31 +125,8 @@ export default {
         this.$router.push(this.$route.query.redirect || "/");
       }
     },
-    async sendPasswordResetEmail() {
-      if (!this.$refs.form.validate("email")) {
-        this.$store.dispatch("setSnackbar", {
-          show: true,
-          text: "E-mail invalid"
-        });
-      }
-      try {
-        await firebase.auth().sendPasswordResetEmail(this.email);
-        this.$store.dispatch("setSnackbar", {
-          show: true,
-          text: "Wachtwoord reset mail verzonden"
-        });
-      } catch (error) {
-        console.log("sendPasswordResetEmail: " + error);
-      }
-    },
     validate() {
       this.$refs.form.validate();
-    },
-    reset() {
-      this.$refs.form.reset();
-    },
-    resetValidation() {
-      this.$refs.form.resetValidation();
     }
   },
   components: { Loading }

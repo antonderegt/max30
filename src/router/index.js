@@ -19,19 +19,24 @@ const routes = [
   {
     path: "/login",
     name: "Login",
-    component: () => import("@/views/Login.vue")
+    component: () => import("@/views/authentication/Login.vue")
   },
   {
     path: "/register-venue",
     name: "SignupVenue",
-    component: () => import("@/views/Signup.vue"),
+    component: () => import("@/views/authentication/Signup.vue"),
     props: { isVenue: true }
   },
   {
     path: "/signup",
     name: "Signup",
-    component: () => import("@/views/Signup.vue"),
+    component: () => import("@/views/authentication/Signup.vue"),
     props: { isVenue: false }
+  },
+  {
+    path: "/password-reset",
+    name: "PasswordReset",
+    component: () => import("@/views/authentication/PasswordReset.vue")
   },
   {
     path: "/add-venue",
