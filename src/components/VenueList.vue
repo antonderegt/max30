@@ -1,19 +1,6 @@
 <template>
   <Loading v-if="loading" />
   <v-list v-else two-line subheader>
-    <!-- <v-list-item
-        :to="'venue/' + venue.id"
-        v-for="venue in venueList"
-        :key="venue.id"
-      >
-        <v-list-item-content>
-          <v-list-item-title>{{ venue.name }}</v-list-item-title>
-          <v-list-item-subtitle>
-            {{ venue.location.address }}<br />
-            {{ venue.location.postcode }} in {{ venue.location.city }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item> -->
     <!-- TODO: hadere restaruants: in Zwolle (postcode) -->
     <v-row>
       <v-col
@@ -127,7 +114,7 @@ export default {
       };
 
       try {
-        await this.$store.dispatch("bindGeoBoundedVenues", location);
+        await this.$store.dispatch("getGeoBoundedVenues", location);
         if (!this.venueListGeoBounded?.length) {
           // Vergroot zoek gebied tot een venue is gevonden
           if (distance < 500) {
