@@ -48,7 +48,19 @@ export default new Vuex.Store({
     },
     SET_SNACKBAR(state, snackbar) {
       state.snackbar = snackbar;
+    },
+    ADD_GEO_BOUNDED_VENUES(state, venues) {
+      state.venueListGeoBounded = venues;
+
+      // console.log("venue");
+
+      // console.log(venue);
+
+      // state.venueListGeoBounded.push(venue);
     }
+    // CLEAR_GEO_BOUNDED_VENUES(state) {
+    //   state.venueListGeoBounded = [];
+    // }
   },
   actions: {
     bindVenue: firestoreAction((bindFirestoreRef, id) => {
@@ -57,29 +69,45 @@ export default new Vuex.Store({
         db.collection("venues").doc(id)
       );
     }),
-    bindGeoBoundedVenues: firestoreAction((bindFirestoreRef, location) => {
-      const kmPerLat = 111;
-      const kmPerLon = 150 - 1.6 * location.latitude;
-      const lat = 1 / kmPerLat;
-      const lon = 1 / kmPerLon;
+    // bindGeoBoundedVenues: firestoreAction((bindFirestoreRef, location) => {
+    //   // const kmPerLat = 111;
+    //   // const kmPerLon = 150 - 1.6 * location.latitude;
+    //   // const lat = 1 / kmPerLat;
+    //   // const lon = 1 / kmPerLon;
 
-      const lowerLat = location.latitude - lat * location.distance;
-      const lowerLon = location.longitude - lon * location.distance;
+    //   // const lowerLat = location.latitude - lat * location.distance;
+    //   // const lowerLon = location.longitude - lon * location.distance;
 
-      const upperLat = location.latitude + lat * location.distance;
-      const upperLon = location.longitude + lon * location.distance;
+    //   // const upperLat = location.latitude + lat * location.distance;
+    //   // const upperLon = location.longitude + lon * location.distance;
 
-      const lower = geohash.encode(lowerLat, lowerLon);
-      const upper = geohash.encode(upperLat, upperLon);
+    //   // const lower = geohash.encode(lowerLat, lowerLon);
+    //   // const upper = geohash.encode(upperLat, upperLon);
 
-      return bindFirestoreRef.bindFirestoreRef(
-        "venueListGeoBounded",
-        db
-          .collection("venues")
-          .where("location.geohash", ">", lower)
-          .where("location.geohash", "<", upper)
-      );
-    }),
+    //   // console.log("lower: " + lower);
+    //   // console.log("upper: " + upper);
+
+    //   const centerLat = location.latitude;
+    //   const centerLon = location.longitude;
+    //   let center = geohash.encode(centerLat, centerLon);
+    //   console.log(center);
+
+    //   center = center.substring(0, center.length - 4);
+    //   const neighbors = geohash.neighbors(center);
+    //   console.log("box: " + center + "0, " + center + "~");
+    //   console.log(neighbors);
+
+    //   return bindFirestoreRef.bindFirestoreRef(
+    //     "venueListGeoBounded",
+    //     db
+    //       .collection("venues")
+    //       // .where("location.geohash", ">", lower)
+    //       // .where("location.geohash", "<", upper)
+    //       .where("location.geohash", ">", center)
+    //       .where("location.geohash", "<", center + "~")
+    //     // .where("location.geohash", "in", neighbors)
+    //   );
+    // }),
     bindWaitList: firestoreAction((bindFirestoreRef, venueID) => {
       return bindFirestoreRef.bindFirestoreRef(
         "waitList",
@@ -115,6 +143,37 @@ export default new Vuex.Store({
         db.collection("venues").where(`owners.${userID}`, "==", true)
       );
     }),
+    async bindGeoBoundedVenues({ commit }, location) {
+      const centerLat = location.latitude;
+      const centerLon = location.longitude;
+      let center = geohash.encode(centerLat, centerLon);
+      center = center.substring(0, center.length - location.distance);
+      const neighbors = geohash.neighbors(center);
+      neighbors.push(center);
+
+      let venueList = [];
+
+      await Promise.all(
+        neighbors.map(async center => {
+          try {
+            const res = await db
+              .collection("venues")
+              .where("location.geohash", ">", center)
+              .where("location.geohash", "<", center + "~")
+              .get();
+            if (!res?.empty) {
+              res.docs.forEach(v => {
+                venueList.push(v.data());
+              });
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        })
+      );
+
+      commit("ADD_GEO_BOUNDED_VENUES", venueList);
+    },
     async updateWaitList(_, waitListItem) {
       try {
         await db

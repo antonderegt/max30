@@ -104,7 +104,7 @@ export default {
   },
   watch: {
     geo: function() {
-      this.getVenueList(3);
+      this.getVenueList(4);
     }
   },
   components: {
@@ -135,7 +135,7 @@ export default {
               show: true,
               text: "Zoek gebied wordt vergroot."
             });
-            this.getVenueList(distance + 1.5);
+            this.getVenueList(distance + 1);
           } else {
             this.$store.dispatch("setSnackbar", {
               show: true,
@@ -174,7 +174,7 @@ export default {
     }
   },
   created() {
-    this.getVenueList(3);
+    this.getVenueList(4);
   }
 };
 </script>
