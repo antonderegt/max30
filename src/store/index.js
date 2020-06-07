@@ -11,6 +11,7 @@ export default new Vuex.Store({
     waitList: [],
     venueListGeoBounded: [],
     venue: {},
+    searchLocation: "",
     user: {
       loggedIn: false,
       data: null,
@@ -51,6 +52,9 @@ export default new Vuex.Store({
     },
     ADD_GEO_BOUNDED_VENUES(state, venues) {
       state.venueListGeoBounded = venues;
+    },
+    SET_SEARCH_LOCATION(state, location) {
+      state.searchLocation = location;
     }
   },
   actions: {
@@ -95,6 +99,9 @@ export default new Vuex.Store({
         db.collection("venues").where(`owners.${userID}`, "==", true)
       );
     }),
+    setSearchLocation({ commit }, location) {
+      commit("SET_SEARCH_LOCATION", location);
+    },
     async getGeoBoundedVenues({ commit }, location) {
       const center = geohash
         .encode(location.latitude, location.longitude)
