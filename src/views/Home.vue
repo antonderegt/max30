@@ -60,10 +60,11 @@
 
 <script>
 import VenueList from "@/components/VenueList.vue";
+import { mapState } from "vuex";
 import axios from "axios";
 
 export default {
-  name: "Home",
+  computed: mapState(["searchLocation"]),
   components: {
     VenueList
   },
@@ -111,6 +112,7 @@ export default {
             }
             this.requestedLocation = true;
             this.searchField = osmRes?.data?.address?.postcode;
+            this.$store.dispatch("setSearchLocation", this.searchField);
             this.geo = {
               latitude: res?.coords?.latitude,
               longitude: res?.coords?.longitude
@@ -157,12 +159,19 @@ export default {
 
       if (this.timeout) clearTimeout(this.timeout);
       this.timeout = setTimeout(() => {
+        if (this.searchField == this.searchLocation) return;
+        this.$store.dispatch("setSearchLocation", this.searchField);
         //search function
         this.getCoordinates();
       }, 300);
     }
   },
   mounted() {
+    if (this.searchLocation !== "") {
+      this.searchField = this.searchLocation;
+      return;
+    }
+
     this.requestLocation();
   }
 };

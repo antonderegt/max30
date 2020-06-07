@@ -83,7 +83,7 @@ export default {
       type: Object
     }
   },
-  computed: mapState(["venueListGeoBounded"]),
+  computed: mapState(["venueListGeoBounded", "searchLocation"]),
   data() {
     return {
       loading: false,
@@ -162,6 +162,11 @@ export default {
     }
   },
   created() {
+    if (this.searchLocation !== "") {
+      this.calculateDistance();
+      return;
+    }
+
     this.getVenueList(4);
   }
 };
