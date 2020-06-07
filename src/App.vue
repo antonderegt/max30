@@ -1,5 +1,5 @@
 <template>
-  <v-app class="white lighten-4">
+  <v-app :style="{ background: $vuetify.theme.themes.light.primary }">
     <NavBar :items="items" />
 
     <v-content
@@ -46,3 +46,9 @@ export default {
   components: { NavBar, Snackbar }
 };
 </script>
+
+<style>
+html {
+  overflow-x: auto;
+}
+</style>
