@@ -120,12 +120,14 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-row class="ma-2" v-if="method !== ''">
-        <v-btn v-if="owner" color="info" ma-5 @click="signUp"
+        <v-btn v-if="owner" color="success" ma-5 @click="signUp"
           >Laat de klanten maar komen!</v-btn
-        ><v-btn v-else color="info" ma-5 @click="signUp">Meld mij aan!</v-btn>
+        ><v-btn v-else color="success" ma-5 @click="signUp"
+          >Meld mij aan!</v-btn
+        >
       </v-row>
       <v-row class="ma-2">
-        <v-btn text small to="/login">Ik heb al een account</v-btn>
+        <v-btn text to="/login">Ik heb al een account</v-btn>
       </v-row>
     </v-card>
   </v-container>

@@ -17,14 +17,14 @@
           :to="'venue/' + venue.id"
         >
           <v-list-item three-line>
-            <v-list-item-content class="primary--text">
+            <v-list-item-content class="info--text">
               <v-list-item-title class="headline mb-1">{{
                 venue.name
               }}</v-list-item-title>
-              <v-list-item-subtitle class="primary--text">{{
+              <v-list-item-subtitle class="info--text">{{
                 venue.location.address
               }}</v-list-item-subtitle>
-              <v-list-item-subtitle class="primary--text">{{
+              <v-list-item-subtitle class="info--text">{{
                 venue.location.city
               }}</v-list-item-subtitle>
             </v-list-item-content>
@@ -60,7 +60,7 @@
                 class="ma-2"
                 tile
                 outlined
-                color="primary"
+                color="success"
               >
                 <v-icon left>post_add</v-icon> Zet mij in de wachtrij
               </v-btn>

@@ -11,10 +11,10 @@ export default new Vuetify({
         primary: "#B248F8", // Electric Purple
         secondary: "#C98DF7", // Bright Lilac
         accent: "#F7F7F7", // Cultured (white)
-        error: "#EAEAED", // Platinum (gray)
+        error: "#C98DF7", // Secondary
         info: "#000000",
-        success: "#000000",
-        warning: "#000000"
+        success: "#B248F8", // Primary
+        warning: "#EAEAED" // Platinum (gray)
       }
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <Loading v-if="loading" />
   <v-container v-else class="pa-3">
-    <v-card v-if="myVenues.length === 0">
+    <v-card v-if="myVenues.length === 0" color="accent">
       <v-card-title>You don't have any venues registered</v-card-title>
       <v-card-actions>
         <v-btn to="/add-venue">Click here to register</v-btn>
@@ -12,7 +12,8 @@
       v-for="venue in myVenues"
       :key="venue.name"
       @click="goToVenue(venue.id)"
-      class="ma-3"
+      class="ma-3 info--text"
+      color="accent"
     >
       <v-card-title>
         {{ venue.name }}
@@ -20,7 +21,7 @@
     </v-card>
     <v-btn
       to="/add-venue"
-      color="pink"
+      color="accent"
       class="mx-4 my-12"
       fab
       fixed
@@ -29,7 +30,7 @@
       bottom
       right
     >
-      <v-icon>mdi-plus</v-icon>
+      <v-icon color="success">mdi-plus</v-icon>
     </v-btn>
   </v-container>
 </template>

@@ -3,15 +3,19 @@
   <v-container v-else>
     <v-row justify="center">
       <v-col cols="12" md="6">
-        <v-card max-width="400" class="mx-auto">
-          <v-row v-if="venue === null">
+        <v-card max-width="400" class="mx-auto info--text" color="accent">
+          <v-row v-if="venue == null">
             <v-col>
               <h3>No venue information...</h3>
             </v-col>
           </v-row>
 
           <v-row v-else class="pa-0" no-gutters>
-            <v-col v-if="isEdit && editedVenue" cols="10" class="ma-4">
+            <v-col
+              v-if="isEdit && editedVenue"
+              cols="10"
+              class="ma-4 info--text"
+            >
               <!-- Venue info fields -->
               <v-text-field
                 label="Naam"
@@ -55,7 +59,7 @@
               <v-row v-show="isAdmin">
                 <v-col align="center">
                   <v-btn
-                    color="warning"
+                    color="error"
                     @click="updateMetaInfo('capacity', venue.capacity - 1)"
                     >-</v-btn
                   >
@@ -91,12 +95,12 @@
                   @click="showReportModal = !showReportModal"
                   text
                   icon
-                  color="red lighten-2"
+                  color="secondary lighten-2"
                 >
                   <v-icon>mdi-alert-circle-outline</v-icon>
                 </v-btn>
               </v-card-title>
-              <v-card-subtitle v-if="venue.location">
+              <v-card-subtitle v-if="venue.location" class="info--text">
                 {{ venue.location.city }}, {{ venue.location.address }}
               </v-card-subtitle>
               <v-card-text>
@@ -120,7 +124,7 @@
                     ', kijk dan op onze site om andere locaties te checken'
                 "
               >
-                <v-btn color="success" class="white--text">
+                <v-btn color="primary" class="primary--text" icon>
                   <v-icon>fab fa-whatsapp</v-icon>
                 </v-btn>
               </ShareNetwork>
@@ -140,13 +144,13 @@
                 quote="Plekkie houdt mijn alcoholisme in stand. - Kroeg Tijger"
                 hashtags="feest,wachtrij,reserveren,plekkie"
               >
-                <v-btn color="info" class="white--text">
+                <v-btn color="primary" class="primary--text" icon>
                   <v-icon>fab fa-facebook-f</v-icon>
                 </v-btn>
               </ShareNetwork>
             </v-col>
             <v-col v-show="isAdmin" @click="toggleEdit()" cols="1 pt-4">
-              <v-icon>{{ isEdit ? "done" : "create" }}</v-icon>
+              <v-icon color="primary">{{ isEdit ? "done" : "create" }}</v-icon>
             </v-col>
           </v-row>
           <v-divider class="my-4"></v-divider>
@@ -213,16 +217,22 @@
                 }}</v-card-title>
               </v-col>
               <v-col
-                v-for="person in waitList.slice(0, 5)"
+                v-for="person in waitList.slice(0, 4)"
                 :key="person.id"
                 cols="2"
                 class="pa-3"
               >
-                <v-badge color="green" :content="person.personCount" overlap>
-                  <v-icon>mdi-account-group</v-icon>
+                <v-badge
+                  color="secondary"
+                  :content="person.personCount"
+                  overlap
+                >
+                  <v-icon color="primary">mdi-account-group</v-icon>
                 </v-badge>
               </v-col>
-              <v-icon v-if="waitList.length > 5">mdi-dots-horizontal</v-icon>
+              <v-icon color="primary" v-if="waitList.length > 5"
+                >mdi-dots-horizontal</v-icon
+              >
             </v-row>
 
             <v-card-title v-show="isAdmin">Pas aanwezigen aan:</v-card-title>
@@ -230,10 +240,11 @@
             <v-row v-show="isAdmin">
               <v-col align="center">
                 <v-btn
-                  color="warning"
+                  color="error"
                   @click="
                     updateMetaInfo('presentCount', venue.presentCount - 1)
                   "
+                  class="accent--text"
                   >-</v-btn
                 >
               </v-col>
@@ -243,6 +254,7 @@
                   @click="
                     updateMetaInfo('presentCount', venue.presentCount + 1)
                   "
+                  class="accent--text"
                   >+</v-btn
                 >
               </v-col>
@@ -276,7 +288,7 @@
           <v-divider></v-divider>
           <v-card-actions>
             <v-btn
-              color="success"
+              color="secondary"
               @click="
                 acceptOrDeclineGroup(
                   index,
@@ -289,7 +301,7 @@
               yes
             </v-btn>
             <v-btn
-              color="error"
+              color="secondary"
               @click="
                 acceptOrDeclineGroup(
                   index,
@@ -431,9 +443,12 @@ export default {
     },
     getProgressColor(venue) {
       let progress = (venue.presentCount / venue.capacity) * 100;
-      if (progress < 80) return { background: "green", text: "black--text" };
-      if (progress < 99) return { background: "orange", text: "white--text" };
-      return { background: "red", text: "white--text" };
+      // if (progress < 80) return { background: "green", text: "black--text" };
+      // if (progress < 99) return { background: "orange", text: "white--text" };
+      // return { background: "red", text: "white--text" };
+      if (progress < 80) return { background: "primary", text: "accent--text" };
+      if (progress < 99) return { background: "primary", text: "accent--text" };
+      return { background: "secondary", text: "accent--text" };
     }
   },
   components: {

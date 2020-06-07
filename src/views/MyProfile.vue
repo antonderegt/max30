@@ -4,20 +4,23 @@
     <v-row justify="center" v-if="!loading">
       <v-col cols="12" md="6">
         <v-card max-width="400" class="mx-auto">
-          <v-row class="pa-0" no-gutters>
-            <v-col v-if="isEdit && editedUser.data" cols="10" class="ma-4">
+          <v-row v-if="isEdit && editedUser.data" cols="12">
+            <v-col>
               <!-- Venue info fields -->
               <v-text-field
+                class="ma-2"
                 label="Naam"
                 v-model="editedUser.data.displayName"
                 prepend-icon="mdi-card-account-details-outline"
               ></v-text-field>
               <v-text-field
+                class="ma-2"
                 label="Email"
                 v-model="editedUser.data.email"
                 prepend-icon="mdi-email"
               ></v-text-field>
               <v-text-field
+                class="ma-2"
                 v-if="provider === 'password'"
                 v-model="oldPassword"
                 :rules="passwordRules"
@@ -29,6 +32,7 @@
                 required
               ></v-text-field>
               <v-text-field
+                class="ma-2"
                 v-if="provider === 'password'"
                 v-model="newPassword"
                 :rules="passwordRules"
@@ -39,58 +43,57 @@
                 @click:append="showPassword = !showPassword"
                 required
               ></v-text-field>
-              <v-row class="pa-2 mt-10" justify="center" no-gutters>
-                <v-col>
-                  <v-btn
-                    small
-                    color="error"
-                    class="ma-2"
-                    @click="dialog = !dialog"
-                    >Verwijder Profiel en Venues uit Plekkie</v-btn
+              <v-dialog v-model="dialog" max-width="380" class="mx-auto">
+                <v-card>
+                  <v-card-title class="headline">
+                    Verwijderen profiel
+                  </v-card-title>
+                  <v-card-text
+                    >Weet je zeker dat je jouw profiel wilt verwijderen?
+                    <br />Je verwijdert je profiel, maar ook alle plekkies die
+                    gekoppeld zijn aan jouw account.</v-card-text
                   >
-                </v-col>
-                <v-dialog v-model="dialog">
-                  <v-card>
-                    <v-card-title class="headline"
-                      >Verwijderen profiel</v-card-title
+                  <v-text-field
+                    class="ml-4 mr-10"
+                    v-if="provider === 'password'"
+                    v-model="oldPassword"
+                    :rules="passwordRules"
+                    label="Wachtwoord"
+                    :type="showPassword ? 'text' : 'password'"
+                    prepend-icon="mdi-lock"
+                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    @click:append="showPassword = !showPassword"
+                    required
+                  ></v-text-field>
+                  <v-divider></v-divider>
+                  <v-card-actions>
+                    <v-btn color="green darken-1" text @click="dialog = false"
+                      >Annuleer</v-btn
+                    ><v-spacer></v-spacer>
+                    <v-btn color="red darken-1" text @click="deleteAccount()"
+                      >Verwijder</v-btn
                     >
-                    <v-card-text
-                      >Weet je zeker dat je jouw profiel wilt verwijderen?
-                      <br />Je verwijderd je profiel, maar ook alle plekkies die
-                      gekoppeld zijn aan jouw account.</v-card-text
-                    >
-                    <v-text-field
-                      class="ml-4 mr-10"
-                      v-if="provider === 'password'"
-                      v-model="oldPassword"
-                      :rules="passwordRules"
-                      label="Wachtwoord"
-                      :type="showPassword ? 'text' : 'password'"
-                      prepend-icon="mdi-lock"
-                      :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                      @click:append="showPassword = !showPassword"
-                      required
-                    ></v-text-field>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="green darken-1" text @click="dialog = false"
-                        >Nee, annuleer</v-btn
-                      >
-                      <v-btn color="red darken-1" text @click="deleteAccount()"
-                        >Ja, verwijder</v-btn
-                      >
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </v-row>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-btn text @click="dialog = !dialog">
+                  Verwijder Profiel
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn @click="toggleEdit()" color="success">save</v-btn>
+              </v-card-actions>
             </v-col>
+          </v-row>
 
-            <v-col v-else cols="11">
+          <v-row v-else>
+            <v-col cols="10">
               <v-card-title>{{ user.data.displayName }} </v-card-title>
               <v-card-subtitle>{{ user.data.email }} </v-card-subtitle>
             </v-col>
-            <v-col @click="toggleEdit()" cols="1 pt-4">
-              <v-icon>{{ isEdit ? "done" : "create" }}</v-icon>
+            <v-col @click="toggleEdit()" cols="2 pt-4">
+              <v-icon color="success">create</v-icon>
             </v-col>
           </v-row>
         </v-card>
@@ -102,7 +105,6 @@
 <script>
 import firebase from "firebase/app";
 import { mapGetters } from "vuex";
-// import axios from "axios";
 import Loading from "@/components/Loading.vue";
 
 export default {
@@ -177,7 +179,7 @@ export default {
           this.$store.dispatch("setSnackbar", {
             show: true,
             text: "Je profiel is gewijzigd!",
-            color: "success"
+            color: "info"
           });
         } catch (e) {
           console.error(e);

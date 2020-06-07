@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-xl>
+  <v-container grid-list-xl class="accent--text">
     <v-row>
       <v-col cols="12" align="center">
         <h1>Welkom in de wachtruimte</h1>
@@ -16,15 +16,15 @@
       justify="center"
     >
       <v-col cols="12" md="6">
-        <v-card :color="color[item.status]">
+        <v-card :color="color[item.status]" class="info--text">
           <v-card-title
             >{{ item.venueName }} - {{ item.personCount }}
             {{ item.personCount === 1 ? "persoon" : "personen" }}</v-card-title
           >
-          <v-card-subtitle>{{
+          <v-card-subtitle class="info--text">{{
             item.timestamp.toDate().toLocaleDateString("nl", options)
           }}</v-card-subtitle>
-          <v-card-text v-if="item.status === 'waiting'">
+          <v-card-text v-if="item.status === 'waiting'" class="info--text">
             <v-row
               ><v-col
                 >{{ user.profile.name }} de status van jou reservering:
@@ -43,7 +43,9 @@
               </v-col>
             </v-row>
           </v-card-text>
-          <v-card-text v-else>{{ status[item.status] }} </v-card-text>
+          <v-card-text class="info--text" v-else
+            >{{ status[item.status] }}
+          </v-card-text>
           <v-divider v-if="item.status == 'waiting'"></v-divider>
           <v-card-actions v-if="item.status !== 'deleted'">
             <v-spacer></v-spacer>
@@ -90,9 +92,9 @@ export default {
         minute: "numeric"
       },
       color: {
-        accepted: "success",
-        declined: "warning",
-        waiting: ""
+        accepted: "secondary",
+        declined: "secondary",
+        waiting: "accent"
       },
       status: {
         waiting: "Nog even geduld a.u.b.",
