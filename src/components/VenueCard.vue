@@ -227,10 +227,10 @@
                   :content="person.personCount"
                   overlap
                 >
-                  <v-icon color="primary">mdi-account-group</v-icon>
+                  <v-icon color="info">mdi-account-group</v-icon>
                 </v-badge>
               </v-col>
-              <v-icon color="primary" v-if="waitList.length > 5"
+              <v-icon color="info" v-if="waitList.length > 5"
                 >mdi-dots-horizontal</v-icon
               >
             </v-row>
