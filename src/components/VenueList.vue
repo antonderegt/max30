@@ -1,6 +1,6 @@
 <template>
   <Loading v-if="loading" />
-  <v-list v-else two-line subheader color="primary">
+  <v-list v-else two-line subheader color="secondary">
     <!-- TODO: hadere restaruants: in Zwolle (postcode) -->
     <v-row>
       <v-col

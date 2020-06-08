@@ -1,5 +1,5 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes.light.primary }">
+  <v-app :style="{ background: $vuetify.theme.themes.light.secondary }">
     <NavBar :items="items" />
 
     <v-content

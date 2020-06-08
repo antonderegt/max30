@@ -39,7 +39,9 @@
           </v-list-item-title>
           <v-list-item-subtitle class="accent--text">
             Vind een plekkie
-            <span v-if="user.profile !== null">{{ user.profile.name }}</span>
+            <span v-if="user.profile !== null">{{
+              user.data.displayName
+            }}</span>
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>

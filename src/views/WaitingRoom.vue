@@ -92,8 +92,8 @@ export default {
         minute: "numeric"
       },
       color: {
-        accepted: "secondary",
-        declined: "secondary",
+        accepted: "warning",
+        declined: "warning",
         waiting: "accent"
       },
       status: {
