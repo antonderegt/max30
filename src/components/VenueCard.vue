@@ -362,7 +362,6 @@ export default {
       try {
         await this.$store.dispatch("bindVenue", this.venueID);
         this.openingHours = this.venue.openingHours;
-        console.log(this.openingHours);
 
         this.loadingVenue = false;
         this.loadingWaitList = true;
