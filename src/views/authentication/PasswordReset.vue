@@ -26,7 +26,7 @@
       <v-card-actions>
         <v-btn text :to="login">Naar login</v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="success" @click.prevent="sendPasswordResetEmail"
+        <v-btn color="secondary" @click.prevent="sendPasswordResetEmail"
           >Stuur reset email</v-btn
         >
       </v-card-actions>

@@ -78,11 +78,11 @@
               </v-dialog>
               <v-divider></v-divider>
               <v-card-actions>
-                <v-btn text @click="dialog = !dialog">
+                <v-btn color="secondary" text @click="dialog = !dialog">
                   Verwijder Profiel
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn @click="toggleEdit()" color="success">save</v-btn>
+                <v-btn @click="toggleEdit()" color="primary">save</v-btn>
               </v-card-actions>
             </v-col>
           </v-row>
@@ -93,7 +93,7 @@
               <v-card-subtitle>{{ user.data.email }} </v-card-subtitle>
             </v-col>
             <v-col @click="toggleEdit()" cols="2 pt-4">
-              <v-icon color="success">create</v-icon>
+              <v-icon color="accent">create</v-icon>
             </v-col>
           </v-row>
         </v-card>

@@ -2,17 +2,20 @@
   <nav>
     <v-app-bar flat color="primary" app>
       <v-app-bar-nav-icon
-        class="accent--text"
+        class="info--text"
         @click="drawer = !drawer"
       ></v-app-bar-nav-icon>
-      <v-btn to="/" text color="accent">
-        <v-toolbar-title class="text-uppercase accent--text">
+      <v-btn to="/" text color="info">
+        <v-toolbar-title class="text-uppercase info--text">
           <span>Plek</span>
           <span class="font-weight-light">kie</span>
         </v-toolbar-title>
       </v-btn>
       <v-spacer></v-spacer>
-      <v-btn v-if="user.loggedIn" text color="accent" @click="logout">
+      <v-btn class="hidden-xs-only" text color="info" to="/faq">
+        <span>Hoe werkt het?</span>
+      </v-btn>
+      <v-btn v-if="user.loggedIn" text color="info" @click="logout">
         <span>Sign out</span>
         <v-icon right>exit_to_app</v-icon>
       </v-btn>
@@ -22,7 +25,7 @@
         "
         text
         class="px-0"
-        color="accent"
+        color="info"
         to="/signup"
       >
         <span>Meld je aan</span>
@@ -33,11 +36,11 @@
     <v-navigation-drawer v-model="drawer" color="primary" app>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="title accent--text text-uppercase">
+          <v-list-item-title class="title dark--text text-uppercase">
             <span>Plek</span>
             <span class="font-weight-light">kie</span>
           </v-list-item-title>
-          <v-list-item-subtitle class="accent--text">
+          <v-list-item-subtitle class="dark--text">
             Vind een plekkie
             <span v-if="user.profile !== null">{{
               user.data.displayName
@@ -47,38 +50,38 @@
       </v-list-item>
       <v-divider></v-divider>
 
-      <v-list dense nav>
+      <v-list dense nav color="primary">
         <v-list-item v-for="item in items" :key="item.title" :to="item.link">
           <v-list-item-icon>
-            <v-icon color="accent">{{ item.icon }}</v-icon>
+            <v-icon color="black">{{ item.icon }}</v-icon>
           </v-list-item-icon>
 
-          <v-list-item-content class="accent--text">
+          <v-list-item-content class="dark--text">
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <div
           v-if="user.profile !== null && user.profile.owner"
-          class="accent--text"
+          class="dark--text"
         >
           Beheerders
           <v-divider></v-divider>
           <v-list-item to="/my-profile">
             <v-list-item-icon>
-              <v-icon color="accent">mdi-account-circle</v-icon>
+              <v-icon color="black">mdi-account-circle</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title class="accent--text"
+              <v-list-item-title class="dark--text"
                 >Mijn Profiel</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/my-venues">
             <v-list-item-icon>
-              <v-icon color="accent">mdi-map-marker</v-icon>
+              <v-icon color="black">mdi-map-marker</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title class="accent--text"
+              <v-list-item-title class="dark--text"
                 >Mijn Plekken</v-list-item-title
               >
             </v-list-item-content>

@@ -1,60 +1,67 @@
 <template>
-  <v-container fluid>
-    <!-- <v-parallax
-      height="250"
-      src="https://cdn.vuetifyjs.com/images/parallax/material.jpg"
-    > -->
-    <v-row align="center" justify="center">
-      <v-col cols="12" class="text-center">
-        <h1 class="display-1 font-weight-thin mb-4 accent--text">
-          <b> Plekkie laat zien waar plek is!</b>
-        </h1>
-        <h4 class="subheading"></h4>
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col cols="12" sm="6" md="4">
-        <v-toolbar
-          class="mx-2"
-          style="border-radius: .5rem"
-          rounded
-          dense
-          color="accent"
-        >
-          <v-text-field
-            v-model="searchField"
-            hide-details
-            autofocus
-            clearable
-            placeholder="Plaatsnaam of postcode"
-            prepend-icon="search"
-            single-line
-            :disabled="loading"
-            color="primary"
-          ></v-text-field>
-
-          <v-btn @click="requestLocation()" class="primary--text" icon>
-            <v-progress-circular
-              v-if="loading"
-              indeterminate
-              color="primary"
-              @click.stop="cancelRequestLocation"
-            >
-              <v-icon>mdi-close-circle</v-icon></v-progress-circular
-            >
-            <v-icon v-else>my_location</v-icon>
-          </v-btn>
-        </v-toolbar>
-      </v-col>
-    </v-row>
-    <!-- </v-parallax> -->
-    <v-container>
-      <v-row justify="center">
-        <v-col cols="12" md="6">
-          <VenueList :geo="geo" />
+  <v-container fluid class="ma-0 pa-0">
+    <v-img
+      height="93vh"
+      src="https://images.unsplash.com/photo-1549807315-f5fa45619e33?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=975&q=80"
+    >
+      <!-- https://cdn.vuetifyjs.com/images/parallax/material.jpg -->
+      <v-row align="center" justify="center">
+        <v-col cols="12" class="text-center">
+          <h1 class="display-1 font-weight-thin mb-4 info--text">
+            <b> Plekkie laat zien waar plek is!</b>
+          </h1>
+          <h4 class="subheading"></h4>
         </v-col>
       </v-row>
-    </v-container>
+      <v-row justify="center">
+        <v-col cols="12" sm="6" md="4">
+          <v-toolbar
+            class="mx-2"
+            style="border-radius: .5rem"
+            rounded
+            dense
+            color="info"
+          >
+            <v-text-field
+              v-model="searchField"
+              hide-details
+              autofocus
+              clearable
+              placeholder="Plaatsnaam of postcode"
+              prepend-icon="search"
+              single-line
+              :disabled="loading"
+              color="secondary"
+            ></v-text-field>
+
+            <v-btn @click="requestLocation()" class="secondary--text" icon>
+              <v-progress-circular
+                v-if="loading"
+                indeterminate
+                color="secondary"
+                @click.stop="cancelRequestLocation"
+              >
+                <v-icon>mdi-close-circle</v-icon></v-progress-circular
+              >
+              <v-icon v-else>my_location</v-icon>
+            </v-btn>
+          </v-toolbar>
+        </v-col>
+      </v-row>
+      <!-- <v-row>
+        <v-col align="center" justify="center"
+          ><v-btn @click="$vuetify.goTo($refs.venues)">down</v-btn></v-col
+        >
+      </v-row> -->
+
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="12" md="6">
+            <VenueList :geo="geo" />
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-img>
   </v-container>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <v-container grid-list-xl class="accent--text">
+  <v-container grid-list-xl class="info--text">
     <v-row>
       <v-col cols="12" align="center">
         <h1>Welkom in de wachtruimte</h1>
@@ -16,18 +16,17 @@
       justify="center"
     >
       <v-col cols="12" md="6">
-        <v-card :color="color[item.status]" class="info--text">
+        <v-card :color="color[item.status]" class="dark--text">
           <v-card-title
             >{{ item.venueName }} - {{ item.personCount }}
             {{ item.personCount === 1 ? "persoon" : "personen" }}</v-card-title
           >
-          <v-card-subtitle class="info--text">{{
+          <v-card-subtitle class="semidark--text">{{
             item.timestamp.toDate().toLocaleDateString("nl", options)
           }}</v-card-subtitle>
-          <v-card-text v-if="item.status === 'waiting'" class="info--text">
+          <v-card-text v-if="item.status === 'waiting'" class="dark--text">
             <v-row
-              ><v-col
-                >{{ user.profile.name }} de status van jou reservering:
+              ><v-col>
                 <b>{{ status[item.status] }}</b></v-col
               >
             </v-row>
@@ -36,14 +35,13 @@
                 Je bent de eerst volgende!
               </v-col>
               <v-col v-else>
-                Er staat {{ peopleInFront.groups }}
-                {{ peopleInFront.groups === 1 ? "groep" : "groepen" }} voor je
-                met in totaal {{ peopleInFront.people }}
-                {{ peopleInFront.people === 1 ? "persoon" : "personen" }}.
+                {{ peopleInFront.people }}
+                {{ peopleInFront.people === 1 ? "Persoon" : "Personen" }} voor
+                je.
               </v-col>
             </v-row>
           </v-card-text>
-          <v-card-text class="info--text" v-else
+          <v-card-text class="dark--text" v-else
             >{{ status[item.status] }}
           </v-card-text>
           <v-divider v-if="item.status == 'waiting'"></v-divider>
@@ -51,7 +49,7 @@
             <v-spacer></v-spacer>
             <v-btn
               v-if="item.status === 'waiting'"
-              color="error"
+              color="secondary"
               @click="cancelWaitListItem(item.id)"
               >Cancel</v-btn
             >
@@ -92,14 +90,14 @@ export default {
         minute: "numeric"
       },
       color: {
-        accepted: "warning",
-        declined: "warning",
-        waiting: "accent"
+        accepted: "info",
+        declined: "info",
+        waiting: "info"
       },
       status: {
-        waiting: "Nog even geduld a.u.b.",
+        waiting: "Nog even geduld a.u.b. 💆🏾‍♂️⏳💆🏻‍♀️",
         declined: "Je aanvraag is helaas afgekeurd",
-        accepted: "Je mag naar binnen!"
+        accepted: "Je mag naar binnen!👯‍♀️"
       }
     };
   },

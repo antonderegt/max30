@@ -13,7 +13,7 @@
       :striped="striped"
       :top="top"
       :value="value"
-      color="accent"
+      color="info"
     ></v-progress-linear>
   </v-container>
 </template>

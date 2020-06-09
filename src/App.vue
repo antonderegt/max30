@@ -1,5 +1,5 @@
 <template>
-  <v-app :style="{ background: $vuetify.theme.themes.light.secondary }">
+  <v-app :style="{ background: $vuetify.theme.themes.light.primary }">
     <NavBar :items="items" />
 
     <v-content
@@ -29,7 +29,7 @@ export default {
           link: "/waiting-room"
         },
         {
-          title: "FAQ",
+          title: "Hoe werkt het?",
           icon: "mdi-comment-question",
           link: "/faq"
         }

@@ -42,7 +42,7 @@
       <v-card-actions>
         <v-btn text :to="signup">Account nodig?</v-btn>
         <v-spacer></v-spacer>
-        <v-btn color="success" @click.prevent="login">Login</v-btn>
+        <v-btn color="secondary" @click.prevent="login">Login</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
