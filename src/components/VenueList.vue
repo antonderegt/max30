@@ -157,9 +157,9 @@ export default {
     },
     getProgressColor(venue) {
       let progress = (venue.presentCount / venue.capacity) * 100;
-      if (progress < 80) return { background: "primary", text: "dark--text" };
-      if (progress < 99) return { background: "primary", text: "dark--text" };
-      return { background: "secondary", text: "info--text" };
+      if (progress < 80) return { background: "secondary", text: "dark--text" };
+      if (progress < 99) return { background: "secondary", text: "dark--text" };
+      return { background: "primary", text: "info--text" };
     }
   },
   created() {

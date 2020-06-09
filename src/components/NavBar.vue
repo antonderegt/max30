@@ -36,11 +36,11 @@
     <v-navigation-drawer v-model="drawer" color="primary" app>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title class="title dark--text text-uppercase">
+          <v-list-item-title class="title info--text text-uppercase">
             <span>Plek</span>
             <span class="font-weight-light">kie</span>
           </v-list-item-title>
-          <v-list-item-subtitle class="dark--text">
+          <v-list-item-subtitle class="info--text">
             Vind een plekkie
             <span v-if="user.profile !== null">{{
               user.data.displayName
@@ -53,35 +53,35 @@
       <v-list dense nav color="primary">
         <v-list-item v-for="item in items" :key="item.title" :to="item.link">
           <v-list-item-icon>
-            <v-icon color="black">{{ item.icon }}</v-icon>
+            <v-icon color="info">{{ item.icon }}</v-icon>
           </v-list-item-icon>
 
-          <v-list-item-content class="dark--text">
+          <v-list-item-content class="info--text">
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <div
           v-if="user.profile !== null && user.profile.owner"
-          class="dark--text"
+          class="info--text"
         >
           Beheerders
           <v-divider></v-divider>
           <v-list-item to="/my-profile">
             <v-list-item-icon>
-              <v-icon color="black">mdi-account-circle</v-icon>
+              <v-icon color="info">mdi-account-circle</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title class="dark--text"
+              <v-list-item-title class="info--text"
                 >Mijn Profiel</v-list-item-title
               >
             </v-list-item-content>
           </v-list-item>
           <v-list-item to="/my-venues">
             <v-list-item-icon>
-              <v-icon color="black">mdi-map-marker</v-icon>
+              <v-icon color="info">mdi-map-marker</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title class="dark--text"
+              <v-list-item-title class="info--text"
                 >Mijn Plekken</v-list-item-title
               >
             </v-list-item-content>

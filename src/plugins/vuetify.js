@@ -18,12 +18,12 @@ export default new Vuetify({
         // warning: "#EAEAED" // Platinum (gray)
 
         // Geel rood variant
-        primary: "#FFD23F", // Geel
-        secondary: "#EE4266", // Rood
-        accent: "#540D6E", // Paars
+        primary: "#EE4266", // Geel FFD23F
+        secondary: "#FFD23F", // Rood EE4266
+        accent: "#540D6E", // Paars 540D6E
         error: "#000000", //
-        info: "#F3FCF0", // Wit
-        dark: "#1F271B",
+        info: "#F3FCF0", // Wit F3FCF0
+        dark: "#1F271B", // Zwart 1F271B
         semidark: "#a0a090",
         success: "#000000", //
         warning: "#000000" //

@@ -50,6 +50,7 @@
             <v-btn
               v-if="item.status === 'waiting'"
               color="secondary"
+              class="dark--text"
               @click="cancelWaitListItem(item.id)"
               >Cancel</v-btn
             >
