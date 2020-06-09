@@ -49,6 +49,9 @@
                 prepend-icon="mdi-road"
               ></v-text-field>
 
+              Openingstijden
+              <OpeningHours :openingHours.sync="openingHours" />
+
               <!-- Venue capacity -->
               <v-row v-show="isAdmin" class="pa-2" justify="center" no-gutters>
                 <v-col>
@@ -328,6 +331,7 @@
 import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 import JoinModal from "@/components/JoinModal.vue";
+import OpeningHours from "@/components/OpeningHours.vue";
 import ReportModal from "@/components/ReportModal.vue";
 import VueQrcode from "@chenfengyuan/vue-qrcode";
 import firebase from "firebase/app";
@@ -355,7 +359,8 @@ export default {
       count: 1,
       isEdit: false,
       editedVenue: null,
-      showReportModal: false
+      showReportModal: false,
+      openingHours: []
     };
   },
   watch: {
@@ -368,6 +373,8 @@ export default {
       this.loadingVenue = true;
       try {
         await this.$store.dispatch("bindVenue", this.venueID);
+        this.openingHours = this.venue.openingHours;
+
         this.loadingVenue = false;
         this.loadingWaitList = true;
         await this.$store.dispatch("bindWaitList", this.venueID);
@@ -427,6 +434,7 @@ export default {
           parseFloat(res.data[0].lat),
           parseFloat(res.data[0].lon)
         );
+        this.editedVenue.openingHours = this.openingHours;
         await this.$store.dispatch("updateVenue", this.editedVenue);
       }
       this.isEdit = !this.isEdit;
@@ -455,7 +463,8 @@ export default {
     Loading,
     JoinModal,
     ReportModal,
-    VueQrcode
+    VueQrcode,
+    OpeningHours
   },
   created() {
     this.venueID = this.$route.params.venue;

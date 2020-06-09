@@ -38,14 +38,26 @@
             v-on:blur="fetchLocation()"
             required
           ></v-text-field>
-          <v-text-field
-            v-model="address.number"
-            :rules="numberRules"
-            label="Huisnummer"
-            prepend-icon="mdi-numeric"
-            v-on:blur="fetchLocation()"
-            required
-          ></v-text-field>
+          <v-row no-gutters>
+            <v-col cols="6">
+              <v-text-field
+                v-model="address.number"
+                :rules="numberRules"
+                label="Huisnummer"
+                prepend-icon="mdi-numeric"
+                v-on:blur="fetchLocation()"
+                required
+              ></v-text-field> </v-col
+            ><v-col cols="6">
+              <v-text-field
+                v-model="address.addition"
+                label="Toevoeging"
+                prepend-icon="mdi-alphabetical"
+                v-on:blur="fetchLocation()"
+                required
+              ></v-text-field>
+            </v-col>
+          </v-row>
           <v-text-field
             v-model="address.street"
             label="Straat"
@@ -115,6 +127,7 @@ export default {
       address: {
         postcode: "",
         number: "",
+        addition: "",
         street: ""
       },
       capacity: 30
@@ -148,7 +161,13 @@ export default {
         url: this.url,
         location: {
           city: this.address.city,
-          address: `${this.address.street} ${this.address.number}`,
+          address: `${this.address.street + " " + this.address.number}${
+            this.address.addition
+              ? isNaN(this.address.addition)
+                ? this.address.addition
+                : "-" + this.address.addition
+              : ""
+          }`,
           geo: coords
         },
         owners: {
