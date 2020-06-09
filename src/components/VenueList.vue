@@ -6,9 +6,8 @@
     subheader
     color="rgb(255, 0, 0, 0)"
     style="max-height: calc(100vh - 280px)"
-    class="overflow-y-auto "
+    class="overflow-y-auto overflow-x-hidden"
   >
-    <!-- calc(100vh - 280px) -->
     <!-- TODO: hadere restaruants: in Zwolle (postcode) -->
     <v-row>
       <v-col
@@ -173,10 +172,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.v-list {
-  /* height: 100vh; */
-  /* overflow-y: scroll; */
-}
-</style>

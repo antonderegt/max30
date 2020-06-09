@@ -48,11 +48,6 @@
           </v-toolbar>
         </v-col>
       </v-row>
-      <!-- <v-row>
-        <v-col align="center" justify="center"
-          ><v-btn @click="$vuetify.goTo($refs.venues)">down</v-btn></v-col
-        >
-      </v-row> -->
 
       <v-container>
         <v-row justify="center">
