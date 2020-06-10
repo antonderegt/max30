@@ -1,9 +1,18 @@
 <template>
   <v-container>
-    <h1 class="ma-2">Antwoorden op veel gevraagde vragen</h1>
+    <h1 class="ma-2 info--text">Antwoorden op veel gevraagde vragen</h1>
     <v-expansion-panels>
-      <v-expansion-panel v-for="(q, i) in questions" :key="i">
-        <v-expansion-panel-header>{{ q.title }}</v-expansion-panel-header>
+      <v-expansion-panel
+        class="dark--text"
+        v-for="(q, i) in questions"
+        :key="i"
+      >
+        <v-expansion-panel-header
+          >{{ q.title }}
+          <template v-slot:actions>
+            <v-icon color="secondary">$expand</v-icon>
+          </template>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           {{ q.text }}
         </v-expansion-panel-content>

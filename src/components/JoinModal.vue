@@ -2,39 +2,21 @@
   <v-row justify="center">
     <v-dialog v-model="show" persistent max-width="400">
       <v-card>
-        <v-card-title class="headline">Bent u gezond?</v-card-title>
-        <v-card-text>
-          <v-checkbox
-            class="ma-0 pa-0"
-            v-model="declaration1"
-            label="Ervaart u en gezelschap momenteel of in de afgelopen twee weken
-            klachten?"
-          ></v-checkbox>
-          <v-checkbox
-            class="ma-0 pa-0"
-            v-model="declaration2"
-            label="Ervaart u en gezelschap thuis momenteel of in de afgelopen twee
-            weken klachten?"
-          ></v-checkbox>
-          <v-checkbox
-            class="ma-0 pa-0"
-            v-model="declaration3"
-            label="Bent u elders in contact gekomen met individuen die klachten
-            hebben/vertonen?"
-          ></v-checkbox>
-          <v-checkbox
-            class="ma-0 pa-0"
-            v-model="declaration4"
-            label="Verklaart u en gezelschap naar eigen weten gezond
-            te zijn?"
-          ></v-checkbox>
-          <v-text-field
-            type="number"
-            label="Hoeveel personen?"
-            v-model="newCount"
-            @change="$emit('update:count', parseInt(newCount))"
-          ></v-text-field>
-        </v-card-text>
+        <v-card-title class="headline">Hoeveel personen?</v-card-title><br />
+        <v-card-text> </v-card-text>
+        <v-slider v-model="newCount" thumb-label="always" max="30">
+          <template v-slot:prepend>
+            <v-icon @click="newCount--">
+              mdi-minus
+            </v-icon>
+          </template>
+
+          <template v-slot:append>
+            <v-icon @click="newCount++">
+              mdi-plus
+            </v-icon>
+          </template>
+        </v-slider>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -61,27 +43,12 @@ export default {
   },
   data() {
     return {
-      newCount: Number,
-      declaration1: false,
-      declaration2: false,
-      declaration3: false,
-      declaration4: false
+      newCount: Number
     };
   },
   methods: {
     async agree() {
-      if (
-        !this.declaration1 ||
-        !this.declaration2 ||
-        !this.declaration3 ||
-        !this.declaration4
-      ) {
-        this.$store.dispatch("setSnackbar", {
-          show: true,
-          text: "U moet alles accepteren om verder te gaan"
-        });
-        return;
-      }
+      // $emit("update:count", parseInt(newCount)); //TODO: ask anton why count is synced?
       const waitListItem = {
         userID: this.user.data.uid,
         venueID: this.venue.id,
@@ -103,7 +70,6 @@ export default {
         await this.$store.dispatch("joinWaitList", waitListItem);
       }
       this.$router.push("/waiting-room");
-      this.$emit("update:show", false);
     }
   },
   created() {

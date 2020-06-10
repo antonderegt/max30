@@ -40,9 +40,9 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="info" @click.prevent="login">Login</v-btn>
+        <v-btn text :to="signup">Account nodig?</v-btn>
         <v-spacer></v-spacer>
-        <v-btn text small :to="signup">Account nodig?</v-btn>
+        <v-btn color="secondary" @click.prevent="login">Login</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>

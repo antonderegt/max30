@@ -1,6 +1,13 @@
 <template>
   <Loading v-if="loading" />
-  <v-list v-else two-line subheader>
+  <v-list
+    v-else
+    two-line
+    subheader
+    color="rgb(255, 0, 0, 0)"
+    style="max-height: calc(100vh - 280px)"
+    class="overflow-y-auto overflow-x-hidden"
+  >
     <!-- TODO: hadere restaruants: in Zwolle (postcode) -->
     <v-row>
       <v-col
@@ -10,20 +17,21 @@
         cols="12"
       >
         <v-card
+          color="info"
           class="mx-auto"
           max-width="700"
-          outlined
+          :ripple="{ class: 'secondary--text' }"
           :to="'venue/' + venue.id"
         >
           <v-list-item three-line>
-            <v-list-item-content>
+            <v-list-item-content class="dark--text">
               <v-list-item-title class="headline mb-1">{{
                 venue.name
               }}</v-list-item-title>
-              <v-list-item-subtitle>{{
+              <v-list-item-subtitle class="semidark--text">{{
                 venue.location.address
               }}</v-list-item-subtitle>
-              <v-list-item-subtitle>{{
+              <v-list-item-subtitle class="semidark--text">{{
                 venue.location.city
               }}</v-list-item-subtitle>
             </v-list-item-content>
@@ -54,14 +62,8 @@
               de wachtrij
             </v-list-item-subtitle>
             <v-list-item-subtitle v-if="venue.capacity <= venue.presentCount">
-              <v-btn
-                :to="'venue/' + venue.id"
-                class="ma-2"
-                tile
-                outlined
-                color="success"
-              >
-                <v-icon left>post_add</v-icon> Zet mij in de wachtrij
+              <v-btn :to="'venue/' + venue.id" class="ma-2" color="secondary">
+                <v-icon left>post_add</v-icon> Stap in de wachtrij
               </v-btn>
             </v-list-item-subtitle>
           </v-card-actions>
@@ -155,9 +157,9 @@ export default {
     },
     getProgressColor(venue) {
       let progress = (venue.presentCount / venue.capacity) * 100;
-      if (progress < 80) return { background: "green", text: "black--text" };
-      if (progress < 99) return { background: "orange", text: "white--text" };
-      return { background: "red", text: "white--text" };
+      if (progress < 80) return { background: "secondary", text: "dark--text" };
+      if (progress < 99) return { background: "secondary", text: "dark--text" };
+      return { background: "primary", text: "info--text" };
     }
   },
   created() {
