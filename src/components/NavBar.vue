@@ -16,7 +16,7 @@
         <span>Hoe werkt het?</span>
       </v-btn>
       <v-btn v-if="user.loggedIn" text color="info" @click="logout">
-        <span>Sign out</span>
+        <span>Uitloggen</span>
         <v-icon right>exit_to_app</v-icon>
       </v-btn>
       <v-btn

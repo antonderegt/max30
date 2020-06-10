@@ -1,5 +1,26 @@
 <template>
   <v-container fluid class="ma-0 pa-0">
+    <v-dialog v-model="dialog" width="500">
+      <v-card>
+        <v-card-title class="headline lighten-2" primary-title>
+          Gezondheidsverklaring
+        </v-card-title>
+
+        <v-card-text>
+          Verklaart u en gezelschap naar eigen weten gezond te zijn? U heeft
+          geen klachten die duiden op besmetting van Corona
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="declaredHealthy()">
+            Ik ben gezond
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     <v-img
       height="93vh"
       src="https://images.unsplash.com/photo-1549807315-f5fa45619e33?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=975&q=80"
@@ -79,7 +100,8 @@ export default {
       geo: {
         latitude: 52.37454030000001,
         longitude: 4.897975505617977
-      }
+      },
+      dialog: undefined
     };
   },
   watch: {
@@ -166,6 +188,16 @@ export default {
         //search function
         this.getCoordinates();
       }, 300);
+    },
+    async declaredHealthy() {
+      sessionStorage.setItem(
+        "healthStatus",
+        JSON.stringify({
+          healthy: true,
+          timestamp: Date.now()
+        })
+      );
+      this.dialog = false;
     }
   },
   mounted() {
@@ -175,6 +207,13 @@ export default {
     }
 
     this.requestLocation();
+  },
+  updated() {
+    let status = JSON.parse(sessionStorage.getItem("healthStatus"));
+    const offset = 12 * 60 * 60 * 1000; // time in ms that is required to re request the users health (12 hour)
+    if (Date.now() - status?.timestamp > offset) {
+      this.dialog = true;
+    }
   }
 };
 </script>
