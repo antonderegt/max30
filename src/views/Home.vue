@@ -211,7 +211,7 @@ export default {
   updated() {
     let status = JSON.parse(sessionStorage.getItem("healthStatus"));
     const offset = 12 * 60 * 60 * 1000; // time in ms that is required to re request the users health (12 hour)
-    if (Date.now() - status?.timestamp > offset) {
+    if (!status || Date.now() - status?.timestamp > offset) {
       this.dialog = true;
     }
   }
