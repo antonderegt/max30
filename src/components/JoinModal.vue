@@ -1,10 +1,10 @@
 <template>
   <v-row justify="center">
     <v-dialog v-model="show" persistent max-width="380">
-      <v-card>
+      <v-card class="pa-4">
         <v-card-title class="headline">Hoeveel personen?</v-card-title><br />
         <v-card-text> </v-card-text>
-        <v-slider v-model="newCount" thumb-label="always" max="30">
+        <v-slider v-model="newCount" thumb-label="always" min="1" max="30">
           <template v-slot:prepend>
             <v-icon @click="newCount--">
               mdi-minus
@@ -48,7 +48,6 @@ export default {
   },
   methods: {
     async agree() {
-      // $emit("update:count", parseInt(newCount)); //TODO: ask anton why count is synced?
       const waitListItem = {
         userID: this.user.data.uid,
         venueID: this.venue.id,

@@ -18,7 +18,8 @@
       <v-col cols="12" md="6">
         <v-card :color="color[item.status]" class="dark--text">
           <v-card-title
-            >{{ item.venueName }} - {{ item.personCount }}
+            >{{ item.venueName ? item.venueName : "Deze plek is verwijderd" }} -
+            {{ item.personCount }}
             {{ item.personCount === 1 ? "persoon" : "personen" }}</v-card-title
           >
           <v-card-subtitle class="semidark--text">{{
@@ -57,9 +58,9 @@
           </v-card-actions>
         </v-card>
       </v-col>
-      <v-col cols="12" class="text-center">
+      <v-col v-if="waitListsWithName.length > 1" cols="12" class="text-center">
         <h1>{{ index == 0 ? "Verleden" : "" }}</h1>
-        <v-divider></v-divider>
+        <v-divider v-if="index == 0"></v-divider>
       </v-col>
     </v-row>
   </v-container>
@@ -97,8 +98,8 @@ export default {
       },
       status: {
         waiting: "Nog even geduld a.u.b. 💆🏾‍♂️⏳💆🏻‍♀️",
-        declined: "Je aanvraag is helaas afgekeurd",
-        accepted: "Je mag naar binnen!👯‍♀️"
+        declined: "Je aanvraag is helaas afgekeurd... 🤧",
+        accepted: "Je mag naar binnen! 👯‍♀️"
       }
     };
   },

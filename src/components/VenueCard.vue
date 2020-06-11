@@ -195,6 +195,7 @@
                   </v-card>
                 </v-dialog>
               </v-card-text>
+              <span class="ml-4 semidark--text">Delen: </span>
               <ShareNetwork
                 class="ma-4"
                 network="WhatsApp"
@@ -378,12 +379,13 @@
                   index,
                   person.userID,
                   person.personCount,
-                  'accepted'
+                  'declined'
                 )
               "
             >
-              yes
+              NEE
             </v-btn>
+            <v-spacer></v-spacer>
             <v-btn
               color="secondary"
               @click="
@@ -391,11 +393,12 @@
                   index,
                   person.userID,
                   person.personCount,
-                  'declined'
+                  'accepted'
                 )
               "
-              >no</v-btn
             >
+              JA
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -539,9 +542,9 @@ export default {
       // if (progress < 80) return { background: "green", text: "black--text" };
       // if (progress < 99) return { background: "orange", text: "white--text" };
       // return { background: "red", text: "white--text" };
-      if (progress < 80) return { background: "primary", text: "dark--text" };
-      if (progress < 99) return { background: "primary", text: "dark--text" };
-      return { background: "secondary", text: "info--text" };
+      if (progress < 80) return { background: "secondary", text: "dark--text" };
+      if (progress < 99) return { background: "secondary", text: "dark--text" };
+      return { background: "primary", text: "info--text" };
     }
   },
   components: {
