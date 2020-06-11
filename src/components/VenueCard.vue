@@ -108,10 +108,92 @@
               </v-card-subtitle>
               <v-card-text>
                 <p v-if="venue.description">{{ venue.description }}</p>
-                <a :href="'//' + venue.url" v-if="venue.url" target="_blank">{{
-                  venue.url
-                }}</a>
+                <p class="ma-0 pa-0">
+                  <a
+                    :href="'//' + venue.url"
+                    v-if="venue.url"
+                    target="_blank"
+                    >{{ venue.url }}</a
+                  >
+                </p>
                 <p v-if="venue.phone">Tel: {{ venue.phone }}</p>
+                <v-btn
+                  class="my-2"
+                  color="secondary"
+                  @click="showOpeningHours = !showOpeningHours"
+                  >Openingstijden</v-btn
+                >
+                <v-dialog v-model="showOpeningHours" max-width="380">
+                  <v-card>
+                    <v-card-title v-if="openingHours == undefined">
+                      Geen openingstijden beschikbaar
+                    </v-card-title>
+                    <v-card-title v-else>Openingstijden</v-card-title>
+                    <v-card-text v-if="openingHours == undefined">
+                      <p v-if="venue.url != undefined && venue.url != ''">
+                        Misschien kan je het vinden op de website van
+                        <a :href="'//' + venue.url" target="_blank">{{
+                          venue.name
+                        }}</a>
+                        of op
+                        <a
+                          :href="
+                            '//' +
+                              'google.com/search?q=Openingstijden+' +
+                              venue.name +
+                              '+' +
+                              venue.location.city
+                          "
+                          target="_blank"
+                        >
+                          Google
+                        </a>
+                      </p>
+                      <p v-else>
+                        Misschien weet
+                        <a
+                          :href="
+                            '//' +
+                              'google.com/search?q=Openingstijden+' +
+                              venue.name +
+                              '+' +
+                              venue.location.city
+                          "
+                          target="_blank"
+                          >Google</a
+                        >
+                        het wel.
+                      </p>
+                    </v-card-text>
+                    <v-card-text v-else>
+                      <p
+                        v-for="day in openingHours"
+                        :key="day.label"
+                        class="ma-0 pa-0"
+                      >
+                        <!-- {{ day }} -->
+                        {{ day.label }}:
+                        {{
+                          day.openTime == null
+                            ? "Gesloten"
+                            : day.closeTime == null
+                            ? "Gesloten"
+                            : day.openTime + " - " + day.closeTime
+                        }}
+                      </p>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn
+                        color="primary"
+                        @click="showOpeningHours = !showOpeningHours"
+                      >
+                        Sluit
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
               </v-card-text>
               <ShareNetwork
                 class="ma-4"
@@ -359,7 +441,8 @@ export default {
       isEdit: false,
       editedVenue: null,
       showReportModal: false,
-      openingHours: []
+      openingHours: [],
+      showOpeningHours: false
     };
   },
   watch: {
@@ -433,7 +516,10 @@ export default {
           parseFloat(res.data[0].lat),
           parseFloat(res.data[0].lon)
         );
-        this.editedVenue.openingHours = this.openingHours;
+
+        if (this.openingHours != undefined)
+          this.editedVenue.openingHours = this.openingHours;
+
         await this.$store.dispatch("updateVenue", this.editedVenue);
       }
       this.isEdit = !this.isEdit;

@@ -69,7 +69,7 @@
 <script>
 export default {
   props: {
-    openingHours: Object
+    openingHours: Array
   },
   data() {
     return {
@@ -111,6 +111,7 @@ export default {
     }
   },
   created() {
+    this.$emit("update:openingHours", this.hours);
     if (this.openingHours == undefined) return;
     this.hours = this.openingHours;
   }

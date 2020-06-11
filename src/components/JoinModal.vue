@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="show" persistent max-width="400">
+    <v-dialog v-model="show" persistent max-width="380">
       <v-card>
         <v-card-title class="headline">Hoeveel personen?</v-card-title><br />
         <v-card-text> </v-card-text>
