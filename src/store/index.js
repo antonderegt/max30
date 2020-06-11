@@ -171,6 +171,19 @@ export default new Vuex.Store({
         console.log("Error getting document:", error);
       }
     },
+    async getUserName(_, userID) {
+      const docRef = db.collection("profiles").doc(userID);
+      try {
+        const doc = await docRef.get();
+        if (doc.exists) {
+          return doc.data().name;
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.log("Error getting document:", error);
+      }
+    },
     async getWaitListInFrontOfUser(_, waitListItem) {
       const doc = await db
         .collection("waitlists")
@@ -264,6 +277,18 @@ export default new Vuex.Store({
         console.error("Error writing document: ", error);
       }
       commit("UPDATE_PROFILE", profile);
+    },
+    async updateProfileName(_, profile) {
+      try {
+        await db
+          .collection("profiles")
+          .doc(profile.userID)
+          .update({
+            name: profile.name
+          });
+      } catch (error) {
+        console.error("Error writing document: ", error);
+      }
     },
     fetchUser({ commit }, user) {
       if (user === null) {

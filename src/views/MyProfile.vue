@@ -161,6 +161,12 @@ export default {
             await this.currUser.updateProfile({
               displayName: this.editedUser.data.displayName
             });
+            // Also update profile
+            const profile = {
+              userID: this.currUser.uid,
+              name: this.editedUser.data.displayName
+            };
+            await this.$store.dispatch("updateProfileName", profile);
           }
           // Update email if changed
           if (this.editedUser.data.email !== this.user.data.email) {
@@ -184,7 +190,7 @@ export default {
           this.$store.dispatch("setSnackbar", {
             show: true,
             text: "Je profiel is gewijzigd!",
-            color: "info"
+            color: "dark"
           });
         } catch (e) {
           console.error(e);

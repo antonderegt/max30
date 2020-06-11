@@ -274,10 +274,6 @@
             </v-row>
 
             <v-row v-if="!isAdmin" no-gutters>
-              <!-- <v-col v-if="waitList.length === 0" cols="12">
-                <v-card-text>Ja er is nog plek, kom snel!</v-card-text>
-              </v-col> -->
-
               <v-col
                 cols="12"
                 class="pa-4"
@@ -366,8 +362,7 @@
       >
         <v-card>
           <v-card-title>
-            <!-- TODO get name instead of userID -->
-            {{ person.userID }}
+            {{ person.userName }}
           </v-card-title>
           <v-card-text> Met {{ person.personCount }} personen. </v-card-text>
           <v-divider></v-divider>
@@ -463,6 +458,20 @@ export default {
         this.loadingVenue = false;
         this.loadingWaitList = true;
         await this.$store.dispatch("bindWaitList", this.venueID);
+
+        await Promise.all(
+          this.waitList.map(async waitListItem => {
+            try {
+              waitListItem.userName = await this.$store.dispatch(
+                "getUserName",
+                waitListItem.userID
+              );
+            } catch (error) {
+              console.log(error);
+            }
+          })
+        );
+
         this.loadingWaitList = false;
       } catch (error) {
         console.log("bindVenue: " + error);
@@ -539,9 +548,6 @@ export default {
     },
     getProgressColor(venue) {
       let progress = (venue.presentCount / venue.capacity) * 100;
-      // if (progress < 80) return { background: "green", text: "black--text" };
-      // if (progress < 99) return { background: "orange", text: "white--text" };
-      // return { background: "red", text: "white--text" };
       if (progress < 80) return { background: "secondary", text: "dark--text" };
       if (progress < 99) return { background: "secondary", text: "dark--text" };
       return { background: "primary", text: "info--text" };

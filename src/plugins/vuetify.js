@@ -8,22 +8,13 @@ export default new Vuetify({
   theme: {
     themes: {
       light: {
-        // Paarse variant
-        // primary: "#B248F8", // Electric Purple
-        // secondary: "#C98DF7", // Bright Lilac
-        // accent: "#F7F7F7", // Cultured (white)
-        // error: "#C98DF7", // Secondary
-        // info: "#000000",
-        // success: "#B248F8", // Primary
-        // warning: "#EAEAED" // Platinum (gray)
-
         // Geel rood variant
-        primary: "#EE4266", // Geel FFD23F
-        secondary: "#FFD23F", // Rood EE4266
-        accent: "#540D6E", // Paars 540D6E
+        primary: "#EE4266", // Rood
+        secondary: "#FFD23F", // Geel
+        accent: "#540D6E", // Paars
         error: "#000000", //
-        info: "#F3FCF0", // Wit F3FCF0
-        dark: "#1F271B", // Zwart 1F271B
+        info: "#F3FCF0", // Wit
+        dark: "#1F271B", // Zwart
         semidark: "#a0a090",
         success: "#000000", //
         warning: "#000000" //
