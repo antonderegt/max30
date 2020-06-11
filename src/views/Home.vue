@@ -25,10 +25,9 @@
       height="93vh"
       src="https://images.unsplash.com/photo-1549807315-f5fa45619e33?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=975&q=80"
     >
-      <!-- https://cdn.vuetifyjs.com/images/parallax/material.jpg -->
       <v-row align="center" justify="center">
         <v-col cols="12" class="text-center">
-          <h1 class="display-1 font-weight-bold mb-4 info--text">
+          <h1 class="display-1  mb-4 info--text">
             <b>Vind een vrij plekkie bij jou in de buurt!</b>
           </h1>
           <h4 class="subheading"></h4>
