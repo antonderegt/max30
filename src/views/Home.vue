@@ -28,8 +28,8 @@
       <!-- https://cdn.vuetifyjs.com/images/parallax/material.jpg -->
       <v-row align="center" justify="center">
         <v-col cols="12" class="text-center">
-          <h1 class="display-1 font-weight-thin mb-4 info--text">
-            <b> Plekkie laat zien waar plek is!</b>
+          <h1 class="display-1 font-weight-bold mb-4 info--text">
+            <b>Vind een vrij plekkie bij jou in de buurt!</b>
           </h1>
           <h4 class="subheading"></h4>
         </v-col>

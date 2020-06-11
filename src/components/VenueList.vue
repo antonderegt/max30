@@ -122,7 +122,7 @@ export default {
           if (distance < 500) {
             this.$store.dispatch("setSnackbar", {
               show: true,
-              text: "Zoek gebied wordt vergroot."
+              text: "Zoekgebied wordt vergroot."
             });
             this.getVenueList(distance + 1);
           } else {
