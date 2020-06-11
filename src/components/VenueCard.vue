@@ -389,7 +389,7 @@
                   index,
                   person.userID,
                   person.personCount,
-                  'accepted'
+                  'startTimer'
                 )
               "
             >
@@ -403,7 +403,7 @@
                   index,
                   person.userID,
                   person.personCount,
-                  'inside'
+                  'accepted'
                 )
               "
             >
@@ -501,14 +501,14 @@ export default {
     },
     async acceptOrDeclineGroup(index, userID, count, status) {
       try {
-        if (status == "accepted") {
+        if (status == "startTimer") {
           await this.$store.dispatch(
             "updateAwaitingArrival",
             this.waitList[index].id
           );
           return;
         }
-        if (status == "inside") {
+        if (status == "accepted") {
           this.updateMetaInfo("presentCount", this.venue.presentCount + count);
         }
         const waitListItem = {

@@ -24,7 +24,10 @@
           <v-card-subtitle class="semidark--text">{{
             item.timestamp.toDate().toLocaleDateString("nl", options)
           }}</v-card-subtitle>
-          <v-card-text v-if="item.awaitingArrival" class="dark--text">
+          <v-card-text
+            v-if="item.awaitingArrival && item.status == 'waiting'"
+            class="dark--text"
+          >
             <p v-if="formattedTimeLeft != '00:00'">
               Claim je plekkie binnen
               <span class="font-weight-bold"
@@ -120,12 +123,13 @@ export default {
       color: {
         accepted: "info",
         declined: "info",
-        waiting: "info"
+        waiting: "info",
+        inside: "info"
       },
       status: {
         waiting: "Nog even geduld a.u.b. 💆🏾‍♂️⏳💆🏻‍♀️",
         declined: "Je aanvraag is helaas afgekeurd... 🤧",
-        accepted: "Je mag naar binnen! 👯‍♀️"
+        accepted: "Je mag naar binnen! 👯‍♀️ Veel plezier 🎉"
       }
     };
   },
