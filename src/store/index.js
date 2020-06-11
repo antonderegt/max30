@@ -140,7 +140,21 @@ export default new Vuex.Store({
           .collection("waitlists")
           .doc(waitListItem.waitListID)
           .update({
-            status: waitListItem.status
+            status: waitListItem.status,
+            updateTimestamp: Timestamp.fromDate(new Date())
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async updateAwaitingArrival(_, waitListID) {
+      try {
+        await db
+          .collection("waitlists")
+          .doc(waitListID)
+          .update({
+            awaitingArrival: true,
+            updateTimestamp: Timestamp.fromDate(new Date())
           });
       } catch (error) {
         console.log(error);
@@ -205,7 +219,8 @@ export default new Vuex.Store({
           venueID: waitListItem.venueID,
           personCount: waitListItem.personCount,
           timestamp: waitListItem.timestamp,
-          status: waitListItem.status
+          status: waitListItem.status,
+          awaitingArrival: waitListItem.awaitingArrival
         });
       } catch (error) {
         console.log(error);

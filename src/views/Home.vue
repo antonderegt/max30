@@ -27,7 +27,7 @@
     >
       <v-row align="center" justify="center">
         <v-col cols="12" class="text-center">
-          <h1 class="display-1  mb-4 info--text">
+          <h1 class="display-1  my-4 info--text">
             <b>Vind een vrij plekkie bij jou in de buurt!</b>
           </h1>
           <h4 class="subheading"></h4>

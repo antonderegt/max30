@@ -19,17 +19,27 @@
         <v-card :color="color[item.status]" class="dark--text">
           <v-card-title
             >{{ item.venueName ? item.venueName : "Deze plek is verwijderd" }} -
-            {{ item.personCount }}
-            {{ item.personCount === 1 ? "persoon" : "personen" }}</v-card-title
+            {{ user.data.displayName }} ({{ item.personCount }})</v-card-title
           >
           <v-card-subtitle class="semidark--text">{{
             item.timestamp.toDate().toLocaleDateString("nl", options)
           }}</v-card-subtitle>
-          <v-card-text v-if="item.status === 'waiting'" class="dark--text">
-            <v-row
-              ><v-col>
-                <b>{{ status[item.status] }}</b></v-col
+          <v-card-text v-if="item.awaitingArrival" class="dark--text">
+            <p v-if="formattedTimeLeft != '00:00'">
+              Claim je plekkie binnen
+              <span class="font-weight-bold"
+                >{{ formattedTimeLeft }} 🏃🏽‍♀🏃🏻‍♂️</span
               >
+            </p>
+            <p v-else>
+              Je bent helaas te laat om je plekkie te claimen 🤷🏾‍♀️
+            </p>
+          </v-card-text>
+          <v-card-text v-else-if="item.status === 'waiting'" class="dark--text">
+            <v-row>
+              <v-col>
+                <b>{{ status[item.status] }}</b>
+              </v-col>
             </v-row>
             <v-row
               ><v-col v-if="peopleInFront.groups <= 0">
@@ -72,9 +82,25 @@ import firebase from "firebase/app";
 import Loading from "@/components/Loading.vue";
 
 export default {
-  computed: mapState(["user", "waitListsByUser", "waitListInFrontOfUser"]),
+  computed: {
+    formattedTimeLeft() {
+      const timeLeft = Math.floor(this.timerCount);
+      if (timeLeft <= 0) {
+        return "00:00";
+      }
+      const minutes = Math.floor(timeLeft / 60);
+      let seconds = timeLeft % 60;
+      if (seconds < 10) {
+        seconds = `0${seconds}`;
+      }
+      // The output in MM:SS format
+      return `${minutes}:${seconds}`;
+    },
+    ...mapState(["user", "waitListsByUser", "waitListInFrontOfUser"])
+  },
   data() {
     return {
+      timerCount: null,
       loadingWaitLists: false,
       newMessage: "",
       waitListLength: 0,
@@ -110,6 +136,16 @@ export default {
     },
     async waitListsByUser() {
       await this.filterVenues();
+    },
+    timerCount: {
+      handler(value) {
+        if (value > 1) {
+          setTimeout(() => {
+            this.timerCount--;
+          }, 1000);
+        }
+      }
+      // immediate: true // This ensures the watcher is triggered upon creation
     }
   },
   methods: {
@@ -171,6 +207,17 @@ export default {
           ? 1
           : -1;
       });
+
+      if (
+        this.waitListsWithName[0]?.awaitingArrival &&
+        this.timerCount == null
+      ) {
+        this.timerCount =
+          (this.waitListsWithName[0].updateTimestamp.toMillis() +
+            1000 * 60 * 15 -
+            Date.now()) /
+          1000;
+      }
     },
     countPeopleInFront() {
       this.peopleInFront = {

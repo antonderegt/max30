@@ -52,7 +52,8 @@ export default {
         userID: this.user.data.uid,
         venueID: this.venue.id,
         personCount: parseInt(this.newCount),
-        status: "waiting"
+        status: "waiting",
+        awaitingArrival: false
       };
 
       const alreadyInQueue = await this.$store.dispatch(

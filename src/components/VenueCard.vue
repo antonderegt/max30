@@ -360,7 +360,7 @@
         v-for="(person, index) in waitList"
         :key="person.id"
       >
-        <v-card>
+        <v-card color="info">
           <v-card-title>
             {{ person.userName }}
           </v-card-title>
@@ -378,10 +378,11 @@
                 )
               "
             >
-              NEE
+              Weiger
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn
+              v-if="!person.awaitingArrival"
               color="secondary"
               @click="
                 acceptOrDeclineGroup(
@@ -392,7 +393,21 @@
                 )
               "
             >
-              JA
+              Start Timer
+            </v-btn>
+            <v-btn
+              v-else
+              color="secondary"
+              @click="
+                acceptOrDeclineGroup(
+                  index,
+                  person.userID,
+                  person.personCount,
+                  'inside'
+                )
+              "
+            >
+              Binnen
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -446,6 +461,10 @@ export default {
   watch: {
     venue(newValue) {
       this.editedVenue = newValue; // prefill edit fields
+    },
+    async waitList() {
+      await this.getUserNames();
+      this.$forceUpdate();
     }
   },
   methods: {
@@ -459,33 +478,44 @@ export default {
         this.loadingWaitList = true;
         await this.$store.dispatch("bindWaitList", this.venueID);
 
-        await Promise.all(
-          this.waitList.map(async waitListItem => {
-            try {
-              waitListItem.userName = await this.$store.dispatch(
-                "getUserName",
-                waitListItem.userID
-              );
-            } catch (error) {
-              console.log(error);
-            }
-          })
-        );
+        await this.getUserNames();
 
         this.loadingWaitList = false;
       } catch (error) {
         console.log("bindVenue: " + error);
       }
     },
+    async getUserNames() {
+      await Promise.all(
+        this.waitList.map(async waitListItem => {
+          try {
+            waitListItem.userName = await this.$store.dispatch(
+              "getUserName",
+              waitListItem.userID
+            );
+          } catch (error) {
+            console.log(error);
+          }
+        })
+      );
+    },
     async acceptOrDeclineGroup(index, userID, count, status) {
       try {
         if (status == "accepted") {
+          await this.$store.dispatch(
+            "updateAwaitingArrival",
+            this.waitList[index].id
+          );
+          return;
+        }
+        if (status == "inside") {
           this.updateMetaInfo("presentCount", this.venue.presentCount + count);
         }
         const waitListItem = {
           waitListID: this.waitList[index].id,
           status
         };
+
         await this.$store.dispatch("updateWaitList", waitListItem);
       } catch (error) {
         console.log("acceptOrDeclineGroup: " + error);
