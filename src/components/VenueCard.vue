@@ -353,14 +353,14 @@
 
     <Loading v-if="loadingWaitList" />
 
-    <v-row v-if="isAdmin" class="pa-3" justify="center">
+    <v-row v-if="isAdmin" justify="center">
       <v-col
+        class="pa-3"
         cols="12"
-        md="6"
         v-for="(person, index) in waitList"
         :key="person.id"
       >
-        <v-card color="info">
+        <v-card color="info" max-width="400" class="mx-auto">
           <v-card-title>
             {{ person.userName }}
           </v-card-title>
