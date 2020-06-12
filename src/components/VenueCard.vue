@@ -64,14 +64,14 @@
                   <v-btn
                     color="secondary"
                     @click="updateMetaInfo('capacity', venue.capacity - 1)"
-                    >-</v-btn
+                    ><v-icon>mdi-minus</v-icon></v-btn
                   >
                 </v-col>
                 <v-col align="center">
                   <v-btn
                     color="primary"
                     @click="updateMetaInfo('capacity', venue.capacity + 1)"
-                    >+</v-btn
+                    ><v-icon>mdi-plus</v-icon></v-btn
                   >
                 </v-col>
               </v-row>
@@ -82,17 +82,18 @@
                 justify="center"
                 no-gutters
               >
-                <v-col>
+                <!-- <v-col>
                   <v-btn color="secondary" @click="deleteVenue()"
                     >Verwijder uit Plekkie</v-btn
                   >
-                </v-col>
+                </v-col> -->
               </v-row>
             </v-col>
 
-            <v-col v-else cols="11">
+            <v-col v-else cols="12">
               <v-card-title
                 >{{ venue.name }}
+                <v-spacer></v-spacer>
                 <v-btn
                   v-if="!isAdmin"
                   @click="showReportModal = !showReportModal"
@@ -101,6 +102,15 @@
                   color="accent"
                 >
                   <v-icon>mdi-alert-circle-outline</v-icon>
+                </v-btn>
+                <v-btn
+                  v-show="isAdmin && !isEdit"
+                  @click="toggleEdit()"
+                  icon
+                  text
+                  color="accent"
+                >
+                  <v-icon>create</v-icon>
                 </v-btn>
               </v-card-title>
               <v-card-subtitle v-if="venue.location" class="semidark--text">
@@ -171,7 +181,6 @@
                         :key="day.label"
                         class="ma-0 pa-0"
                       >
-                        <!-- {{ day }} -->
                         {{ day.label }}:
                         {{
                           day.openTime == null
@@ -226,7 +235,6 @@
                     venue.name +
                     ', kijk dan op onze site om andere locaties te checken'
                 "
-                quote="Plekkie houdt mijn alcoholisme in stand. - Kroeg Tijger"
                 hashtags="feest,wachtrij,reserveren,plekkie"
               >
                 <v-btn color="accent" icon>
@@ -234,12 +242,17 @@
                 </v-btn>
               </ShareNetwork>
             </v-col>
-            <v-col v-show="isAdmin" @click="toggleEdit()" cols="1 pt-4">
+            <!-- <v-col v-show="isAdmin" @click="toggleEdit()" cols="1 pt-4">
               <v-icon color="primary">{{ isEdit ? "done" : "create" }}</v-icon>
-            </v-col>
+            </v-col> -->
+            <!-- <v-col
+              v-show="isAdmin && !isEdit"
+              @click="toggleEdit()"
+              cols="2 pt-4"
+            >
+              <v-icon color="secondary">create</v-icon>
+            </v-col> -->
           </v-row>
-          <v-divider class="my-4"></v-divider>
-
           <div class="venueInfo" v-if="!isEdit">
             <v-row no-gutters>
               <v-card-title v-if="!isAdmin"
@@ -330,7 +343,7 @@
                     updateMetaInfo('presentCount', venue.presentCount - 1)
                   "
                   class="info--text"
-                  >-</v-btn
+                  ><v-icon>mdi-minus</v-icon></v-btn
                 >
               </v-col>
               <v-col align="center">
@@ -340,7 +353,7 @@
                     updateMetaInfo('presentCount', venue.presentCount + 1)
                   "
                   class="info--text"
-                  >+</v-btn
+                  ><v-icon>mdi-plus</v-icon></v-btn
                 >
               </v-col>
             </v-row>
@@ -351,13 +364,23 @@
               />
             </v-col>
           </div>
+          <v-divider v-if="isEdit"></v-divider>
+          <v-card-actions v-if="isEdit">
+            <v-btn color="primary" @click="deleteVenue()"
+              >Verwijder uit Plekkie</v-btn
+            >
+            <v-spacer></v-spacer>
+            <v-btn @click="toggleEdit()" color="secondary" class="dark--text"
+              >save</v-btn
+            >
+          </v-card-actions>
         </v-card>
       </v-col>
     </v-row>
 
     <Loading v-if="loadingWaitList" />
 
-    <v-row v-if="isAdmin" justify="center">
+    <v-row v-if="isAdmin && !isEdit" justify="center">
       <v-col
         class="pa-3"
         cols="12"
@@ -373,6 +396,7 @@
           <v-card-actions>
             <v-btn
               color="secondary"
+              class="dark--text"
               @click="
                 acceptOrDeclineGroup(
                   index,
@@ -388,6 +412,7 @@
             <v-btn
               v-if="!person.awaitingArrival"
               color="secondary"
+              class="dark--text"
               @click="
                 acceptOrDeclineGroup(
                   index,
@@ -402,6 +427,7 @@
             <v-btn
               v-else
               color="secondary"
+              class="dark--text"
               @click="
                 acceptOrDeclineGroup(
                   index,

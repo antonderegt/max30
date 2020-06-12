@@ -68,10 +68,10 @@
                   ></v-text-field>
                   <v-divider></v-divider>
                   <v-card-actions>
-                    <v-btn color="green darken-1" text @click="dialog = false"
+                    <v-btn color="success" text @click="dialog = false"
                       >Annuleer</v-btn
                     ><v-spacer></v-spacer>
-                    <v-btn color="red darken-1" text @click="deleteAccount()"
+                    <v-btn color="error" text @click="deleteAccount()"
                       >Verwijder</v-btn
                     >
                   </v-card-actions>
@@ -99,7 +99,7 @@
               <v-card-subtitle>{{ user.data.email }} </v-card-subtitle>
             </v-col>
             <v-col @click="toggleEdit()" cols="2 pt-4">
-              <v-icon color="secondary">create</v-icon>
+              <v-icon color="accent">create</v-icon>
             </v-col>
           </v-row>
         </v-card>

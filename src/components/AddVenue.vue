@@ -92,6 +92,7 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
+        <v-spacer></v-spacer>
         <v-btn color="secondary" class="dark--text" @click="addVenue"
           >Toevoegen</v-btn
         >

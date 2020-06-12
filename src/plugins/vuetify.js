@@ -12,11 +12,11 @@ export default new Vuetify({
         primary: "#EE4266", // Rood
         secondary: "#FFD23F", // Geel
         accent: "#9A4EAE", // Paars
-        error: "#EE4266", //
+        error: "#EE4266", // Primary
         info: "#F3FCF0", // Wit
         dark: "#1F271B", // Zwart
         semidark: "#a0a090",
-        success: "#000000", //
+        success: "#53a653", // Green
         warning: "#000000" //
       }
     }

@@ -111,8 +111,10 @@ export default {
     }
   },
   created() {
-    this.$emit("update:openingHours", this.hours);
-    if (this.openingHours == undefined) return;
+    if (this.openingHours == undefined) {
+      this.$emit("update:openingHours", this.hours);
+      return;
+    }
     this.hours = this.openingHours;
   }
 };

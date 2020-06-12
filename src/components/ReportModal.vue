@@ -12,17 +12,17 @@
               v-model="reason"
             ></v-text-field></div
         ></v-card-text>
+        <v-divider></v-divider>
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn
-            color="green darken-1"
+            color="success"
             text
             @click="$emit('update:showReportModal', false)"
-            >Cancel</v-btn
           >
-          <v-btn color="green darken-1" text @click="reportVenue"
-            >Rapporteer</v-btn
-          >
+            Cancel
+          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="error" text @click="reportVenue">Rapporteer</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
