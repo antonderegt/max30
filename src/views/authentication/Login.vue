@@ -6,12 +6,22 @@
         <h1 class="display-1">Login</h1>
       </v-card-title>
       <v-card-text>
-        <v-row v-if="!resetPassword" justify="center">
-          <v-btn @click="loginWithSocial('google')" class="ma-2">
-            <v-icon class="mr-2">fab fa-google</v-icon>
+        <v-row v-if="!resetPassword" justify="center" class="pa-2">
+          <v-btn
+            @click="loginWithSocial('google')"
+            color="#4285F4"
+            class="ma-2 white--text"
+            block
+          >
+            <v-icon color="white" class="mr-2">fab fa-google</v-icon>
             google</v-btn
-          ><v-btn @click="loginWithSocial('facebook')" class="ma-2">
-            <v-icon class="mr-2">fab fa-facebook</v-icon>
+          ><v-btn
+            @click="loginWithSocial('facebook')"
+            color="#4267B2"
+            class="ma-2 white--text"
+            block
+          >
+            <v-icon color="white" class="mr-2">fab fa-facebook</v-icon>
             facebook</v-btn
           >
         </v-row>
