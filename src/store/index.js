@@ -305,6 +305,16 @@ export default new Vuex.Store({
         console.error("Error writing document: ", error);
       }
     },
+    async deleteProfile(_, userID) {
+      try {
+        await db
+          .collection("profiles")
+          .doc(userID)
+          .delete();
+      } catch (error) {
+        console.error("Error writing document: ", error);
+      }
+    },
     fetchUser({ commit }, user) {
       if (user === null) {
         commit("SET_LOGGED_OUT");

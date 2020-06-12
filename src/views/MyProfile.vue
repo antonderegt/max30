@@ -24,7 +24,7 @@
                 v-if="provider === 'password'"
                 v-model="oldPassword"
                 :rules="passwordRules"
-                label="Oude wachtwoord"
+                label="Oud wachtwoord"
                 :type="showPassword ? 'text' : 'password'"
                 prepend-icon="mdi-lock"
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -36,7 +36,7 @@
                 v-if="provider === 'password'"
                 v-model="newPassword"
                 :rules="passwordRules"
-                label="Verander wachtwoord"
+                label="Nieuw wachtwoord"
                 :type="showPassword ? 'text' : 'password'"
                 prepend-icon="mdi-lock"
                 :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -55,6 +55,7 @@
                   >
                   <v-text-field
                     class="ml-4 mr-10"
+                    color="dark"
                     v-if="provider === 'password'"
                     v-model="oldPassword"
                     :rules="passwordRules"
@@ -219,12 +220,29 @@ export default {
     async deleteAccount() {
       let resMsg = "Account succesvol verwijderd!";
       let resColor = "success";
+
+      let provider;
+      switch (this.provider) {
+        case "password":
+          provider = firebase.auth.EmailAuthProvider.credential(
+            this.user.data.email,
+            this.oldPassword
+          );
+          break;
+        case "google.com":
+          provider = new firebase.auth.GoogleAuthProvider();
+          break;
+        case "facebook.com":
+          provider = new firebase.auth.FacebookAuthProvider();
+          break;
+      }
       try {
-        const credential = firebase.auth.EmailAuthProvider.credential(
-          this.user.data.email,
-          this.oldPassword
-        );
-        await this.currUser.reauthenticateWithCredential(credential);
+        if (this.provider == "password") {
+          await this.currUser.reauthenticateWithCredential(provider);
+        } else {
+          await this.currUser.reauthenticateWithPopup(provider);
+        }
+        this.$store.dispatch("deleteProfile", this.currUser.uid);
         await this.currUser.delete();
       } catch (e) {
         resColor = "error";

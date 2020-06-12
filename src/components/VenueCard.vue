@@ -98,7 +98,7 @@
                   @click="showReportModal = !showReportModal"
                   text
                   icon
-                  color="secondary lighten-2"
+                  color="accent"
                 >
                   <v-icon>mdi-alert-circle-outline</v-icon>
                 </v-btn>
@@ -118,7 +118,7 @@
                 </p>
                 <p v-if="venue.phone">Tel: {{ venue.phone }}</p>
                 <v-btn
-                  class="my-2"
+                  class="my-2 dark--text"
                   color="secondary"
                   @click="showOpeningHours = !showOpeningHours"
                   >Openingstijden</v-btn
@@ -209,7 +209,7 @@
                     ', kijk dan op onze site om andere locaties te checken'
                 "
               >
-                <v-btn color="secondary" class="primary--text" icon>
+                <v-btn color="accent" icon>
                   <v-icon>fab fa-whatsapp</v-icon>
                 </v-btn>
               </ShareNetwork>
@@ -229,7 +229,7 @@
                 quote="Plekkie houdt mijn alcoholisme in stand. - Kroeg Tijger"
                 hashtags="feest,wachtrij,reserveren,plekkie"
               >
-                <v-btn color="secondary" class="primary--text" icon>
+                <v-btn color="accent" icon>
                   <v-icon>fab fa-facebook-f</v-icon>
                 </v-btn>
               </ShareNetwork>
@@ -279,7 +279,11 @@
                 class="pa-4"
                 v-if="venue.presentCount >= venue.capacity"
               >
-                <v-btn color="secondary" block @click="checkUser(venue.id)"
+                <v-btn
+                  color="secondary"
+                  class="dark--text"
+                  block
+                  @click="checkUser(venue.id)"
                   >Stap in de rij</v-btn
                 >
                 <JoinModal
@@ -311,7 +315,7 @@
                   <v-icon color="dark">mdi-account-group</v-icon>
                 </v-badge>
               </v-col>
-              <v-icon color="info" v-if="waitList.length > 5"
+              <v-icon color="dark" v-if="waitList.length > 5"
                 >mdi-dots-horizontal</v-icon
               >
             </v-row>

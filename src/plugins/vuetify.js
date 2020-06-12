@@ -11,8 +11,8 @@ export default new Vuetify({
         // Geel rood variant
         primary: "#EE4266", // Rood
         secondary: "#FFD23F", // Geel
-        accent: "#540D6E", // Paars
-        error: "#000000", //
+        accent: "#9A4EAE", // Paars
+        error: "#EE4266", //
         info: "#F3FCF0", // Wit
         dark: "#1F271B", // Zwart
         semidark: "#a0a090",

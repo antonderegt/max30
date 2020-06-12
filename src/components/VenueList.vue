@@ -62,7 +62,11 @@
               de wachtrij
             </v-list-item-subtitle>
             <v-list-item-subtitle v-if="venue.capacity <= venue.presentCount">
-              <v-btn :to="'venue/' + venue.id" class="ma-2" color="secondary">
+              <v-btn
+                :to="'venue/' + venue.id"
+                class="ma-2 dark--text"
+                color="secondary"
+              >
                 <v-icon left>post_add</v-icon> Stap in de wachtrij
               </v-btn>
             </v-list-item-subtitle>

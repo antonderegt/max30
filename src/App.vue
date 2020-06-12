@@ -32,6 +32,11 @@ export default {
           title: "Hoe werkt het?",
           icon: "mdi-comment-question",
           link: "/faq"
+        },
+        {
+          title: "Mijn Profiel",
+          icon: "mdi-account-circle",
+          link: "/my-profile"
         }
       ]
     };

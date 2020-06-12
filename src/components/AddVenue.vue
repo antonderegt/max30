@@ -92,7 +92,9 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="info" @click="addVenue">Toevoegen</v-btn>
+        <v-btn color="secondary" class="dark--text" @click="addVenue"
+          >Toevoegen</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-container>

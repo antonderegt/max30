@@ -66,16 +66,6 @@
         >
           Beheerders
           <v-divider></v-divider>
-          <v-list-item to="/my-profile">
-            <v-list-item-icon>
-              <v-icon color="info">mdi-account-circle</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title class="info--text"
-                >Mijn Profiel</v-list-item-title
-              >
-            </v-list-item-content>
-          </v-list-item>
           <v-list-item to="/my-venues">
             <v-list-item-icon>
               <v-icon color="info">mdi-map-marker</v-icon>
