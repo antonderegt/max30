@@ -82,11 +82,6 @@
                 justify="center"
                 no-gutters
               >
-                <!-- <v-col>
-                  <v-btn color="secondary" @click="deleteVenue()"
-                    >Verwijder uit Plekkie</v-btn
-                  >
-                </v-col> -->
               </v-row>
             </v-col>
 
@@ -242,16 +237,6 @@
                 </v-btn>
               </ShareNetwork>
             </v-col>
-            <!-- <v-col v-show="isAdmin" @click="toggleEdit()" cols="1 pt-4">
-              <v-icon color="primary">{{ isEdit ? "done" : "create" }}</v-icon>
-            </v-col> -->
-            <!-- <v-col
-              v-show="isAdmin && !isEdit"
-              @click="toggleEdit()"
-              cols="2 pt-4"
-            >
-              <v-icon color="secondary">create</v-icon>
-            </v-col> -->
           </v-row>
           <div class="venueInfo" v-if="!isEdit">
             <v-row no-gutters>
@@ -364,9 +349,13 @@
               />
             </v-col>
           </div>
+
           <v-divider v-if="isEdit"></v-divider>
           <v-card-actions v-if="isEdit">
-            <v-btn color="primary" @click="deleteVenue()"
+            <v-btn
+              color="error"
+              text
+              @click="deleteVenueDialog = !deleteVenueDialog"
               >Verwijder uit Plekkie</v-btn
             >
             <v-spacer></v-spacer>
@@ -376,6 +365,24 @@
           </v-card-actions>
         </v-card>
       </v-col>
+
+      <v-dialog v-model="deleteVenueDialog" max-width="380" class="mx-auto">
+        <v-card>
+          <v-card-title class="headline">
+            Verwijderen Plekkie
+          </v-card-title>
+          <v-card-text
+            >Weet je zeker dat je deze plek wilt verwijderen?</v-card-text
+          >
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-btn color="success" text @click="deleteVenueDialog = false"
+              >Annuleer</v-btn
+            ><v-spacer></v-spacer>
+            <v-btn color="error" text @click="deleteVenue()">Verwijder</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-row>
 
     <Loading v-if="loadingWaitList" />
@@ -485,7 +492,8 @@ export default {
       editedVenue: null,
       showReportModal: false,
       openingHours: [],
-      showOpeningHours: false
+      showOpeningHours: false,
+      deleteVenueDialog: false
     };
   },
   watch: {
@@ -569,11 +577,8 @@ export default {
       }
     },
     async deleteVenue() {
-      // TODO: use Vuetify modal for confirmation
-      if (confirm("Weet je zeker dat je het bedrijf wilt verwijderen?")) {
-        this.$router.replace("/my-venues");
-        await this.$store.dispatch("deleteVenue", this.venue);
-      }
+      this.$router.replace("/my-venues");
+      await this.$store.dispatch("deleteVenue", this.venue);
     },
     async toggleEdit() {
       if (this.isEdit) {
