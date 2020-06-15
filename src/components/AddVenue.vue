@@ -9,7 +9,7 @@
         <v-form ref="form" v-model="valid" :lazy-validation="lazy">
           <v-text-field
             v-model="name"
-            :rules="nameRules"
+            :rules="rules.nameRules"
             label="Naam"
             prepend-icon="mdi-card-account-details-outline"
             required
@@ -32,7 +32,7 @@
           ></v-text-field>
           <v-text-field
             v-model="address.postcode"
-            :rules="postcodeRules"
+            :rules="rules.postcodeRules"
             label="Postcode"
             prepend-icon="mdi-home"
             v-on:blur="fetchLocation()"
@@ -42,7 +42,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="address.number"
-                :rules="numberRules"
+                :rules="rules.numberRules"
                 label="Huisnummer"
                 prepend-icon="mdi-numeric"
                 v-on:blur="fetchLocation()"
@@ -108,7 +108,7 @@ import Loading from "@/components/Loading.vue";
 import axios from "axios";
 
 export default {
-  computed: mapState(["user"]),
+  computed: mapState(["user", "rules"]),
   data() {
     return {
       loading: false,
@@ -116,17 +116,8 @@ export default {
       lazy: true,
       name: "",
       description: "",
-      nameRules: [v => !!v || "Veld is verplicht"],
       phone: "",
       url: "",
-      urlRules: [v => !!v || "Veld is verplicht"],
-      postcodeRules: [
-        v => !!v || "Postcode is verplicht",
-        v =>
-          /^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i.test(v) ||
-          "Voer een geldig postcode in"
-      ],
-      numberRules: [v => !!v || "Huisnummer is verplicht"],
       address: {
         postcode: "",
         number: "",

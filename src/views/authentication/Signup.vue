@@ -51,7 +51,7 @@
           <v-text-field
             v-if="method === 'email'"
             v-model="name"
-            :rules="nameRules"
+            :rules="rules.nameRules"
             label="Naam"
             prepend-icon="mdi-account"
             required
@@ -59,7 +59,7 @@
           <v-text-field
             v-if="method === 'email'"
             v-model="email"
-            :rules="emailRules"
+            :rules="rules.emailRules"
             label="Email"
             prepend-icon="mdi-email"
             required
@@ -67,7 +67,7 @@
           <v-text-field
             v-if="method === 'email'"
             v-model="password"
-            :rules="passwordRules"
+            :rules="rules.passwordRules"
             label="Wachtwoord"
             :type="showPassword ? 'text' : 'password'"
             prepend-icon="mdi-lock"
@@ -79,7 +79,7 @@
           <v-text-field
             v-if="owner"
             v-model="venue.name"
-            :rules="nameRules"
+            :rules="rules.nameRules"
             label="Naam"
             prepend-icon="mdi-card-account-details"
             required
@@ -87,7 +87,7 @@
           <v-text-field
             v-if="owner"
             v-model="venue.address.postcode"
-            :rules="postcodeRules"
+            :rules="rules.postcodeRules"
             label="Postcode"
             prepend-icon="mdi-home"
             v-on:blur="fetchLocation()"
@@ -96,7 +96,7 @@
           <v-text-field
             v-if="owner"
             v-model="venue.address.number"
-            :rules="numberRules"
+            :rules="rules.numberRules"
             label="Huisnummer"
             prepend-icon="mdi-numeric"
             v-on:blur="fetchLocation()"
@@ -155,7 +155,7 @@
 
 <script>
 import firebase from "firebase/app";
-import { mapGetters } from "vuex";
+import { mapState } from "vuex";
 import axios from "axios";
 import Loading from "@/components/Loading.vue";
 
@@ -163,9 +163,7 @@ export default {
   props: ["isVenue"],
   name: "signup",
   computed: {
-    ...mapGetters({
-      user: "user"
-    })
+    ...mapState(["user", "rules"])
   },
   data() {
     return {
@@ -174,19 +172,7 @@ export default {
       valid: true,
       lazy: true,
       name: "",
-      nameRules: [v => !!v || "Naam is verplicht"],
       email: "",
-      emailRules: [
-        v => !!v || "E-mail is verplicht",
-        v => /.+@.+\..+/.test(v) || "E-mail moet geldig zijn"
-      ],
-      postcodeRules: [
-        v => !!v || "Postcode is verplicht",
-        v =>
-          /^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i.test(v) ||
-          "Voer een geldig postcode in"
-      ],
-      numberRules: [v => !!v || "Huisnummer is verplicht"],
       venue: {
         name: "",
         address: {
@@ -196,11 +182,6 @@ export default {
         }
       },
       password: "",
-      passwordRules: [
-        v => !!v || "Wachtwoord is verplicht",
-        v =>
-          (v && v.length >= 6) || "Wachtwoord moet minstens 6 characters zijn"
-      ],
       showPassword: false,
       capacity: 30,
       owner: this.isVenue

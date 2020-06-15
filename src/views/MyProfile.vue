@@ -17,13 +17,14 @@
                 class="ma-2"
                 label="Email"
                 v-model="editedUser.data.email"
+                :rules="rules.emailRules"
                 prepend-icon="mdi-email"
               ></v-text-field>
               <v-text-field
                 class="ma-2"
                 v-if="provider === 'password'"
                 v-model="oldPassword"
-                :rules="passwordRules"
+                :rules="rules.passwordRules"
                 label="Oud wachtwoord"
                 :type="showPassword ? 'text' : 'password'"
                 prepend-icon="mdi-lock"
@@ -35,7 +36,7 @@
                 class="ma-2"
                 v-if="provider === 'password'"
                 v-model="newPassword"
-                :rules="passwordRules"
+                :rules="rules.passwordRules"
                 label="Nieuw wachtwoord"
                 :type="showPassword ? 'text' : 'password'"
                 prepend-icon="mdi-lock"
@@ -58,7 +59,7 @@
                     color="dark"
                     v-if="provider === 'password'"
                     v-model="oldPassword"
-                    :rules="passwordRules"
+                    :rules="rules.passwordRules"
                     label="Wachtwoord"
                     :type="showPassword ? 'text' : 'password'"
                     prepend-icon="mdi-lock"
@@ -110,15 +111,13 @@
 
 <script>
 import firebase from "firebase/app";
-import { mapGetters } from "vuex";
+import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 
 export default {
   name: "MyProfile",
   computed: {
-    ...mapGetters({
-      user: "user"
-    })
+    ...mapState(["user", "rules"])
   },
   data() {
     return {
@@ -130,17 +129,7 @@ export default {
       provider: "",
       showPassword: false,
       oldPassword: "",
-      newPassword: "",
-      //TODO: move general rules to vuex store?
-      passwordRules: [
-        v => !!v || "Wachtwoord is verplicht",
-        v =>
-          (v && v.length >= 6) || "Wachtwoord moet minstens 6 characters zijn"
-      ],
-      emailRules: [
-        v => !!v || "E-mail is verplicht",
-        v => /.+@.+\..+/.test(v) || "E-mail moet geldig zijn"
-      ]
+      newPassword: ""
     };
   },
   watch: {

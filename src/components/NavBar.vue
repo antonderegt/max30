@@ -85,14 +85,12 @@
 <script>
 import firebase from "firebase/app";
 require("firebase/auth");
-import { mapGetters } from "vuex";
+import { mapState } from "vuex";
 
 export default {
   props: ["items"],
   computed: {
-    ...mapGetters({
-      user: "user"
-    })
+    ...mapState(["user"])
   },
   data() {
     return {

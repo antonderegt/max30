@@ -10,7 +10,7 @@
           <v-text-field
             @keyup.enter="login"
             v-model="email"
-            :rules="emailRules"
+            :rules="rules.emailRules"
             label="E-mail"
             prepend-icon="mdi-account"
             required
@@ -39,19 +39,19 @@
 
 <script>
 import firebase from "firebase/app";
+import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 
 export default {
+  computed: {
+    ...mapState(["rules"])
+  },
   data: function() {
     return {
       loading: false,
       valid: true,
       lazy: true,
       email: "",
-      emailRules: [
-        v => !!v || "E-mail is required",
-        v => /.+@.+\..+/.test(v) || "E-mail must be valid"
-      ],
       signup: this.$route.query.redirect
         ? `/signup?redirect=${this.$route.query.redirect}`
         : "/signup",

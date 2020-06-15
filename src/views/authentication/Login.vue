@@ -29,7 +29,7 @@
           <v-text-field
             @keyup.enter="login"
             v-model="email"
-            :rules="emailRules"
+            :rules="rules.emailRules"
             label="E-mail"
             prepend-icon="mdi-account"
             required
@@ -37,7 +37,7 @@
           <v-text-field
             @keyup.enter="login"
             v-model="password"
-            :rules="passwordRules"
+            :rules="rules.passwordRules"
             label="Password"
             :type="showPassword ? 'text' : 'password'"
             prepend-icon="mdi-lock"
@@ -62,9 +62,13 @@
 
 <script>
 import firebase from "firebase/app";
+import { mapState } from "vuex";
 import Loading from "@/components/Loading.vue";
 
 export default {
+  computed: {
+    ...mapState(["rules"])
+  },
   data: function() {
     return {
       loading: false,
@@ -72,15 +76,7 @@ export default {
       lazy: true,
       resetPassword: false,
       email: "",
-      emailRules: [
-        v => !!v || "E-mail is required",
-        v => /.+@.+\..+/.test(v) || "E-mail must be valid"
-      ],
       password: "",
-      passwordRules: [
-        v => !!v || "Password is required",
-        v => (v && v.length >= 6) || "Password must be at least 6 characters"
-      ],
       showPassword: false,
       signup: this.$route.query.redirect
         ? `/signup?redirect=${this.$route.query.redirect}`

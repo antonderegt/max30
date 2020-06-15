@@ -24,7 +24,28 @@ export default new Vuex.Store({
       text: "",
       color: ""
     },
-    waitListInFrontOfUser: {}
+    waitListInFrontOfUser: {},
+    rules: {
+      nameRules: [v => !!v || "Veld is verplicht"],
+      passwordRules: [
+        v => !!v || "Wachtwoord is verplicht",
+        v =>
+          (v && v.length >= 6) || "Wachtwoord moet minstens 6 characters zijn"
+      ],
+      emailRules: [
+        v => !!v || "E-mail is verplicht",
+        v => /.+@.+\..+/.test(v) || "E-mail moet geldig zijn"
+      ],
+      urlRules: [v => !!v || "Veld is verplicht"],
+
+      postcodeRules: [
+        v => !!v || "Postcode is verplicht",
+        v =>
+          /^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i.test(v) ||
+          "Voer een geldig postcode in"
+      ],
+      numberRules: [v => !!v || "Huisnummer is verplicht"]
+    }
   },
   mutations: {
     ...vuexfireMutations,
@@ -358,13 +379,6 @@ export default new Vuex.Store({
     }
   },
 
-  getters: {
-    user(state) {
-      return state.user;
-    },
-    myVenues(state) {
-      return state.myVenues;
-    }
-  },
+  getters: {},
   modules: {}
 });
