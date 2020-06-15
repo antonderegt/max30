@@ -19,14 +19,11 @@
         </v-slider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="green darken-1"
-            text
-            @click="$emit('update:show', false)"
-          >
+          <v-btn color="error" text @click="$emit('update:show', false)">
             Cancel
           </v-btn>
-          <v-btn color="green darken-1" text @click="agree">Accepteren</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="success" text @click="agree">Accepteren</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

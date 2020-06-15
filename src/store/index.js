@@ -90,7 +90,6 @@ export default new Vuex.Store({
       return bindFirestoreRef.bindFirestoreRef(
         "waitListsByUser",
         db.collection("waitlists").where("userID", "==", userID)
-        //TODO: needs relation to venue to also query venue info or waitinglist should be an object property of venue itself
       );
     }),
     bindMyVenues: firestoreAction((bindFirestoreRef, userID) => {
@@ -268,15 +267,34 @@ export default new Vuex.Store({
         console.log("Error getting document:", error);
       }
     },
-    async deleteVenue(_, venue) {
+    async declineWaitListByVenue(_, venueID) {
+      console.log(venueID);
       try {
-        // TODO: waitListItems still exist after delete (feature? or bug?)
+        const waitListItems = await db
+          .collection("waitlists")
+          .where("venueID", "==", venueID)
+          .get();
+
+        waitListItems.docs.forEach(w => {
+          db.collection("waitlists")
+            .doc(w.id)
+            .update({
+              status: "declined"
+            });
+        });
+      } catch (error) {
+        console.error("declineWaitListByVenue error: ", error);
+      }
+    },
+    async deleteVenue(_, venueID) {
+      try {
         await db
           .collection("venues")
-          .doc(venue.id)
+          .doc(venueID)
           .delete();
+        await this.dispatch("declineWaitListByVenue", venueID);
       } catch (error) {
-        console.error("Error deleting document: ", error);
+        console.error("deleteVenue error: ", error);
       }
     },
     async createProfile({ commit }, profile) {

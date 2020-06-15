@@ -578,7 +578,7 @@ export default {
     },
     async deleteVenue() {
       this.$router.replace("/my-venues");
-      await this.$store.dispatch("deleteVenue", this.venue);
+      await this.$store.dispatch("deleteVenue", this.venue.id);
     },
     async toggleEdit() {
       if (this.isEdit) {
