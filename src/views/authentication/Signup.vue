@@ -75,62 +75,12 @@
             @click:append="showPassword = !showPassword"
             required
           ></v-text-field>
-          <span v-if="owner">Vul de gegevens in van je eerste zaak</span>
-          <v-text-field
+          <span v-if="owner">Vul de gegevens in van je eerste plekkie</span>
+          <AddVenueForm
             v-if="owner"
-            v-model="venue.name"
-            :rules="rules.nameRules"
-            label="Naam"
-            prepend-icon="mdi-card-account-details"
-            required
-          ></v-text-field>
-          <v-text-field
-            v-if="owner"
-            v-model="venue.address.postcode"
-            :rules="rules.postcodeRules"
-            label="Postcode"
-            prepend-icon="mdi-home"
-            v-on:blur="fetchLocation()"
-            required
-          ></v-text-field>
-          <v-text-field
-            v-if="owner"
-            v-model="venue.address.number"
-            :rules="rules.numberRules"
-            label="Huisnummer"
-            prepend-icon="mdi-numeric"
-            v-on:blur="fetchLocation()"
-            required
-          ></v-text-field>
-          <v-text-field
-            v-if="owner"
-            v-model="venue.address.street"
-            label="Straat"
-            prepend-icon="mdi-road"
-            disabled
-          ></v-text-field>
-          <v-text-field
-            v-if="owner"
-            v-model="venue.address.city"
-            label="Stad"
-            prepend-icon="mdi-city"
-            disabled
-          ></v-text-field>
-          <br />
-          <span v-if="owner">Capaciteit</span>
-          <v-slider v-if="owner" v-model="capacity" thumb-label="always">
-            <template v-slot:prepend>
-              <v-icon @click="capacity--">
-                mdi-minus
-              </v-icon>
-            </template>
-
-            <template v-slot:append>
-              <v-icon @click="capacity++">
-                mdi-plus
-              </v-icon>
-            </template>
-          </v-slider>
+            ref="addVenueComponent"
+            :allFields="false"
+          />
         </v-form>
       </v-card-text>
       <v-divider></v-divider>
@@ -156,8 +106,8 @@
 <script>
 import firebase from "firebase/app";
 import { mapState } from "vuex";
-import axios from "axios";
 import Loading from "@/components/Loading.vue";
+import AddVenueForm from "@/components/AddVenueForm.vue";
 
 export default {
   props: ["isVenue"],
@@ -189,9 +139,6 @@ export default {
   },
   methods: {
     async signupWithSocial(provider) {
-      if (!this.$refs.form.validate()) return;
-
-      this.loading = true;
       switch (provider) {
         case "google":
           provider = new firebase.auth.GoogleAuthProvider();
@@ -219,108 +166,46 @@ export default {
           this.loading = false;
           return;
         }
-        await this.addVenue(result.user.uid);
-        this.$router.push(this.$route.query.redirect || "/my-venues");
-        this.loading = false;
+        this.$refs.addVenueComponent.addVenue();
       } catch (error) {
         console.log("signInWithSocial: " + error);
       }
     },
-    async addVenue(uid) {
-      if (!this?.$refs?.form?.validate()) {
-        console.log("Error with validation of form");
-        return;
-      }
-      const query =
-        this.venue.address.street +
-        " " +
-        this.venue.address.number +
-        ", " +
-        this.venue.address.city;
-      const res = await axios.get(
-        `https://nominatim.openstreetmap.org/search/${query}?format=json&countrycodes=NL&limit=3`
-      );
-      const coords = new firebase.firestore.GeoPoint(
-        parseFloat(res.data[0].lat),
-        parseFloat(res.data[0].lon)
-      );
-      this.geo = coords;
-      const venue = {
-        name: this.venue.name,
-        location: {
-          city: this.venue.address.city,
-          address: `${this.venue.address.street} ${this.venue.address.number}`,
-          geo: coords
-        },
-        owners: {
-          [uid]: true
-        },
-        category: {
-          bar: true
-        },
-        capacity: this.capacity,
-        presentCount: 0
-      };
-      await this.$store.dispatch("addVenue", venue);
-      console.log("added Venue");
-    },
-    async fetchLocation() {
-      const { address } = this.venue;
-      if (address.postcode.length && address.number.length) {
-        try {
-          const res = await axios.get(
-            `https://api.postcodedata.nl/v1/postcode/?postcode=${address.postcode}&streetnumber=${address.number}&ref=domeinnaam.nl&type=json`
-          );
-          if (res.data.status === "ok") {
-            this.venue.address = {
-              ...address,
-              ...res.data.details[0]
-            };
-          } else {
-            address.street = "Kan geen geldige locatie vinden";
-          }
-        } catch (error) {
-          console.log("fetchLocation: " + error);
-        }
-      }
-    },
     async signUp() {
+      if (!this.$refs.form.validate()) return;
+      this.loading = true;
+      window.scrollTo(0, 0);
+
       if (this.method !== "email") {
         this.signupWithSocial(this.method);
         return;
       }
-      if (!this.$refs.form.validate()) {
-        return;
-      }
+
       try {
         const res = await firebase
           .auth()
           .createUserWithEmailAndPassword(this.email, this.password);
-
         const currUser = await firebase.getCurrentUser();
         await currUser.updateProfile({
           displayName: this.name
         });
-
         const profile = {
           id: res.user.uid,
           name: this.name,
           owner: this.owner
         };
-
         await this.$store.dispatch("createProfile", profile);
         if (!this.owner) {
           this.$router.push(this.$route.query.redirect || "/");
           return;
         }
         // Else create venue for owner type
-        await this.addVenue(res.user.uid);
-        this.$router.push(this.$route.query.redirect || "/my-venues");
+        this.$refs.addVenueComponent.addVenue();
       } catch (error) {
         alert(error.message);
       }
     }
   },
-  components: { Loading }
+  components: { Loading, AddVenueForm }
 };
 </script>

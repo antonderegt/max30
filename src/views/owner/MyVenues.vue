@@ -2,9 +2,10 @@
   <Loading v-if="loading" />
   <v-container v-else class="pa-3">
     <v-card v-if="myVenues.length === 0" color="info">
-      <v-card-title>You don't have any venues registered</v-card-title>
+      <v-card-title>Je hebt nog geen plekkies aangemaakt</v-card-title>
       <v-card-actions>
-        <v-btn to="/add-venue">Click here to register</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn color="secondary" to="/add-venue">Plekkie aanmaken</v-btn>
       </v-card-actions>
     </v-card>
     <v-card

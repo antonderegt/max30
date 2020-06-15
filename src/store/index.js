@@ -289,7 +289,6 @@ export default new Vuex.Store({
       }
     },
     async declineWaitListByVenue(_, venueID) {
-      console.log(venueID);
       try {
         const waitListItems = await db
           .collection("waitlists")
