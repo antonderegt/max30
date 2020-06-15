@@ -163,15 +163,26 @@ export default {
         });
         return;
       }
-      const res = await axios.get(
-        `https://nominatim.openstreetmap.org/search/${this.searchField}?format=json&countrycodes=NL&limit=3`
-      );
-      if (res.data[0] === undefined) return; // TODO: fix with indicator on hot reloading
 
-      this.geo = {
-        latitude: res.data[0].lat,
-        longitude: res.data[0].lon
-      };
+      try {
+        const res = await axios.get(
+          `https://nominatim.openstreetmap.org/search/${this.searchField}?format=json&countrycodes=NL&limit=3`
+        );
+        if (res.data[0] === undefined) {
+          this.$store.dispatch("setSnackbar", {
+            show: true,
+            text: "Locatie bestaat niet 🤥"
+          });
+          return;
+        }
+
+        this.geo = {
+          latitude: res.data[0]?.lat,
+          longitude: res.data[0]?.lon
+        };
+      } catch (error) {
+        console.log("getCoordinates error: " + error);
+      }
     },
     cancelRequestLocation() {
       this.loading = false;
