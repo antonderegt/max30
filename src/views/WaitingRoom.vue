@@ -149,24 +149,23 @@ export default {
           }, 1000);
         }
       }
-      // immediate: true // This ensures the watcher is triggered upon creation
     }
   },
   methods: {
     async loadWaitListStatus() {
       this.loadingWaitLists = true;
       try {
-        // get venueID:
+        // Get venueID:
         await this.$store.dispatch("bindWaitListsByUser", this.user.data.uid);
         if (!this.waitListsByUser.length) {
           this.loadingWaitLists = false;
           return;
         }
 
-        // get venue name and order
+        // Get venue name and order
         await this.filterVenues();
 
-        // get count of people in front of user
+        // Get count of people in front of user
         const waitListItem = {
           venueID: this.waitListsByUser[0].venueID,
           timestamp: this.waitListsByUser[0].timestamp

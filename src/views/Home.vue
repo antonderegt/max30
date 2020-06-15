@@ -122,7 +122,7 @@ export default {
           async res => {
             if (!res?.coords) {
               this.loading = false;
-              return; // no coordinates from geolocation api web
+              return; // No coordinates from geolocation api web
             }
 
             const osmRes = await axios.get(
@@ -195,7 +195,7 @@ export default {
       this.timeout = setTimeout(() => {
         if (this.searchField == this.searchLocation) return;
         this.$store.dispatch("setSearchLocation", this.searchField);
-        //search function
+        // Search function
         this.getCoordinates();
       }, 300);
     },
@@ -220,7 +220,7 @@ export default {
   },
   updated() {
     let status = JSON.parse(sessionStorage.getItem("healthStatus"));
-    const offset = 12 * 60 * 60 * 1000; // time in ms that is required to re request the users health (12 hour)
+    const offset = 12 * 60 * 60 * 1000; // time in ms that is required to re-request the user's health (12 hour)
     if (!status || Date.now() - status?.timestamp > offset) {
       this.dialog = true;
     }

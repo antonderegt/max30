@@ -28,13 +28,5 @@ export default {
       this.$store.dispatch("setSnackbar", snackbar);
     }
   }
-  //   created() {
-  //     this.$store.subscribe((mutation, state) => {
-  //       if (mutation.type === "snackbar") {
-  //         this.text = state.snackbar.text;
-  //         this.show = state.snackbar.show;
-  //       }
-  //     });
-  //   }
 };
 </script>

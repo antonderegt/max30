@@ -176,7 +176,7 @@ export default {
           // Refetch user
           await this.fetchUser();
 
-          // return snackbar message
+          // Return snackbar message
           this.$store.dispatch("setSnackbar", {
             show: true,
             text: "Je profiel is gewijzigd!",
@@ -250,13 +250,13 @@ export default {
       });
 
       if (resColor === "success") {
-        //succesfull deleted, redirect home
+        // Succesfull delete, redirect home
         this.$router.push("/");
       }
     },
     async fetchUser() {
       this.currUser = await firebase.getCurrentUser();
-      this.provider = this.currUser.providerData[0].providerId; // password = mail, google.com or facebook.com etc.
+      this.provider = this.currUser.providerData[0].providerId; // password = mail, Google = google.com, Facebook = facebook.com
       await this.$store.dispatch("fetchUser", this.currUser);
     }
   },
