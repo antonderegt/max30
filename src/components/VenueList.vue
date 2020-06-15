@@ -8,7 +8,6 @@
     style="max-height: calc(100vh - 280px)"
     class="overflow-y-auto overflow-x-hidden"
   >
-    <!-- TODO: hadere restaruants: in Zwolle (postcode) -->
     <v-row>
       <v-col
         :to="'venue/' + venue.id"
