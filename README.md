@@ -1,8 +1,8 @@
 ![Build and Deploy](https://github.com/antonderegt/max30/workflows/Build%20and%20Deploy/badge.svg?branch=master)
 
-# Plekkie
+# Manage a digital Wait List
 
-Demo at [Plekkie.me](https://plekkie.me)
+View demo [here](https://max30-max100.web.app/)
 
 ## Project setup
 ```
